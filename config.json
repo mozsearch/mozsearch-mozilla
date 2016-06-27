@@ -1,0 +1,22 @@
+{
+  "mozsearch_path": "$MOZSEARCH_PATH",
+  "livegrep_path": "$BASE",
+
+  "repos": {
+    "nss": {
+      "index_path": "$BASE/nss",
+      "repo_path": "$BASE/nss/git",
+      "hg_path": "$TEMP/nss/hg",
+      "blame_repo_path": "$BASE/nss/blame",
+      "objdir_path": "$BASE/nss/dist"
+    },
+
+    "mozilla-central": {
+      "index_path": "$BASE/mozilla-central",
+      "repo_path": "$BASE/mozilla-central/gecko-dev",
+      "hg_path": "$TEMP/mozilla-central/mozilla-central",
+      "blame_repo_path": "$BASE/mozilla-central/gecko-blame",
+      "objdir_path": "$TEMP/mozilla-central/objdir"
+    }
+  }
+}
