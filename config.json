@@ -17,6 +17,12 @@
       "hg_path": "$TEMP/mozilla-central/mozilla-central",
       "blame_repo_path": "$BASE/mozilla-central/gecko-blame",
       "objdir_path": "$TEMP/mozilla-central/objdir"
+    },
+
+    "comm-central": {
+      "index_path": "$BASE/comm-central",
+      "repo_path": "$BASE/comm-central/comm-central",
+      "objdir_path": "$TEMP/comm-central/objdir"
     }
   }
 }

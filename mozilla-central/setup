@@ -28,3 +28,22 @@ rm gecko-blame.tar
 popd
 
 date
+
+echo Updating mercurial
+pushd $HG_ROOT
+hg pull -u
+popd
+
+date
+
+echo Updating git
+pushd $TREE_ROOT
+git pull
+popd
+
+date
+
+echo Generating blame information
+python $MOZSEARCH_PATH/blame/transform-repo.py $TREE_ROOT $BLAME_ROOT $HG_ROOT
+
+date
