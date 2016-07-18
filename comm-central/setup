@@ -1,0 +1,38 @@
+#!/bin/bash
+
+set -e # Errors are fatal
+set -x # Show commands
+
+date
+
+pushd $INDEX_ROOT
+wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/comm-central-hg.tar
+tar xf comm-central-hg.tar
+rm comm-central-hg.tar
+popd
+
+date
+
+pushd /tmp
+virtualenv thenv
+cd thenv
+./bin/pip install treeherder-client
+popd
+
+SCRIPT_PATH=$(readlink -f "$0")
+DIR=$(dirname "$SCRIPT_PATH")
+/tmp/thenv/bin/python $DIR/find-mc-rev.py > /tmp/revs
+
+CC_REV=$(tail -n +1 /tmp/revs | head -1)
+MC_REV=$(tail -n +2 /tmp/revs | head -1)
+
+echo Updating repo
+pushd $FILES_ROOT
+hg pull
+hg update -r $CC_REV
+cd mozilla
+hg pull
+hg update -r $MC_REV
+popd
+
+date
