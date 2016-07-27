@@ -6,13 +6,10 @@ set -x # Show commands
 date
 
 cat > $INDEX_ROOT/mozconfig <<EOF
-. \$topsrcdir/browser/config/mozconfig
 mk_add_options MOZ_OBJDIR=$OBJDIR
+ac_add_options --enable-application=mail
 ac_add_options --enable-debug
 ac_add_options --enable-optimize
-ac_add_options --enable-gczeal
-ac_add_options --without-ccache
-ac_add_options --enable-js-shell
 EOF
 
 mkdir -p $OBJDIR
@@ -21,7 +18,7 @@ mkdir -p $OBJDIR
 $MOZSEARCH_PATH/scripts/indexer-setup.py >> $INDEX_ROOT/mozconfig
 
 cd $FILES_ROOT
-MOZCONFIG=$INDEX_ROOT/mozconfig ./mach build
+MOZCONFIG=$INDEX_ROOT/mozconfig ./mozilla/mach build
 cd -
 
 date

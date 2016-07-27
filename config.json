@@ -2,21 +2,29 @@
   "mozsearch_path": "$MOZSEARCH_PATH",
   "livegrep_path": "$BASE",
 
-  "repos": {
+  "trees": {
     "nss": {
       "index_path": "$BASE/nss",
-      "repo_path": "$BASE/nss/git",
+      "files_path": "$BASE/nss/git",
+      "git_path": "$BASE/nss/git",
       "hg_path": "$TEMP/nss/hg",
-      "blame_repo_path": "$BASE/nss/blame",
+      "git_blame_path": "$BASE/nss/blame",
       "objdir_path": "$BASE/nss/dist"
     },
 
     "mozilla-central": {
       "index_path": "$BASE/mozilla-central",
-      "repo_path": "$BASE/mozilla-central/gecko-dev",
+      "files_path": "$BASE/mozilla-central/gecko-dev",
+      "git_path": "$BASE/mozilla-central/gecko-dev",
       "hg_path": "$TEMP/mozilla-central/mozilla-central",
-      "blame_repo_path": "$BASE/mozilla-central/gecko-blame",
+      "git_blame_path": "$BASE/mozilla-central/gecko-blame",
       "objdir_path": "$TEMP/mozilla-central/objdir"
+    },
+
+    "comm-central": {
+      "index_path": "$BASE/comm-central",
+      "files_path": "$BASE/comm-central/comm-central",
+      "objdir_path": "$TEMP/comm-central/objdir"
     }
   }
 }

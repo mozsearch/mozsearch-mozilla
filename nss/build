@@ -6,13 +6,13 @@ set -x # Show commands
 date
 
 # Add the special clang flags.
-$MOZSEARCH_ROOT/scripts/indexer-setup.py > $INDEX_ROOT/config
+$MOZSEARCH_PATH/scripts/indexer-setup.py > $INDEX_ROOT/config
 . $INDEX_ROOT/config
 export CCC=$CXX
 
 mkdir -p $OBJDIR
 
-cd $TREE_ROOT
+cd $FILES_ROOT
 USE_64=1 make nss_build_all
 cd -
 
