@@ -33,6 +33,9 @@ hg update -r $CC_REV
 cd mozilla
 hg pull
 hg update -r $MC_REV
+
+# Remove these so they're not indexed.
+rm -rf .hg mozilla/.hg
 popd
 
 date
