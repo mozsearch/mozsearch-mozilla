@@ -17,8 +17,12 @@ mkdir -p $OBJDIR
 # Add the special clang flags.
 $MOZSEARCH_PATH/scripts/indexer-setup.py >> $INDEX_ROOT/mozconfig
 
-cd $FILES_ROOT
+pushd $FILES_ROOT
 MOZCONFIG=$INDEX_ROOT/mozconfig ./mozilla/mach build
-cd -
+
+# Remove these so they're not indexed.
+rm -rf .hg mozilla/.hg
+
+popd
 
 date
