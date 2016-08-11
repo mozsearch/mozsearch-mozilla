@@ -25,7 +25,7 @@ for resultset in resultsets:
         j = res.json()
         for detail in j['results']:
             v = detail['value']
-            m = re.search(r'moz:([0-9a-zA-Z]*)', v)
+            m = re.search(r'https://hg.mozilla.org/mozilla-central/rev/([0-9a-zA-Z]*)', v)
             if m:
                 mcrev = m.group(1)
                 #print rev, mcrev, result
