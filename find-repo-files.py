@@ -59,7 +59,7 @@ for line in lines:
     if 'js/src/tests' in path or 'jit-test' in path:
         continue
 
-    if ext in ['.js', '.jsm', '.xml']:
+    if ext in ['.js', '.jsm', '.xml', '.xul', '.inc']:
         js.append(path + '\n')
 
 index_path = config['trees'][tree_name]['index_path']
