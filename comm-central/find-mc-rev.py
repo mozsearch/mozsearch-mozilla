@@ -4,7 +4,7 @@ import re
 import sys
 
 client = thclient.TreeherderClient()
-resultsets = client.get_resultsets('comm-central')
+resultsets = client.get_resultsets('comm-central', count=50)
 for resultset in resultsets:
     rev = resultset['revision']
 
