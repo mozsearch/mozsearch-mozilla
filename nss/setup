@@ -57,6 +57,8 @@ python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT $HG_ROOT
 date
 
 # Uncomment setting CC and CCC
+pushd $INDEX_ROOT
 patch -p1 <patch
+popd
 
 date
