@@ -1,0 +1,9 @@
+diff --git a/coreconf/Linux.mk b/coreconf/Linux.mk
+index c3ae5b6..1662f8d 100644
+--- a/coreconf/Linux.mk
++++ b/coreconf/Linux.mk
+@@ -19,2 +19,2 @@ endif
+-CC			= gcc
+-CCC			= g++
++#CC			= gcc
++#CCC			= g++
