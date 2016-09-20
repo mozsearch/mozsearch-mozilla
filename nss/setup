@@ -59,6 +59,8 @@ date
 # Uncomment setting CC and CCC
 SCRIPT_PATH=$(readlink -f "$0")
 DIR=$(dirname "$SCRIPT_PATH")
+pushd $GIT_ROOT
 patch -p1 <$DIR/patch
+popd
 
 date
