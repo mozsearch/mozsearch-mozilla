@@ -56,11 +56,12 @@ python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT $HG_ROOT
 
 date
 
-# Uncomment setting CC and CCC
-SCRIPT_PATH=$(readlink -f "$0")
-DIR=$(dirname "$SCRIPT_PATH")
-pushd $GIT_ROOT
-patch -p1 <$DIR/patch
-popd
+## Uncomment setting CC and CCC
+## No longer needed due to an NSS fix.
+#SCRIPT_PATH=$(readlink -f "$0")
+#DIR=$(dirname "$SCRIPT_PATH")
+#pushd $GIT_ROOT
+#patch -p1 <$DIR/patch
+#popd
 
 date
