@@ -24,8 +24,11 @@ for resultset in resultsets:
         res = client.session.get(url)
         j = res.json()
         for detail in j['results']:
-            v = detail['value']
-            m = re.search(r'https://hg.mozilla.org/mozilla-central/rev/([0-9a-zA-Z]*)', v)
+            v = detail['url']
+            if v:
+                m = re.search(r'https://hg.mozilla.org/mozilla-central/rev/([0-9a-zA-Z]*)', v)
+            else:
+                m = None
             if m:
                 mcrev = m.group(1)
                 #print rev, mcrev, result
