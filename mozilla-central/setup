@@ -5,14 +5,7 @@ set -x # Show commands
 
 date
 
-pushd $TEMP_PATH
-wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/mozilla-central.tar
-tar xf mozilla-central.tar
-rm mozilla-central.tar
-popd
-
-date
-
+echo Downloading Gecko
 pushd $INDEX_ROOT
 wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/gecko-dev.tar
 tar xf gecko-dev.tar
@@ -21,6 +14,7 @@ popd
 
 date
 
+echo Downloading Gecko blame
 pushd $INDEX_ROOT
 wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/gecko-blame.tar
 tar xf gecko-blame.tar
@@ -29,9 +23,10 @@ popd
 
 date
 
-echo Updating mercurial
-pushd $HG_ROOT
-hg pull -u
+echo Downloading git to hg map
+pushd $INDEX_ROOT
+wget -q https://api.pub.build.mozilla.org/mapper/gecko-dev/mapfile/full
+mv full git_hg.map
 popd
 
 date
@@ -41,9 +36,7 @@ pushd $GIT_ROOT
 git pull
 popd
 
-date
-
 echo Generating blame information
-python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT $HG_ROOT
+python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT $INDEX_ROOT/git_hg.map
 
 date

@@ -7,7 +7,6 @@
       "index_path": "$BASE/nss",
       "files_path": "$BASE/nss/git",
       "git_path": "$BASE/nss/git",
-      "hg_path": "$TEMP/nss/hg",
       "git_blame_path": "$BASE/nss/blame",
       "objdir_path": "$BASE/nss/dist"
     },
@@ -16,7 +15,6 @@
       "index_path": "$BASE/mozilla-central",
       "files_path": "$BASE/mozilla-central/gecko-dev",
       "git_path": "$BASE/mozilla-central/gecko-dev",
-      "hg_path": "$TEMP/mozilla-central/mozilla-central",
       "git_blame_path": "$BASE/mozilla-central/gecko-blame",
       "objdir_path": "$TEMP/mozilla-central/objdir"
     },
