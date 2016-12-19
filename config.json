@@ -1,6 +1,5 @@
 {
   "mozsearch_path": "$MOZSEARCH_PATH",
-  "livegrep_path": "$BASE",
 
   "trees": {
     "nss": {
@@ -8,7 +7,9 @@
       "files_path": "$BASE/nss/git",
       "git_path": "$BASE/nss/git",
       "git_blame_path": "$BASE/nss/blame",
-      "objdir_path": "$BASE/nss/dist"
+      "objdir_path": "$BASE/nss/dist",
+      "codesearch_path": "$BASE/nss/livegrep.idx",
+      "codesearch_port": 8081
     },
 
     "mozilla-central": {
@@ -16,13 +17,17 @@
       "files_path": "$BASE/mozilla-central/gecko-dev",
       "git_path": "$BASE/mozilla-central/gecko-dev",
       "git_blame_path": "$BASE/mozilla-central/gecko-blame",
-      "objdir_path": "$TEMP/mozilla-central/objdir"
+      "objdir_path": "$TEMP/mozilla-central/objdir",
+      "codesearch_path": "$BASE/mozilla-central/livegrep.idx",
+      "codesearch_port": 8082
     },
 
     "comm-central": {
       "index_path": "$BASE/comm-central",
       "files_path": "$BASE/comm-central/comm-central",
-      "objdir_path": "$TEMP/comm-central/objdir"
+      "objdir_path": "$TEMP/comm-central/objdir",
+      "codesearch_path": "$BASE/comm-central/livegrep.idx",
+      "codesearch_port": 8083
     }
   }
 }
