@@ -5,6 +5,7 @@ import os.path
 import sys
 import subprocess
 import json
+import collections
 
 from lib import run
 
@@ -29,8 +30,10 @@ else:
 files = []
 js = []
 idl = []
-dirs = []
-dirDict = {}
+ipdl = []
+
+dirs = collections.OrderedDict()
+ipdl_dirs = collections.OrderedDict()
 
 for line in lines:
     path = line.strip()
@@ -42,9 +45,8 @@ for line in lines:
     elts = path.split('/')
     for i in range(len(elts)):
         sub = '/'.join(elts[:i])
-        if sub and sub not in dirDict:
-            dirDict[sub] = True
-            dirs.append(sub + '\n')
+        if sub and sub not in dirs:
+            dirs[sub] = True
 
     files.append(path + '\n')
 
@@ -56,6 +58,15 @@ for line in lines:
         if not path.endswith('nsIShellService.idl'):
             idl.append(path + '\n')
 
+    if ext == '.ipdl' or ext == '.ipdlh':
+        if 'ipc/ipdl/test' in path or 'accessible/ipc/win' in path or 'widget/win' in path:
+            continue
+
+        ipdl.append(path + '\n')
+
+        dir = '/'.join(elts[:-1])
+        ipdl_dirs[dir] = True
+
     if 'js/src/tests' in path or 'jit-test' in path:
         continue
 
@@ -64,7 +75,10 @@ for line in lines:
 
 index_path = config['trees'][tree_name]['index_path']
 open(os.path.join(index_path, 'repo-files'), 'w').writelines(files)
-open(os.path.join(index_path, 'repo-dirs'), 'w').writelines(dirs)
+open(os.path.join(index_path, 'repo-dirs'), 'w').writelines([ d + '\n' for d in dirs ])
 open(os.path.join(index_path, 'js-files'), 'w').writelines(js)
 open(os.path.join(index_path, 'idl-files'), 'w').writelines(idl)
+open(os.path.join(index_path, 'ipdl-files'), 'w').writelines(ipdl)
+
+open(os.path.join(index_path, 'ipdl-includes'), 'w').write(' '.join([ '-I ' + d for d in ipdl_dirs ]))
 
