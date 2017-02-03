@@ -3,30 +3,30 @@
 
   "trees": {
     "nss": {
-      "index_path": "$BASE/nss",
-      "files_path": "$BASE/nss/git",
-      "git_path": "$BASE/nss/git",
-      "git_blame_path": "$BASE/nss/blame",
-      "objdir_path": "$BASE/nss/dist",
-      "codesearch_path": "$BASE/nss/livegrep.idx",
+      "index_path": "$WORKING/nss",
+      "files_path": "$WORKING/nss/git",
+      "git_path": "$WORKING/nss/git",
+      "git_blame_path": "$WORKING/nss/blame",
+      "objdir_path": "$WORKING/nss/dist",
+      "codesearch_path": "$WORKING/nss/livegrep.idx",
       "codesearch_port": 8081
     },
 
     "mozilla-central": {
-      "index_path": "$BASE/mozilla-central",
-      "files_path": "$BASE/mozilla-central/gecko-dev",
-      "git_path": "$BASE/mozilla-central/gecko-dev",
-      "git_blame_path": "$BASE/mozilla-central/gecko-blame",
-      "objdir_path": "$TEMP/mozilla-central/objdir",
-      "codesearch_path": "$BASE/mozilla-central/livegrep.idx",
+      "index_path": "$WORKING/mozilla-central",
+      "files_path": "$WORKING/mozilla-central/gecko-dev",
+      "git_path": "$WORKING/mozilla-central/gecko-dev",
+      "git_blame_path": "$WORKING/mozilla-central/gecko-blame",
+      "objdir_path": "$WORKING/mozilla-central/objdir",
+      "codesearch_path": "$WORKING/mozilla-central/livegrep.idx",
       "codesearch_port": 8082
     },
 
     "comm-central": {
-      "index_path": "$BASE/comm-central",
-      "files_path": "$BASE/comm-central/comm-central",
-      "objdir_path": "$TEMP/comm-central/objdir",
-      "codesearch_path": "$BASE/comm-central/livegrep.idx",
+      "index_path": "$WORKING/comm-central",
+      "files_path": "$WORKING/comm-central/comm-central",
+      "objdir_path": "$WORKING/comm-central/objdir",
+      "codesearch_path": "$WORKING/comm-central/livegrep.idx",
       "codesearch_port": 8083
     }
   }
