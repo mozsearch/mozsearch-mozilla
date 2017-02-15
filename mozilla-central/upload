@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -e # Errors are fatal
+set -x # Show commands
+
+date
+
+echo Uploading Gecko
+pushd $INDEX_ROOT
+tar cf gecko-dev.tar gecko-dev
+python $AWS_ROOT/upload.py $INDEX_ROOT/gecko-dev.tar searchfox.repositories gecko-dev.tar
+rm gecko-dev.tar
+popd
+
+date
+
+echo Uploading Gecko blame
+pushd $INDEX_ROOT
+tar cf gecko-blame.tar gecko-blame
+python $AWS_ROOT/upload.py $INDEX_ROOT/gecko-blame.tar searchfox.repositories gecko-blame.tar
+rm gecko-blame.tar
+popd
+
+date
