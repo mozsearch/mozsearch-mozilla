@@ -42,6 +42,7 @@ date
 
 echo Updating git
 pushd $GIT_ROOT
+git reset --hard HEAD # Undo any changes from patches applied below.
 git pull
 popd
 
