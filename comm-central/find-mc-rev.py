@@ -3,6 +3,8 @@ import requests
 import re
 import sys
 
+fallback = None
+
 client = thclient.TreeherderClient()
 resultsets = client.get_resultsets('comm-central', count=50)
 for resultset in resultsets:
@@ -17,7 +19,9 @@ for resultset in resultsets:
         if job['platform_option'] != 'debug':
             continue
 
-        result = job['result'] == 'success' # otherwise will be 'busted'
+        # We allow 'testfailed' since comm-central builds run some
+        # checks that might not be relevant for static analysis.
+        result = job['result'] in ['success', 'testfailed']
 
         url = ('https://treeherder.mozilla.org:443/api/jobdetail/?job_guid='
                + job['job_guid'] + '&repository=comm-central')
@@ -37,5 +41,8 @@ for resultset in resultsets:
                     print rev
                     print mcrev
                     sys.exit(0)
+                elif not fallback:
+                    fallback = [rev, mcrev]
 
-sys.exit(1)
+print fallback[0]
+print fallback[1]
