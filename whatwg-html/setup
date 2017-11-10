@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set -e # Errors are fatal
+set -x # Show commands
+
+date
+
+echo Downloading WHATWG HTML repo
+pushd $INDEX_ROOT
+wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/whatwg-html-git.tar
+tar xf whatwg-html-git.tar
+rm whatwg-html-git.tar
+popd
+
+date
+
+echo Downloading WHATWG HTML blame
+pushd $INDEX_ROOT
+wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/whatwg-html-blame.tar
+tar xf whatwg-html-blame.tar
+rm whatwg-html-blame.tar
+popd
+
+date
+
+echo Updating git
+pushd $GIT_ROOT
+git pull
+popd
+
+echo Generating blame information
+python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT
+
+date
