@@ -35,6 +35,7 @@
       "files_path": "$WORKING/whatwg-html/html",
       "git_path": "$WORKING/whatwg-html/html",
       "git_blame_path": "$WORKING/whatwg-html/blame",
+      "objdir_path": "$WORKING/whatwg-html/objdir",
       "codesearch_path": "$WORKING/whatwg-html/livegrep.idx",
       "codesearch_port": 8084
     }
