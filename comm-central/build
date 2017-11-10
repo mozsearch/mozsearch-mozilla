@@ -18,7 +18,9 @@ mkdir -p $OBJDIR
 $MOZSEARCH_PATH/scripts/indexer-setup.py >> $INDEX_ROOT/mozconfig
 
 pushd $FILES_ROOT
-MOZCONFIG=$INDEX_ROOT/mozconfig ./mozilla/mach build
+
+# We skip the actual build step to save time!
+# MOZCONFIG=$INDEX_ROOT/mozconfig ./mozilla/mach build
 
 # Remove these so they're not indexed.
 rm -rf .hg mozilla/.hg
