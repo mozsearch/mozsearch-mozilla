@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -e # Errors are fatal
+set -x # Show commands
+
+date
+
+echo Uploading Servo
+pushd $INDEX_ROOT
+tar cf servo.tar servo
+python $AWS_ROOT/upload.py $INDEX_ROOT/servo.tar searchfox.repositories servo.tar
+rm servo.tar
+popd
+
+date
+
+echo Uploading Gecko blame
+pushd $INDEX_ROOT
+tar cf servo-blame.tar blame
+python $AWS_ROOT/upload.py $INDEX_ROOT/servo-blame.tar searchfox.repositories servo-blame.tar
+rm servo-blame.tar
+popd
+
+date

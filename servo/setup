@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -e # Errors are fatal
+set -x # Show commands
+
+date
+
+# TODO: Download the cached repo from searchfox.repositories?
+
+echo Downloading Servo
+pushd $INDEX_ROOT
+rm -rf servo
+git clone https://github.com/servo/servo.git
+popd
+
+date
+
+# TODO: Download cached blame info and such.
+mkdir -p $BLAME_ROOT
+pushd $BLAME_ROOT
+git init .
+popd
+
+echo Updating git
+pushd $GIT_ROOT
+git pull
+popd
+
+echo Generating blame information
+python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT
+
+date

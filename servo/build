@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -e # Errors are fatal
+set -x # Show commands
+
+date
+
+cd $FILES_ROOT
+
+# FIXME: This should maybe use $MOZSEARCH_PATH/scripts/indexer-setup.py
+#
+# NOTE(emilio): We use cargo check since it's enough to index the code without
+# a full build.
+RUSTFLAGS="-Zsave-analysis" ./mach cargo check -p servo
+cd -
+
+date

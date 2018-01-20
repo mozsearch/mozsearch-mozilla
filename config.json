@@ -41,6 +41,16 @@
       "objdir_path": "$WORKING/whatwg-html/objdir",
       "codesearch_path": "$WORKING/whatwg-html/livegrep.idx",
       "codesearch_port": 8084
+    },
+
+    "servo": {
+      "index_path": "$WORKING/servo",
+      "files_path": "$WORKING/servo/servo",
+      "git_path": "$WORKING/servo/servo",
+      "git_blame_path": "$WORKING/servo/blame",
+      "objdir_path": "$WORKING/servo/servo/target",
+      "codesearch_path": "$WORKING/servo/livegrep.idx",
+      "codesearch_port": 8085
     }
   }
 }
