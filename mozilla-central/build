@@ -21,7 +21,12 @@ mkdir -p $OBJDIR
 $MOZSEARCH_PATH/scripts/indexer-setup.py >> $INDEX_ROOT/mozconfig
 
 cd $FILES_ROOT
-MOZCONFIG=$INDEX_ROOT/mozconfig ./mach build
+if [ -f "$INDEX_ROOT/target.mozsearch-index.zip" ]
+then
+    echo "Skipping build, since we have analysis data from TaskCluster"
+else
+    MOZCONFIG=$INDEX_ROOT/mozconfig ./mach build
+fi
 cd -
 
 date
