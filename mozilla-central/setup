@@ -7,18 +7,28 @@ date
 
 echo Downloading Gecko
 pushd $INDEX_ROOT
-wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/gecko-dev.tar
-tar xf gecko-dev.tar
-rm gecko-dev.tar
+if [ -d "gecko-dev" ]
+then
+    echo "Found pre-existing gecko-dev folder; skipping re-download."
+else
+    wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/gecko-dev.tar
+    tar xf gecko-dev.tar
+    rm gecko-dev.tar
+fi
 popd
 
 date
 
 echo Downloading Gecko blame
 pushd $INDEX_ROOT
-wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/gecko-blame.tar
-tar xf gecko-blame.tar
-rm gecko-blame.tar
+if [ -d "gecko-blame" ]
+then
+    echo "Found existing gecko-blame folder; skipping re-download."
+else
+    wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/gecko-blame.tar
+    tar xf gecko-blame.tar
+    rm gecko-blame.tar
+fi
 popd
 
 date
