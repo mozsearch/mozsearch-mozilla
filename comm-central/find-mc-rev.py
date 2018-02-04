@@ -13,10 +13,11 @@ for resultset in resultsets:
     jobs = client.get_jobs('comm-central',
                            result_set_id=resultset['id'],
                            platform='linux64',
-                           job_type_name='Build',
                            platform_option='debug')
     for job in jobs:
         if job['platform_option'] != 'debug':
+            continue
+        if job['job_type_name'] not in ['build-linux64/debug', 'Build']:
             continue
 
         # We allow 'testfailed' since comm-central builds run some
