@@ -5,34 +5,59 @@ set -x # Show commands
 
 date
 
+echo Downloading comm-central...
 pushd $INDEX_ROOT
-wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/comm-central-hg.tar
-tar xf comm-central-hg.tar
-rm comm-central-hg.tar
+if [ -d "comm-central" ]
+then
+    echo "Found pre-existing comm-central folder; skipping re-download."
+else
+    wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/comm-central.tar
+    tar xf comm-central.tar
+    rm comm-central.tar
+fi
 popd
 
 date
 
-pushd /tmp
-virtualenv thenv
-cd thenv
-./bin/pip install treeherder-client
+echo Downloading comm-central blame...
+pushd $INDEX_ROOT
+if [ -d "comm-central-blame" ]
+then
+    echo "Found pre-existing comm-central-blame folder; skipping re-download."
+else
+    wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/comm-central-blame.tar
+    tar xf comm-central-blame.tar
+    rm comm-central-blame.tar
+fi
 popd
 
-SCRIPT_PATH=$(readlink -f "$0")
-DIR=$(dirname "$SCRIPT_PATH")
-/tmp/thenv/bin/python $DIR/find-mc-rev.py > /tmp/revs
+date
 
-CC_REV=$(tail -n +1 /tmp/revs | head -1)
-MC_REV=$(tail -n +2 /tmp/revs | head -1)
+# We also need to put a copy of mozilla-central into the mozilla/ folder
 
-echo Updating repo
-pushd $FILES_ROOT
-hg pull
-hg update -r $CC_REV
-cd mozilla
-hg pull
-hg update -r $MC_REV
+echo "Downloading mozilla..."
+pushd $INDEX_ROOT/comm-central
+if [ -d "mozilla" ]
+then
+    echo "Found pre-existing mozilla subfolder; skipping re-download."
+else
+    wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/gecko-dev.tar
+    tar xf gecko-dev.tar
+    mv gecko-dev mozilla
+    rm gecko-dev.tar
+fi
+
+date
+
+echo Updating git
+pushd $GIT_ROOT
+git pull
+pushd mozilla
+git pull
 popd
+popd
+
+echo Generating blame information
+python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT
 
 date

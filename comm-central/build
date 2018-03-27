@@ -3,28 +3,3 @@
 set -e # Errors are fatal
 set -x # Show commands
 
-date
-
-cat > $INDEX_ROOT/mozconfig <<EOF
-mk_add_options MOZ_OBJDIR=$OBJDIR
-ac_add_options --enable-application=mail
-ac_add_options --enable-debug
-ac_add_options --enable-optimize
-EOF
-
-mkdir -p $OBJDIR
-
-# Add the special clang flags.
-$MOZSEARCH_PATH/scripts/indexer-setup.py >> $INDEX_ROOT/mozconfig
-
-pushd $FILES_ROOT
-
-# We skip the actual build step to save time!
-# MOZCONFIG=$INDEX_ROOT/mozconfig ./mozilla/mach build
-
-# Remove these so they're not indexed.
-rm -rf .hg mozilla/.hg
-
-popd
-
-date
