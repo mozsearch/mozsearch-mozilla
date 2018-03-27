@@ -27,6 +27,8 @@
     "comm-central": {
       "index_path": "$WORKING/comm-central",
       "files_path": "$WORKING/comm-central/comm-central",
+      "git_path": "$WORKING/comm-central/comm-central",
+      "git_blame_path": "$WORKING/comm-central/comm-central-blame",
       "hg_root": "https://hg.mozilla.org/comm-central",
       "objdir_path": "$WORKING/comm-central/objdir",
       "codesearch_path": "$WORKING/comm-central/livegrep.idx",

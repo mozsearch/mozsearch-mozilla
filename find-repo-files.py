@@ -14,18 +14,15 @@ tree_name = sys.argv[2]
 
 repo_path = config['trees'][tree_name]['files_path']
 
+stdout = run('git ls-files', shell=True, cwd=repo_path)
+lines = stdout.split('\n')
+
+# Comm-central has a mozilla/ subrepo
 if tree_name == 'comm-central':
-    files1 = run('hg locate', shell=True, cwd=repo_path)
-    lines1 = files1.split('\n')
-    files2 = run('hg locate', shell=True, cwd=os.path.join(repo_path, 'mozilla'))
-    lines2 = files2.split('\n')
-
+    stdout = run('git ls-files', shell=True, cwd=os.path.join(repo_path, 'mozilla'))
+    lines2 = stdout.split('\n')
     lines2 = [ 'mozilla/' + f for f in lines2 if f ]
-
-    lines = lines1 + lines2
-else:
-    stdout = run('git ls-files', shell=True, cwd=repo_path)
-    lines = stdout.split('\n')
+    lines = lines + lines2
 
 files = []
 js = []
