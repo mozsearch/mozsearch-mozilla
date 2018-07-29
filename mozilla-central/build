@@ -24,4 +24,6 @@ cd $FILES_ROOT
 MOZCONFIG=$INDEX_ROOT/mozconfig ./mach build
 cd -
 
+$MOZSEARCH_PATH/scripts/export-rust-source.sh $OBJDIR
+
 date
