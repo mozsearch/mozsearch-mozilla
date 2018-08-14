@@ -35,7 +35,7 @@ date
 
 echo Downloading git to hg map
 pushd $INDEX_ROOT
-wget -q https://api.pub.build.mozilla.org/mapper/gecko-dev/mapfile/full
+wget -q https://mapper.mozilla-releng.net/gecko-dev/mapfile/full
 mv full git_hg.map
 popd
 

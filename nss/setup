@@ -49,7 +49,7 @@ date
 
 echo Downloading git to hg map
 pushd $INDEX_ROOT
-wget -q https://api.pub.build.mozilla.org/mapper/nss/mapfile/full
+wget -q https://mapper.mozilla-releng.net/nss/mapfile/full
 mv full git_hg.map
 popd
 
