@@ -7,27 +7,42 @@ date
 
 echo Downloading NSPR
 pushd $INDEX_ROOT
-wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/nss-nspr.tar
-tar xf nss-nspr.tar
-rm nss-nspr.tar
+if [ -d "nspr" ]
+then
+    echo "Found pre-existing nspr folder; skipping re-download."
+else
+    wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/nss-nspr.tar
+    tar xf nss-nspr.tar
+    rm nss-nspr.tar
+fi
 popd
 
 date
 
 echo Downloading NSS
 pushd $INDEX_ROOT
-wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/nss-git.tar
-tar xf nss-git.tar
-rm nss-git.tar
+if [ -d "git" ]
+then
+    echo "Found pre-existing git folder; skipping re-download."
+else
+    wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/nss-git.tar
+    tar xf nss-git.tar
+    rm nss-git.tar
+fi
 popd
 
 date
 
 echo Downloading NSS blame
 pushd $INDEX_ROOT
-wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/nss-blame.tar
-tar xf nss-blame.tar
-rm nss-blame.tar
+if [ -d "blame" ]
+then
+    echo "Found pre-existing blame folder; skipping re-download."
+else
+    wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/nss-blame.tar
+    tar xf nss-blame.tar
+    rm nss-blame.tar
+fi
 popd
 
 date

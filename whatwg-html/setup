@@ -7,18 +7,28 @@ date
 
 echo Downloading WHATWG HTML repo
 pushd $INDEX_ROOT
-wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/whatwg-html-git.tar
-tar xf whatwg-html-git.tar
-rm whatwg-html-git.tar
+if [ -d "html" ]
+then
+    echo "Found pre-existing html folder; skipping re-download."
+else
+    wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/whatwg-html-git.tar
+    tar xf whatwg-html-git.tar
+    rm whatwg-html-git.tar
+fi
 popd
 
 date
 
 echo Downloading WHATWG HTML blame
 pushd $INDEX_ROOT
-wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/whatwg-html-blame.tar
-tar xf whatwg-html-blame.tar
-rm whatwg-html-blame.tar
+if [ -d "blame" ]
+then
+    echo "Found pre-existing blame folder; skipping re-download."
+else
+    wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/whatwg-html-blame.tar
+    tar xf whatwg-html-blame.tar
+    rm whatwg-html-blame.tar
+fi
 popd
 
 date
