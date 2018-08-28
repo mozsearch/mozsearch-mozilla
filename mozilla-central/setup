@@ -56,6 +56,11 @@ popd
 
 date
 
+function move_file {
+    mkdir -p "$(dirname $2)"
+    mv "$1" "$2"
+}
+
 # Edit this to e.g. try.revision.ee64db93dcc149da9313460317257b8c42eec5b2 or whatever
 # to test other revisions. If you do this, also override INDEXED_GIT_REV below to some sane
 # git-equivalent of the revision because most likely it won't find anything in the mapfile.
@@ -109,6 +114,66 @@ if [ -n "$INDEXED_GIT_REV" ]; then
     # system didn't actually produce two copies of these files.
     cp $INDEX_ROOT/objdir/buildid.h $INDEX_ROOT/objdir/dist/include/buildid.h
     cp $INDEX_ROOT/objdir/mozilla-config.h $INDEX_ROOT/objdir/dist/include/mozilla-config.h
+
+    # Download the macOS tarballs and merge them into the linux tarballs.
+    # Check to make sure they are for the same hg revision first.
+    wget -O macosx.json -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.macosx64-searchfox-debug/artifacts/public/build/target.json
+    MACOSX_HG_REV=$(python $MOZSEARCH_PATH/scripts/read-json.py macosx.json moz_source_stamp)
+    if [ "$INDEXED_HG_REV" == "$MACOSX_HG_REV" ]; then
+        rm -f macosx.mozsearch-index.zip
+        wget -O macosx.mozsearch-index.zip -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.macosx64-searchfox-debug/artifacts/public/build/target.mozsearch-index.zip
+        mkdir -p $INDEX_ROOT/analysis-macosx
+        unzip macosx.mozsearch-index.zip -d $INDEX_ROOT/analysis-macosx
+
+        # Throw the macOS save-analysis files into the objdir too. They'll get
+        # passed to rust-indexer.rs along with the linux ones, and rust-indexer.rs
+        # will take care of combining the analysis files correctly.
+        rm -f macosx.mozsearch-rust.zip
+        wget -O macosx.mozsearch-rust.zip -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.macosx64-searchfox-debug/artifacts/public/build/target.mozsearch-rust.zip
+        unzip macosx.mozsearch-rust.zip -d $INDEX_ROOT/objdir
+
+        rm -f macosx.generated-files.tar.gz
+        wget -O macosx.generated-files.tar.gz -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.macosx64-searchfox-debug/artifacts/public/build/target.generated-files.tar.gz
+        mkdir -p $INDEX_ROOT/generated-macosx
+        tar -x -z -C $INDEX_ROOT/generated-macosx -f macosx.generated-files.tar.gz
+
+        # FIXME: Deal better with merging generated files yet; macOS might have different
+        # generated sources than linux and so the analysis data might be for line numbers
+        # that don't exist. For now let's just extract any macOS-only generated files
+        # and their analysis data, and delete the rest. In effect, for cases where the
+        # generated file differs between Linux and macOS, we use the Linux version.
+        # See bug 1487583 comment 3.
+        pushd generated-macosx
+        find . -type f |
+        while read GENERATED_FILE; do
+            if [ ! -f "../objdir/$GENERATED_FILE" ]; then
+                # Generated file exists only for macOS
+                move_file "$GENERATED_FILE" "../objdir/$GENERATED_FILE"
+                if [ -f "../analysis-macosx/__GENERATED__/$GENERATED_FILE" ]; then
+                    # Move the macOS analysis file as well
+                    move_file "../analysis-macosx/__GENERATED__/$GENERATED_FILE" "../analysis/__GENERATED__/$GENERATED_FILE"
+                fi
+            fi
+        done
+        popd
+        rm -rf analysis-macosx/__GENERATED__
+
+        # Merge analysis files for non-generated source files from macOS. This is as simple
+        # as unioning the lines in the analysis files.
+        pushd analysis-macosx
+        find . -type f |
+        while read ANALYSIS_FILE; do
+            if [ ! -f "../analysis/$ANALYSIS_FILE" ]; then
+                move_file "$ANALYSIS_FILE" "../analysis/$ANALYSIS_FILE"
+            else
+                cat "$ANALYSIS_FILE" "../analysis/$ANALYSIS_FILE" | sort | uniq > ../analysis.merged
+                mv "../analysis.merged" "../analysis/$ANALYSIS_FILE"
+            fi
+        done
+        popd
+    else
+        echo "Most recent macOS analysis was for hg rev $MACOSX_HG_REV; expected $INDEXED_HG_REV; skipping macOS analysis merge step."
+    fi
 
     # We get analysis data for generated files, some of which aren't included
     # in the generated-files tarball that we get from taskcluster. Most of these
