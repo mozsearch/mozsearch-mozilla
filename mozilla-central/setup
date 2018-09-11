@@ -172,7 +172,7 @@ if [ -n "$INDEXED_GIT_REV" ]; then
         done
         popd
     else
-        echo "Most recent macOS analysis was for hg rev $MACOSX_HG_REV; expected $INDEXED_HG_REV; skipping macOS analysis merge step."
+        echo "WARNING: Most recent macOS analysis was for hg rev $MACOSX_HG_REV; expected $INDEXED_HG_REV; skipping macOS analysis merge step."
     fi
 
     # We get analysis data for generated files, some of which aren't included
@@ -194,6 +194,8 @@ if [ -n "$INDEXED_GIT_REV" ]; then
     # Also drop any directories that got emptied as a result
     find . -depth -type d -empty -delete
     popd
+else
+    echo "WARNING: Unable to find git equivalent for hg rev $INDEXED_HG_REV; falling back to local build..."
 fi
 popd
 
