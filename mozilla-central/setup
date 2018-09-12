@@ -11,7 +11,7 @@ if [ -d "gecko-dev" ]
 then
     echo "Found pre-existing gecko-dev folder; skipping re-download."
 else
-    wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/gecko-dev.tar
+    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/gecko-dev.tar
     tar xf gecko-dev.tar
     rm gecko-dev.tar
 fi
@@ -25,7 +25,7 @@ if [ -d "gecko-blame" ]
 then
     echo "Found existing gecko-blame folder; skipping re-download."
 else
-    wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/gecko-blame.tar
+    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/gecko-blame.tar
     tar xf gecko-blame.tar
     rm gecko-blame.tar
 fi
@@ -37,7 +37,7 @@ echo Downloading git to hg map
 pushd $INDEX_ROOT
 # We only need "recent" mapfile entries and attempting to download the full mapfile
 # results in a 503 error so we just get the map entries from some fixed recent date.
-wget -O git_hg.map -q https://mapper.mozilla-releng.net/gecko-dev/mapfile/since/2018-08-01
+wget -O git_hg.map -nv https://mapper.mozilla-releng.net/gecko-dev/mapfile/since/2018-08-01
 popd
 
 date

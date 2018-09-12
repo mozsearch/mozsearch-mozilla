@@ -11,7 +11,7 @@ if [ -d "comm-central" ]
 then
     echo "Found pre-existing comm-central folder; skipping re-download."
 else
-    wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/comm-central.tar
+    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/comm-central.tar
     tar xf comm-central.tar
     rm comm-central.tar
 fi
@@ -25,7 +25,7 @@ if [ -d "comm-central-blame" ]
 then
     echo "Found pre-existing comm-central-blame folder; skipping re-download."
 else
-    wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/comm-central-blame.tar
+    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/comm-central-blame.tar
     tar xf comm-central-blame.tar
     rm comm-central-blame.tar
 fi
@@ -41,7 +41,7 @@ if [ -d "mozilla" ]
 then
     echo "Found pre-existing mozilla subfolder; skipping re-download."
 else
-    wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/gecko-dev.tar
+    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/gecko-dev.tar
     tar xf gecko-dev.tar
     mv gecko-dev mozilla
     rm gecko-dev.tar
