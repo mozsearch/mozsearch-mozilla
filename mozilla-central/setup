@@ -9,15 +9,7 @@ echo Downloading Gecko
 pushd $INDEX_ROOT
 if [ -d "gecko-dev" ]
 then
-    # This codepath is not taken in production; it's taken if you are running with
-    # KEEP_WORKING=1 which will preserve the repo from the last run instead of clobbering
-    # and redownloading it. In this case we want to reset the repo to master since it
-    # may have been left at some other cset previously. We do a `git pull` further down
-    # to update it as well.
     echo "Found pre-existing gecko-dev folder; skipping re-download."
-    pushd gecko-dev
-    git checkout master
-    popd
 else
     wget -q https://s3-us-west-2.amazonaws.com/searchfox.repositories/gecko-dev.tar
     tar xf gecko-dev.tar
@@ -51,6 +43,9 @@ date
 
 echo Updating git
 pushd $GIT_ROOT
+# The repo may have been uploaded while checked out to some non-master
+# revision (to match the hg revision used in taskcluster)
+git checkout master
 git pull
 popd
 

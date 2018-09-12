@@ -53,6 +53,9 @@ echo Updating git
 pushd $GIT_ROOT
 git pull
 pushd mozilla
+# The repo may have been uploaded while checked out to some non-master
+# revision (to match the hg revision used in taskcluster)
+git checkout master
 git pull
 popd
 popd
