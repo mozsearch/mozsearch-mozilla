@@ -35,8 +35,9 @@ date
 
 echo Downloading git to hg map
 pushd $INDEX_ROOT
-wget -q https://mapper.mozilla-releng.net/gecko-dev/mapfile/full
-mv full git_hg.map
+# We only need "recent" mapfile entries and attempting to download the full mapfile
+# results in a 503 error so we just get the map entries from some fixed recent date.
+wget -O git_hg.map -q https://mapper.mozilla-releng.net/gecko-dev/mapfile/since/2018-08-01
 popd
 
 date
