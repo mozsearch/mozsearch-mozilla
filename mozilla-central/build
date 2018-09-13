@@ -25,7 +25,10 @@ if [ -f "$INDEX_ROOT/target.mozsearch-index.zip" ]
 then
     echo "Skipping build, since we have analysis data from TaskCluster"
 else
+    MOZCONFIG=$INDEX_ROOT/mozconfig ./mach bootstrap --application-choice=browser --no-interactive --no-system-changes
     MOZCONFIG=$INDEX_ROOT/mozconfig ./mach build
+    # Delete the ~1.8 Gb of toolchains that we don't need after this (we'll need the space to write big files in /tmp later)
+    rm -rf $HOME/.mozbuild
 fi
 cd -
 
