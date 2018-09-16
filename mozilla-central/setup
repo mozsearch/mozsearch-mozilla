@@ -92,12 +92,12 @@ if [ -n "$INDEXED_GIT_REV" ]; then
     rm -f target.mozsearch-index.zip
     wget -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.linux64-searchfox-debug/artifacts/public/build/target.mozsearch-index.zip
     mkdir -p $INDEX_ROOT/analysis
-    unzip target.mozsearch-index.zip -d $INDEX_ROOT/analysis
+    unzip -q target.mozsearch-index.zip -d $INDEX_ROOT/analysis
 
     rm -f target.mozsearch-rust.zip
     wget -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.linux64-searchfox-debug/artifacts/public/build/target.mozsearch-rust.zip
     mkdir -p $INDEX_ROOT/objdir
-    unzip target.mozsearch-rust.zip -d $INDEX_ROOT/objdir
+    unzip -q target.mozsearch-rust.zip -d $INDEX_ROOT/objdir
 
     rm -f target.generated-files.tar.gz
     wget -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.linux64-searchfox-debug/artifacts/public/build/target.generated-files.tar.gz
@@ -119,14 +119,14 @@ if [ -n "$INDEXED_GIT_REV" ]; then
         rm -f macosx.mozsearch-index.zip
         wget -O macosx.mozsearch-index.zip -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.macosx64-searchfox-debug/artifacts/public/build/target.mozsearch-index.zip
         mkdir -p $INDEX_ROOT/analysis-macosx
-        unzip macosx.mozsearch-index.zip -d $INDEX_ROOT/analysis-macosx
+        unzip -q macosx.mozsearch-index.zip -d $INDEX_ROOT/analysis-macosx
 
         # Throw the macOS save-analysis files into the objdir too. They'll get
         # passed to rust-indexer.rs along with the linux ones, and rust-indexer.rs
         # will take care of combining the analysis files correctly.
         rm -f macosx.mozsearch-rust.zip
         wget -O macosx.mozsearch-rust.zip -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.macosx64-searchfox-debug/artifacts/public/build/target.mozsearch-rust.zip
-        unzip macosx.mozsearch-rust.zip -d $INDEX_ROOT/objdir
+        unzip -q macosx.mozsearch-rust.zip -d $INDEX_ROOT/objdir
 
         rm -f macosx.generated-files.tar.gz
         wget -O macosx.generated-files.tar.gz -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.macosx64-searchfox-debug/artifacts/public/build/target.generated-files.tar.gz
