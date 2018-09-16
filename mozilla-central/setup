@@ -162,7 +162,7 @@ if [ -n "$INDEXED_GIT_REV" ]; then
             if [ ! -f "../analysis/$ANALYSIS_FILE" ]; then
                 move_file "$ANALYSIS_FILE" "../analysis/$ANALYSIS_FILE"
             else
-                cat "$ANALYSIS_FILE" "../analysis/$ANALYSIS_FILE" | sort | uniq > ../analysis.merged
+                $MOZSEARCH_PATH/scripts/merge-analyses.py "$ANALYSIS_FILE" "../analysis/$ANALYSIS_FILE" | sort | uniq > ../analysis.merged
                 mv "../analysis.merged" "../analysis/$ANALYSIS_FILE"
             fi
         done
