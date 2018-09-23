@@ -175,7 +175,7 @@ if [ -n "$INDEXED_GIT_REV" ]; then
                 move_file "$ANALYSIS_FILE" "../analysis/$ANALYSIS_FILE"
             else
                 echo "Merging analysis file $ANALYSIS_FILE"
-                $MOZSEARCH_PATH/scripts/merge-analyses.py "$ANALYSIS_FILE" "../analysis/$ANALYSIS_FILE" | sort | uniq > ../analysis.merged
+                $MOZSEARCH_PATH/tools/target/release/merge-analyses "$ANALYSIS_FILE" "../analysis/$ANALYSIS_FILE" > ../analysis.merged
                 mv "../analysis.merged" "../analysis/$ANALYSIS_FILE"
             fi
         done
