@@ -18,6 +18,7 @@
       "files_path": "$WORKING/mozilla-central/gecko-dev",
       "git_path": "$WORKING/mozilla-central/gecko-dev",
       "git_blame_path": "$WORKING/mozilla-central/gecko-blame",
+      "github_repo": "https://github.com/mozilla/gecko-dev",
       "hg_root": "https://hg.mozilla.org/mozilla-central",
       "objdir_path": "$WORKING/mozilla-central/objdir",
       "codesearch_path": "$WORKING/mozilla-central/livegrep.idx",
@@ -29,6 +30,7 @@
       "files_path": "$WORKING/comm-central/comm-central",
       "git_path": "$WORKING/comm-central/comm-central",
       "git_blame_path": "$WORKING/comm-central/comm-central-blame",
+      "github_repo": "https://github.com/mozilla/releases-comm-central",
       "hg_root": "https://hg.mozilla.org/comm-central",
       "objdir_path": "$WORKING/comm-central/objdir",
       "codesearch_path": "$WORKING/comm-central/livegrep.idx",
@@ -40,6 +42,7 @@
       "files_path": "$WORKING/whatwg-html/html",
       "git_path": "$WORKING/whatwg-html/html",
       "git_blame_path": "$WORKING/whatwg-html/blame",
+      "github_repo": "https://github.com/whatwg/html",
       "objdir_path": "$WORKING/whatwg-html/objdir",
       "codesearch_path": "$WORKING/whatwg-html/livegrep.idx",
       "codesearch_port": 8084
