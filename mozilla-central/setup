@@ -65,7 +65,7 @@ function move_file {
 REVISION=mozilla-central.latest
 
 pushd $INDEX_ROOT
-wget -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.linux64-searchfox-debug/artifacts/public/build/target.json
+curl -SsfL --compressed https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.linux64-searchfox-debug/artifacts/public/build/target.json > target.json
 INDEXED_HG_REV=$(python $MOZSEARCH_PATH/scripts/read-json.py target.json moz_source_stamp)
 INDEXED_GIT_REV=$(awk -v REV=$INDEXED_HG_REV '$2 ~ REV { print $1 }' git_hg.map)
 
@@ -77,7 +77,7 @@ INDEXED_GIT_REV=$(awk -v REV=$INDEXED_HG_REV '$2 ~ REV { print $1 }' git_hg.map)
 # so that we have analysis data for a version of the source we have.
 # Whether or not we do the build is decided in the "build" script in the same folder
 # as this file, which detects this scenario by the absence of the
-# target.mozsearch-index.zip file.
+# linux64.mozsearch-index.zip file.
 
 if [ -n "$INDEXED_GIT_REV" ]; then
     pushd $GIT_ROOT
@@ -85,127 +85,134 @@ if [ -n "$INDEXED_GIT_REV" ]; then
     git checkout $INDEXED_GIT_REV
     popd
 
-    # Download the C++ analysis, Rust save-analysis files, and generated sources tarballs.
+    rm -rf analysis && mkdir -p analysis
+    rm -rf objdir && mkdir -p objdir
+    rm -f analysis-files.list analysis-dirs.list
 
-    rm -rf $INDEX_ROOT/analysis
-    rm -rf $INDEX_ROOT/objdir
-
-    rm -f target.mozsearch-index.zip
-    wget -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.linux64-searchfox-debug/artifacts/public/build/target.mozsearch-index.zip
-    mkdir -p $INDEX_ROOT/analysis
-    unzip -q target.mozsearch-index.zip -d $INDEX_ROOT/analysis
-
-    rm -f target.mozsearch-rust.zip
-    wget -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.linux64-searchfox-debug/artifacts/public/build/target.mozsearch-rust.zip
-    mkdir -p $INDEX_ROOT/objdir
-    unzip -q target.mozsearch-rust.zip -d $INDEX_ROOT/objdir
-
-    rm -f target.generated-files.tar.gz
-    wget -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.linux64-searchfox-debug/artifacts/public/build/target.generated-files.tar.gz
-    tar -x -z -C $INDEX_ROOT/objdir -f target.generated-files.tar.gz
-
-    # Special cases - buildid.h and mozilla-config.h show up in two places in a regular
-    # objdir and the analysis tarball will correspondingly also have two instances of
-    # the analysis file. The generated-files tarball only has one copy, so we manually
-    # make the other copy to make things match up. The best would be if the gecko build
-    # system didn't actually produce two copies of these files.
-    cp $INDEX_ROOT/objdir/buildid.h $INDEX_ROOT/objdir/dist/include/buildid.h
-    cp $INDEX_ROOT/objdir/mozilla-config.h $INDEX_ROOT/objdir/dist/include/mozilla-config.h
-
-    date
-
-    # Download the macOS tarballs and merge them into the linux tarballs.
-    # Check to make sure they are for the same hg revision first.
-    wget -O macosx.json -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.macosx64-searchfox-debug/artifacts/public/build/target.json
-    MACOSX_HG_REV=$(python $MOZSEARCH_PATH/scripts/read-json.py macosx.json moz_source_stamp)
-    if [ "$INDEXED_HG_REV" == "$MACOSX_HG_REV" ]; then
-        rm -f macosx.mozsearch-index.zip
-        wget -O macosx.mozsearch-index.zip -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.macosx64-searchfox-debug/artifacts/public/build/target.mozsearch-index.zip
-        mkdir -p $INDEX_ROOT/analysis-macosx
-        unzip -q macosx.mozsearch-index.zip -d $INDEX_ROOT/analysis-macosx
-
-        # Throw the macOS save-analysis files into the objdir too. They'll get
-        # passed to rust-indexer.rs along with the linux ones, and rust-indexer.rs
-        # will take care of combining the analysis files correctly.
-        rm -f macosx.mozsearch-rust.zip
-        wget -O macosx.mozsearch-rust.zip -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.macosx64-searchfox-debug/artifacts/public/build/target.mozsearch-rust.zip
-        unzip -q macosx.mozsearch-rust.zip -d $INDEX_ROOT/objdir
-
-        rm -f macosx.generated-files.tar.gz
-        wget -O macosx.generated-files.tar.gz -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.macosx64-searchfox-debug/artifacts/public/build/target.generated-files.tar.gz
-        mkdir -p $INDEX_ROOT/generated-macosx
-        tar -x -z -C $INDEX_ROOT/generated-macosx -f macosx.generated-files.tar.gz
-
+    # Download the artifacts from taskcluster for each platform that we're indexing
+    for PLATFORM in linux64 macosx64; do
         date
 
-        # FIXME: Deal better with merging generated files yet; macOS might have different
-        # generated sources than linux and so the analysis data might be for line numbers
-        # that don't exist. For now let's just extract any macOS-only generated files
-        # and their analysis data, and delete the rest. In effect, for cases where the
-        # generated file differs between Linux and macOS, we use the Linux version.
-        # See bug 1487583 comment 3.
-        pushd generated-macosx
+        # First check that the latest artifacts for the platform match the revision we want, otherwise emit a warning and skip it
+        curl -SsfL --compressed https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.$PLATFORM-searchfox-debug/artifacts/public/build/target.json > $PLATFORM.json
+        PLATFORM_HG_REV=$(python $MOZSEARCH_PATH/scripts/read-json.py $PLATFORM.json moz_source_stamp)
+        if [ "$PLATFORM_HG_REV" != "$INDEXED_HG_REV" ]; then
+            echo "WARNING: Most recent analysis for $PLATFORM was for hg rev $PLATFORM_HG_REV; expected $INDEXED_HG_REV; skipping analysis merge step for this platform."
+            continue;
+        fi
+
+        echo "Downloading artifacts for $PLATFORM..."
+
+        # Download the C++ analysis and unpack into a platform-specific folder
+        rm -f $PLATFORM.mozsearch-index.zip
+        wget -O $PLATFORM.mozsearch-index.zip -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.$PLATFORM-searchfox-debug/artifacts/public/build/target.mozsearch-index.zip
+        mkdir -p analysis-$PLATFORM
+        unzip -q $PLATFORM.mozsearch-index.zip -d analysis-$PLATFORM
+
+        # Download the Rust save-analysis files. These all get unpacked into the objdir directly because the files
+        # are already in platform-specific subfolders inside the zipfile, so there won't be any collisions. The
+        # rust-indexer.rs tool will take care of combining all the analysis files correctly.
+        rm -f $PLATFORM.mozsearch-rust.zip
+        wget -O $PLATFORM.mozsearch-rust.zip -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.$PLATFORM-searchfox-debug/artifacts/public/build/target.mozsearch-rust.zip
+        unzip -q $PLATFORM.mozsearch-rust.zip -d objdir
+
+        # Download generated sources tarballs and unpack into platform-specific folder
+        rm -f $PLATFORM.generated-files.tar.gz
+        wget -O $PLATFORM.generated-files.tar.gz -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.$PLATFORM-searchfox-debug/artifacts/public/build/target.generated-files.tar.gz
+        mkdir -p generated-$PLATFORM
+        tar -x -z -C generated-$PLATFORM -f $PLATFORM.generated-files.tar.gz
+
+        # Special cases - buildid.h and mozilla-config.h show up in two places in a regular
+        # objdir and the analysis tarball will correspondingly also have two instances of
+        # the analysis file. The generated-files tarball only has one copy, so we manually
+        # make the other copy to make things match up. The best would be if the gecko build
+        # system didn't actually produce two copies of these files.
+        cp generated-$PLATFORM/buildid.h        generated-$PLATFORM/dist/include/buildid.h
+        cp generated-$PLATFORM/mozilla-config.h generated-$PLATFORM/dist/include/mozilla-config.h
+
+        # We get analysis data for generated files, some of which aren't included
+        # in the generated-files tarball that we get from taskcluster. Most of these
+        # missing files are dummy unified build files that we don't care about, and
+        # we can just delete those.
+        # If there are other such cases, then we'll get zero-byte files generated by
+        # output-file.rs since it won't be able to find the source file corresponding to
+        # the analysis file. In those cases we should ensure the generated file is
+        # included in the target.generated-files.tar.gz tarball that comes out of the
+        # taskcluster indexing job. Bug 1440879 can be used as a guide.
+        pushd analysis-$PLATFORM/__GENERATED__
+        set +x  # Turn off echoing of commands and output only relevant things to avoid bloating logfiles
+        find . -type f -name "Unified*" |
+        while read GENERATED_ANALYSIS; do
+            if [ ! -f "$INDEX_ROOT/generated-$PLATFORM/$GENERATED_ANALYSIS" ]; then
+                echo "Remove unified compilation generated-file $GENERATED_ANALYSIS"
+                rm "$GENERATED_ANALYSIS"
+            fi
+        done
+        set -x
+        # Also drop any directories that got emptied as a result
+        find . -depth -type d -empty -delete
+        popd
+
+        # FIXME: Deal better with merging generated files.
+        # Different platforms might have different generated sources and so the merged
+        # analysis data might refer to line numbers that don't exist. For now we only copy
+        # files from the generated-$PLATFORM folder into objdir/ if the file doesn't
+        # already exist there. Effectively this means that if the same generated file
+        # exists for multiple platforms, but has different contents, we will prefer the
+        # one from the platform encountered earliest in this loop.
+        # See bug 1487583 comment 3 for some more discussion.
+        pushd generated-$PLATFORM
         set +x  # Turn off echoing of commands and output only relevant things to avoid bloating logfiles
         find . -type f |
         while read GENERATED_FILE; do
             if [ ! -f "../objdir/$GENERATED_FILE" ]; then
-                # Generated file exists only for macOS
-                echo "Taking generated file $GENERATED_FILE from macOS"
+                # Generated file wasn't encountered for previously processed platforms
+                echo "Taking generated file $GENERATED_FILE from $PLATFORM"
                 move_file "$GENERATED_FILE" "../objdir/$GENERATED_FILE"
-                if [ -f "../analysis-macosx/__GENERATED__/$GENERATED_FILE" ]; then
-                    # Move the macOS analysis file as well
-                    move_file "../analysis-macosx/__GENERATED__/$GENERATED_FILE" "../analysis/__GENERATED__/$GENERATED_FILE"
+                if [ -f "../analysis-$PLATFORM/__GENERATED__/$GENERATED_FILE" ]; then
+                    # Move the analysis file as well
+                    move_file "../analysis-$PLATFORM/__GENERATED__/$GENERATED_FILE" "../analysis/__GENERATED__/$GENERATED_FILE"
                 fi
             fi
         done
         set -x
         popd
-        rm -rf analysis-macosx/__GENERATED__
 
-        date
+        # Throw away any leftover generated files and their analysis, so that they don't
+        # accidentally get merged later. The above loop should have copied any that we
+        # care about into the main objdir/ and analysis/ folders.
+        rm -rf generated-$PLATFORM
+        rm -rf analysis-$PLATFORM/__GENERATED__
 
-        # Merge analysis files for non-generated source files from macOS. This is as simple
-        # as unioning the lines in the analysis files.
-        pushd analysis-macosx
-        set +x
-        find . -type f |
-        while read ANALYSIS_FILE; do
-            if [ ! -f "../analysis/$ANALYSIS_FILE" ]; then
-                echo "Taking analysis file $ANALYSIS_FILE from macOS"
-                move_file "$ANALYSIS_FILE" "../analysis/$ANALYSIS_FILE"
-            else
-                echo "Merging analysis file $ANALYSIS_FILE"
-                $MOZSEARCH_PATH/tools/target/release/merge-analyses "$ANALYSIS_FILE" "../analysis/$ANALYSIS_FILE" > ../analysis.merged
-                mv "../analysis.merged" "../analysis/$ANALYSIS_FILE"
-            fi
-        done
-        set -x
+        # List all the analysis files we have left. We will merge these across platforms
+        # after this per-platform loop is complete.
+        pushd analysis-$PLATFORM
+        find . -type d >> ../analysis-dirs.list
+        find . -type f >> ../analysis-files.list
         popd
-    else
-        echo "WARNING: Most recent macOS analysis was for hg rev $MACOSX_HG_REV; expected $INDEXED_HG_REV; skipping macOS analysis merge step."
-    fi
+
+    done    # end PLATFORM loop
 
     date
 
-    # We get analysis data for generated files, some of which aren't included
-    # in the generated-files tarball that we get from taskcluster. Most of these
-    # missing files are dummy unified build files that we don't care about, and
-    # we can just delete those.
-    # If there are other such cases, then we'll get zero-byte files generated by
-    # output-file.rs since it won't be able to find the source file corresponding to
-    # the analysis file. In those cases we should ensure the generated file is
-    # included in the target.generated-files.tar.gz tarball that comes out of the
-    # taskcluster indexing job. Bug 1440879 can be used as a guide.
-    pushd $INDEX_ROOT/analysis/__GENERATED__
-    find . -type f -name "Unified*" |
-    while read GENERATED_ANALYSIS; do
-        if [ ! -f $INDEX_ROOT/objdir/$GENERATED_ANALYSIS ]; then
-            rm "$GENERATED_ANALYSIS"
-        fi
+    # Finally, merge the analysis files for the non-generated source files. All the files
+    # are going to be listed in the analysis-files.list, possibly duplicated across
+    # platforms, so we deduplicate the filenames and merge each filename across platforms.
+    set +x  # Turn off echoing of commands and output only relevant things to avoid bloating logfiles
+    sort analysis-dirs.list | uniq |
+    while read ANALYSIS_DIR; do
+        mkdir -p "analysis/$ANALYSIS_DIR"
     done
-    # Also drop any directories that got emptied as a result
-    find . -depth -type d -empty -delete
-    popd
+    sort analysis-files.list | uniq |
+    while read ANALYSIS_FILE; do
+        echo "Merging analyses for $ANALYSIS_FILE"
+        RUST_LOG=info $MOZSEARCH_PATH/tools/target/release/merge-analyses analysis-*/$ANALYSIS_FILE > analysis/$ANALYSIS_FILE
+    done
+    set -x
+
+    # Free up disk space, we don't need these per-platform analysis files any more.
+    rm -rf analysis-*
+
 else
     echo "WARNING: Unable to find git equivalent for hg rev $INDEXED_HG_REV; falling back to local build..."
 fi
