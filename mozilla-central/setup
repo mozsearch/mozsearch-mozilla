@@ -90,7 +90,7 @@ if [ -n "$INDEXED_GIT_REV" ]; then
     rm -f analysis-files.list analysis-dirs.list
 
     # Download the artifacts from taskcluster for each platform that we're indexing
-    for PLATFORM in linux64 macosx64; do
+    for PLATFORM in linux64 macosx64 win64; do
         date
 
         # First check that the latest artifacts for the platform match the revision we want, otherwise emit a warning and skip it
