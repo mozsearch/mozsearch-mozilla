@@ -22,7 +22,7 @@ mkdir -p $OBJDIR
 $MOZSEARCH_PATH/scripts/indexer-setup.py >> $INDEX_ROOT/mozconfig
 
 cd $FILES_ROOT
-if [ -f "$INDEX_ROOT/target.mozsearch-index.zip" ]
+if [ -f "$INDEX_ROOT/linux64.mozsearch-index.zip" ]
 then
     echo "Skipping build, since we have analysis data from TaskCluster"
 else
