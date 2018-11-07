@@ -58,6 +58,36 @@ function move_file {
     mv "$1" "$2"
 }
 
+# Check that all the files (provided as arguments) are the same, after normalizing
+# Windows line endings and paths to UNIX. At least one argument must be provided.
+# If all the files match, the name of the first one is echo'd, otherwise the empty
+# string is echo'd.
+function check_all_same {
+    if [ $# -eq 0 ]; then
+        # At least one arg must be provided
+        return 1;
+    fi
+    FIRSTFILE=$1; shift;
+    # Normalize to UNIX in-place. The z: absolute path comes from the taskcluster
+    # working directory for Windows.
+    dos2unix --quiet "$FIRSTFILE"
+    sed --in-place -e "s#z:/task_[0-9]*/#/builds/worker/workspace/#g" "$FIRSTFILE"
+    while [ $# -gt 0 ]; do
+        NEXTFILE=$1; shift;
+        dos2unix --quiet "$NEXTFILE"
+        sed --in-place -e "s#z:/task_[0-9]*/#/builds/worker/workspace/#g" "$NEXTFILE"
+        cmp --quiet "$FIRSTFILE" "$NEXTFILE"
+        if [ $? -ne 0 ]; then
+            # Files aren't the same, echo empty string
+            echo ""
+            return 0;
+        fi
+    done
+    # All files are the same, echo any one of them
+    echo "$FIRSTFILE"
+    return 0;
+}
+
 # Edit this to e.g. try.revision.ee64db93dcc149da9313460317257b8c42eec5b2 or whatever
 # to test other revisions. If you do this, also override INDEXED_GIT_REV below to some sane
 # git-equivalent of the revision because most likely it won't find anything in the mapfile.
@@ -87,7 +117,7 @@ if [ -n "$INDEXED_GIT_REV" ]; then
 
     rm -rf analysis && mkdir -p analysis
     rm -rf objdir && mkdir -p objdir
-    rm -f analysis-files.list analysis-dirs.list
+    rm -f generated-files.list analysis-files.list analysis-dirs.list
 
     # Download the artifacts from taskcluster for each platform that we're indexing
     for PLATFORM in linux64 macosx64 win64; do
@@ -153,45 +183,68 @@ if [ -n "$INDEXED_GIT_REV" ]; then
         find . -depth -type d -empty -delete
         popd
 
-        # FIXME: Deal better with merging generated files.
-        # Different platforms might have different generated sources and so the merged
-        # analysis data might refer to line numbers that don't exist. For now we only copy
-        # files from the generated-$PLATFORM folder into objdir/ if the file doesn't
-        # already exist there. Effectively this means that if the same generated file
-        # exists for multiple platforms, but has different contents, we will prefer the
-        # one from the platform encountered earliest in this loop.
-        # See bug 1487583 comment 3 for some more discussion.
         pushd generated-$PLATFORM
-        set +x  # Turn off echoing of commands and output only relevant things to avoid bloating logfiles
-        find . -type f |
-        while read GENERATED_FILE; do
-            if [ ! -f "../objdir/$GENERATED_FILE" ]; then
-                # Generated file wasn't encountered for previously processed platforms
-                echo "Taking generated file $GENERATED_FILE from $PLATFORM"
-                move_file "$GENERATED_FILE" "../objdir/$GENERATED_FILE"
-                if [ -f "../analysis-$PLATFORM/__GENERATED__/$GENERATED_FILE" ]; then
-                    # Move the analysis file as well
-                    move_file "../analysis-$PLATFORM/__GENERATED__/$GENERATED_FILE" "../analysis/__GENERATED__/$GENERATED_FILE"
-                fi
-            fi
-        done
-        set -x
+        find . -type f >> ../generated-files.list
         popd
 
-        # Throw away any leftover generated files and their analysis, so that they don't
-        # accidentally get merged later. The above loop should have copied any that we
-        # care about into the main objdir/ and analysis/ folders.
-        rm -rf generated-$PLATFORM
-        rm -rf analysis-$PLATFORM/__GENERATED__
-
         # List all the analysis files we have left. We will merge these across platforms
-        # after this per-platform loop is complete.
+        # after this per-platform loop is complete. Make sure to skip over the __GENERATED__
+        # directory
         pushd analysis-$PLATFORM
-        find . -type d >> ../analysis-dirs.list
-        find . -type f >> ../analysis-files.list
+        find . -not \( -name __GENERATED__ -prune \) -type d >> ../analysis-dirs.list
+        find . -not \( -name __GENERATED__ -prune \) -type f >> ../analysis-files.list
         popd
 
     done    # end PLATFORM loop
+
+    date
+
+    # Special case: xptdata.cpp is a giant file and is different for each platform, but
+    # the differences are not particularly relevant so let's just keep the Linux one.
+    rm -f              generated-macosx64/xpcom/reflect/xptinfo/xptdata.cpp
+    rm -f                 generated-win64/xpcom/reflect/xptinfo/xptdata.cpp
+    rm -f analysis-macosx64/__GENERATED__/xpcom/reflect/xptinfo/xptdata.cpp
+    rm -f    analysis-win64/__GENERATED__/xpcom/reflect/xptinfo/xptdata.cpp
+
+    # For each generated file, if all platforms generated the same thing (or didn't
+    # generate the file at all due to being a platform-specific feature), copy it to
+    # the merged objdir.
+    set +x  # Turn off echoing of commands and output only relevant things to avoid bloating logfiles
+    sort generated-files.list | uniq |
+    while read GENERATED_FILE; do
+        ALL_SAME_AS=$(check_all_same generated-*/$GENERATED_FILE)
+        if [ "$ALL_SAME_AS" != "" ]; then
+            echo "Generated file $GENERATED_FILE was identical across platforms where it was created"
+            move_file "$ALL_SAME_AS" "objdir/$GENERATED_FILE"
+            # Also merge the analyses files
+            MERGED_ANALYSIS="analysis/__GENERATED__/$GENERATED_FILE"
+            mkdir -p "$(dirname $MERGED_ANALYSIS)"
+            RUST_LOG=info $MOZSEARCH_PATH/tools/target/release/merge-analyses analysis-*/__GENERATED__/$GENERATED_FILE > $MERGED_ANALYSIS
+            continue;
+        fi
+
+        # The generated file was not the same across all platforms, so
+        # put the different versions in __$PLATFORM__ subfolders.
+        for PLATFORM in linux64 macosx64 win64; do
+            if [ ! -f "generated-$PLATFORM/$GENERATED_FILE" ]; then
+                continue;
+            fi
+            echo "Taking generated file $GENERATED_FILE from $PLATFORM"
+            move_file "generated-$PLATFORM/$GENERATED_FILE" "objdir/__${PLATFORM}__/$GENERATED_FILE"
+            if [ -f "analysis-$PLATFORM/__GENERATED__/$GENERATED_FILE" ]; then
+                # Move the analysis file as well
+                move_file "analysis-$PLATFORM/__GENERATED__/$GENERATED_FILE" "analysis/__GENERATED__/__${PLATFORM}__/$GENERATED_FILE"
+            fi
+        done
+    done
+    set -x
+
+    # Throw away any leftover per-platform generated files, and the analysis data
+    # for generated files. The above loop should have extracted all the useful
+    # information from these folders into the objdir/ and analysis/__GENERATED__/
+    # folders.
+    rm -rf generated-*
+    rm -rf analysis-*/__GENERATED__
 
     date
 
