@@ -152,6 +152,19 @@ if [ -n "$INDEXED_GIT_REV" ]; then
         mkdir -p generated-$PLATFORM
         tar -x -z -C generated-$PLATFORM -f $PLATFORM.generated-files.tar.gz
 
+        # Download the manifest for dist/include entries and normalize away the taskcluster paths
+        rm -f $PLATFORM.distinclude.map
+        curl -SsfL --compressed https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.$PLATFORM-searchfox-debug/artifacts/public/build/target.mozsearch-distinclude.map > $PLATFORM.distinclude.map
+        dos2unix --quiet --force $PLATFORM.distinclude.map  # need --force because of \x1f column separator chars in the file
+        MAPVERSION=$(head -n 1 $PLATFORM.distinclude.map)
+        if [ "$MAPVERSION" != "5" ]; then
+            echo "WARNING: $PLATFORM.distinclude.map had unexpected version [$MAPVERSION]; check for changes in python/mozbuild/mozpack/manifests.py."
+        fi
+        sed --in-place -e "s#/builds/worker/workspace/build/src/##g" $PLATFORM.distinclude.map
+        sed --in-place -e "s#z:/task_[0-9]*/build/src/##g" $PLATFORM.distinclude.map
+
+        date
+
         # Special cases - buildid.h and mozilla-config.h show up in two places in a regular
         # objdir and the analysis tarball will correspondingly also have two instances of
         # the analysis file. The generated-files tarball only has one copy, so we manually
@@ -179,7 +192,57 @@ if [ -n "$INDEXED_GIT_REV" ]; then
             fi
         done
         set -x
+        popd
+
+        date
+
+        # On Windows, analysis for headers ends up in __GENERATED__/dist/include/...
+        # instead of the source version of the file. This happens because Windows doesn't
+        # support symlinks, and so during the build, headers are copied rather than
+        # symlinked into dist/include. When clang processes the source files, it therefore
+        # can't "dereference" the symlinks (because they're not symlinks) to find the
+        # original source file. This results in the misplaced analysis data. To handle
+        # this, we use the distinclude mapfile produced by the taskcluster job to
+        # squash the analysis data for such files back to the source file that it belongs
+        # with. The "squash" is just appending the analysis data from the dist/include
+        # version to the analysis data (if it exists) for the real source. The step
+        # to merge the analyses across platforms later in this script will deduplicate
+        # any redundant lines.
+        # Note also that this hunk of code currently does nothing on Linux/Mac, since
+        # don't suffer from this problem. The code is run anyway for completeness.
+        pushd analysis-$PLATFORM/__GENERATED__/dist/include
+        set +x  # Turn off echoing of commands and output only relevant things to avoid bloating logfiles
+        find . -type f |
+        while read GENERATED_ANALYSIS; do
+            if [ ! -f "$INDEX_ROOT/generated-$PLATFORM/dist/include/$GENERATED_ANALYSIS" ]; then
+                # Found analysis file in __GENERATED__/dist/include for which there is
+                # no corresponding generated source. Let's check the mapfile to see if
+                # the source is elsewhere. The awk command searches the mapfile, assuming
+                # columns are separated by the \x1f character, looking for the first match
+                # where the second column (with a "./" prefixed) is the same as
+                # $GENERATED_ANALYSIS. If a match is found, it emits the third column, which
+                # is the path of the source tree relative to the gecko-dev root (because of
+                # the normalization step after downloading the file).
+                REAL_SOURCE=$(awk -F '\x1f' -v KEY="$GENERATED_ANALYSIS" 'KEY == "./" $2 { print $3; exit }' ../../../../$PLATFORM.distinclude.map)
+                if [ -f "$INDEX_ROOT/gecko-dev/$REAL_SOURCE" ]; then
+                    # Found the real source file this analysis data is for, so let's squash it over
+                    ANALYSIS_FOR_SOURCE="$INDEX_ROOT/analysis-$PLATFORM/$REAL_SOURCE"
+                    echo "Squashing analysis for __GENERATED__/dist/include/$GENERATED_ANALYSIS into analysis-$PLATFORM/$REAL_SOURCE"
+                    mkdir -p $(dirname "$ANALYSIS_FOR_SOURCE")
+                    cat "$GENERATED_ANALYSIS" >> "$ANALYSIS_FOR_SOURCE"
+                    rm "$GENERATED_ANALYSIS"
+                else
+                    echo "Real source [$REAL_SOURCE] for dist/include/$GENERATED_ANALYSIS was not found or was not a file"
+                fi
+            fi
+        done
+        set -x
+        popd
+
+        date
+
         # Also drop any directories that got emptied as a result
+        pushd analysis-$PLATFORM/__GENERATED__
         find . -depth -type d -empty -delete
         popd
 
