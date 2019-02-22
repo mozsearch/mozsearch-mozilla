@@ -122,7 +122,7 @@ if [ -n "$INDEXED_GIT_REV" ]; then
     rm -f generated-files.list analysis-files.list analysis-dirs.list
 
     # Download the artifacts from taskcluster for each platform that we're indexing
-    for PLATFORM in linux64 macosx64 win64; do
+    for PLATFORM in linux64 macosx64 win64 android-armv7; do
         date
 
         # First check that the latest artifacts for the platform match the revision we want, otherwise emit a warning and skip it
@@ -266,10 +266,10 @@ if [ -n "$INDEXED_GIT_REV" ]; then
 
     # Special case: xptdata.cpp is a giant file and is different for each platform, but
     # the differences are not particularly relevant so let's just keep the Linux one.
-    rm -f              generated-macosx64/xpcom/reflect/xptinfo/xptdata.cpp
-    rm -f                 generated-win64/xpcom/reflect/xptinfo/xptdata.cpp
-    rm -f analysis-macosx64/__GENERATED__/xpcom/reflect/xptinfo/xptdata.cpp
-    rm -f    analysis-win64/__GENERATED__/xpcom/reflect/xptinfo/xptdata.cpp
+    for PLATFORM in macosx64 win64 android-armv7; do
+        rm -f generated-${PLATFORM}/xpcom/reflect/xptinfo/xptdata.cpp
+        rm -f analysis-${PLATFORM}/__GENERATED__/xpcom/reflect/xptinfo/xptdata.cpp
+    done
 
     # For each generated file, if all platforms generated the same thing (or didn't
     # generate the file at all due to being a platform-specific feature), copy it to
@@ -290,7 +290,7 @@ if [ -n "$INDEXED_GIT_REV" ]; then
 
         # The generated file was not the same across all platforms, so
         # put the different versions in __$PLATFORM__ subfolders.
-        for PLATFORM in linux64 macosx64 win64; do
+        for PLATFORM in linux64 macosx64 win64 android-armv7; do
             if [ ! -f "generated-$PLATFORM/$GENERATED_FILE" ]; then
                 continue;
             fi
