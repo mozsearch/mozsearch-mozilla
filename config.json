@@ -47,6 +47,15 @@
       "objdir_path": "$WORKING/whatwg-html/objdir",
       "codesearch_path": "$WORKING/whatwg-html/livegrep.idx",
       "codesearch_port": 8084
+    },
+
+    "mozilla-mobile": {
+      "index_path": "$WORKING/mozilla-mobile",
+      "files_path": "$WORKING/mozilla-mobile/mozilla-mobile",
+      "git_path": "$WORKING/mozilla-mobile/mozilla-mobile",
+      "objdir_path": "$WORKING/mozilla-mobile/objdir",
+      "codesearch_path": "$WORKING/mozilla-mobile/livegrep.idx",
+      "codesearch_port": 8085
     }
   }
 }
