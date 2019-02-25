@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+date
+
+echo Downloading mozilla-mobile repo
+pushd $INDEX_ROOT
+if [ -d "mozilla-mobile" ]
+then
+    echo "Found pre-existing mozilla-mobile folder; skipping re-download."
+else
+    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/mozilla-mobile.tar
+    tar xf mozilla-mobile.tar
+    rm mozilla-mobile.tar
+fi
+popd
+
+date
+
+echo Updating git
+pushd $GIT_ROOT
+git submodule update --recursive --remote
+git commit -am "Submodule update at $(date)" --author "Searchfox Indexer <searchfox-aws@mozilla.com>"
+popd
+
+date

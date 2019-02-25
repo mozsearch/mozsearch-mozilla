@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+date
+
+echo Uploading mozilla-mobile
+pushd $INDEX_ROOT
+tar cf mozilla-mobile.tar mozilla-mobile
+python $AWS_ROOT/upload.py $INDEX_ROOT/mozilla-mobile.tar searchfox.repositories mozilla-mobile.tar
+rm mozilla-mobile.tar
+popd
+
+date
