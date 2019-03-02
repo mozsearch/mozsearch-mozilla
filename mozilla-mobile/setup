@@ -23,7 +23,7 @@ date
 echo Updating git
 pushd $GIT_ROOT
 git submodule update --recursive --remote
-git commit -am "Submodule update at $(date)" --author "Searchfox Indexer <searchfox-aws@mozilla.com>"
+git commit --allow-empty -am "Submodule update at $(date)" --author "Searchfox Indexer <searchfox-aws@mozilla.com>"
 popd
 
 date
