@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# Don't do anything here. Once bug 1533801 merges to release
+# we can modify the setup file to pull artifacts from
+# taskcluster to get Rust/C++ data the way we do for mozilla-central.
