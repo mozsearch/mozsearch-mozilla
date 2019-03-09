@@ -42,10 +42,8 @@ if [ -d "mozilla" ]
 then
     echo "Found pre-existing mozilla subfolder; skipping re-download."
 else
-    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/gecko-dev.tar
-    tar xf gecko-dev.tar
+    $CONFIG_REPO/shared/fetch-gecko-dev.sh $PWD
     mv gecko-dev mozilla
-    rm gecko-dev.tar
 fi
 
 date
