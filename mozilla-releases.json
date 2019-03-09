@@ -1,0 +1,38 @@
+{
+  "mozsearch_path": "$MOZSEARCH_PATH",
+
+  "trees": {
+    "mozilla-beta": {
+      "index_path": "$WORKING/mozilla-beta",
+      "files_path": "$WORKING/mozilla-beta/gecko-dev",
+      "git_path": "$WORKING/mozilla-beta/gecko-dev",
+      "github_repo": "https://github.com/mozilla/gecko-dev",
+      "hg_root": "https://hg.mozilla.org/releases/mozilla-beta",
+      "objdir_path": "$WORKING/mozilla-beta/objdir",
+      "codesearch_path": "$WORKING/mozilla-beta/livegrep.idx",
+      "codesearch_port": 8081
+    },
+
+    "mozilla-release": {
+      "index_path": "$WORKING/mozilla-release",
+      "files_path": "$WORKING/mozilla-release/gecko-dev",
+      "git_path": "$WORKING/mozilla-release/gecko-dev",
+      "github_repo": "https://github.com/mozilla/gecko-dev",
+      "hg_root": "https://hg.mozilla.org/releases/mozilla-release",
+      "objdir_path": "$WORKING/mozilla-release/objdir",
+      "codesearch_path": "$WORKING/mozilla-release/livegrep.idx",
+      "codesearch_port": 8082
+    },
+
+    "mozilla-esr60": {
+      "index_path": "$WORKING/mozilla-esr60",
+      "files_path": "$WORKING/mozilla-esr60/gecko-dev",
+      "git_path": "$WORKING/mozilla-esr60/gecko-dev",
+      "github_repo": "https://github.com/mozilla/gecko-dev",
+      "hg_root": "https://hg.mozilla.org/releases/mozilla-esr60",
+      "objdir_path": "$WORKING/mozilla-esr60/objdir",
+      "codesearch_path": "$WORKING/mozilla-esr60/livegrep.idx",
+      "codesearch_port": 8082
+    }
+  }
+}

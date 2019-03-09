@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+date
+
+echo Downloading Gecko
+pushd $INDEX_ROOT
+if [ -d "gecko-dev" ]
+then
+    echo "Found pre-existing gecko-dev folder; skipping re-download."
+else
+    $CONFIG_REPO/shared/fetch-gecko-dev.sh $PWD
+fi
+popd
+
+date
+
+echo Updating git
+pushd $GIT_ROOT
+git fetch origin
+git checkout -b release origin/release
+popd
+
+date
