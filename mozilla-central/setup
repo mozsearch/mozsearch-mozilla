@@ -12,9 +12,7 @@ if [ -d "gecko-dev" ]
 then
     echo "Found pre-existing gecko-dev folder; skipping re-download."
 else
-    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/gecko-dev.tar
-    tar xf gecko-dev.tar
-    rm gecko-dev.tar
+    $CONFIG_REPO/shared/fetch-gecko-dev.sh $PWD
 fi
 popd
 
