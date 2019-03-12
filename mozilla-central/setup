@@ -21,11 +21,7 @@ popd
 date
 
 echo Downloading git to hg map
-pushd $INDEX_ROOT
-# We only need "recent" mapfile entries and attempting to download the full mapfile
-# results in a 503 error so we just get the map entries from some fixed recent date.
-wget -O git_hg.map -nv https://mapper.mozilla-releng.net/gecko-dev/mapfile/since/2018-08-01
-popd
+$CONFIG_REPO/shared/fetch-hg-map.sh
 
 date
 
@@ -85,7 +81,7 @@ REVISION=$REVISION_TREE.$REVISION_ID
 pushd $INDEX_ROOT
 curl -SsfL --compressed https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.linux64-searchfox-debug/artifacts/public/build/target.json > target.json
 INDEXED_HG_REV=$(python $MOZSEARCH_PATH/scripts/read-json.py target.json moz_source_stamp)
-INDEXED_GIT_REV=$(awk -v REV=$INDEXED_HG_REV '$2 ~ REV { print $1 }' git_hg.map)
+INDEXED_GIT_REV=$(awk -v REV=$INDEXED_HG_REV '$2 ~ REV { print $1 }' "${WORKING}/git_hg.map")
 
 # If INDEXED_GIT_REV gets set, that means the gecko-dev repo includes the code for which
 # the taskcluster indexing job ran. So we can download the result of that indexing
@@ -338,7 +334,7 @@ date
 # Generate the blame information after checking out the GIT_ROOT to appropriate
 # revision above, so that the blame repo's head matches the git repo's head.
 echo "Generating blame information for central..."
-python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT $INDEX_ROOT/git_hg.map
+python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT $WORKING/git_hg.map
 
 # Also generate blame for some other branches, because the gecko-blame repo is
 # shared by those branches. We do this here instead of in e.g. ../mozilla-beta/setup
@@ -351,7 +347,7 @@ for BRANCH in beta release esr60; do
     git branch -f $BRANCH origin/$BRANCH
     popd
     echo "Generating blame information for $BRANCH..."
-    BLAME_REF="refs/heads/$BRANCH" python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT $INDEX_ROOT/git_hg.map
+    BLAME_REF="refs/heads/$BRANCH" python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT $WORKING/git_hg.map
 done
 
 # Point the blame repo's HEAD to the commit matching what we have in in the src repo. Note
