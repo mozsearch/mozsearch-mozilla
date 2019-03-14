@@ -78,8 +78,10 @@ REVISION_TREE=mozilla-central       # replace with e.g. 'try' for testing
 REVISION_ID=latest                  # replace with e.g. 'revision.ee64db93dcc149da9313460317257b8c42eec5b2' for testing
 REVISION="${REVISION_TREE}.${REVISION_ID}"
 
+CURL="curl -SsfL --compressed"
+
 pushd $INDEX_ROOT
-curl -SsfL --compressed https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.linux64-searchfox-debug/artifacts/public/build/target.json > target.json
+${CURL} https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.linux64-searchfox-debug/artifacts/public/build/target.json > target.json
 INDEXED_HG_REV=$(python $MOZSEARCH_PATH/scripts/read-json.py target.json moz_source_stamp)
 INDEXED_GIT_REV=$(awk -v REV=$INDEXED_HG_REV '$2 ~ REV { print $1 }' "${WORKING}/git_hg.map")
 
@@ -105,40 +107,42 @@ if [ -n "$INDEXED_GIT_REV" ]; then
     rm -rf objdir && mkdir -p objdir
     rm -f generated-files.list analysis-files.list analysis-dirs.list
 
+    date
+
+    # Download the bugzilla components file
+    ${CURL} https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.source.source-bugzilla-info/artifacts/public/components-normalized.json > bugzilla-components.json
+
     # Download the artifacts from taskcluster for each platform that we're indexing
     for PLATFORM in linux64 macosx64 win64 android-armv7; do
         date
 
         # First check that the the searchfox job exists for the platform and revision we want. Otherwise emit a warning and skip it.
-        curl -SsfL --compressed https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.$PLATFORM-searchfox-debug/artifacts/public/build/target.json ||
+        ${CURL} https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.$PLATFORM-searchfox-debug/artifacts/public/build/target.json ||
         (   echo "WARNING: Unable to find analysis for $PLATFORM for hg rev $INDEXED_HG_REV; skipping analysis merge step for this platform." &&
             continue
         )
 
         echo "Downloading artifacts for $PLATFORM..."
+        TC_PREFIX="https://index.taskcluster.net/v1/task/gecko.v2.${REVISION}.firefox.${PLATFORM}-searchfox-debug/artifacts/public/build"
 
         # Download the C++ analysis and unpack into a platform-specific folder
-        rm -f $PLATFORM.mozsearch-index.zip
-        wget -O $PLATFORM.mozsearch-index.zip -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.$PLATFORM-searchfox-debug/artifacts/public/build/target.mozsearch-index.zip
+        ${CURL} ${TC_PREFIX}/target.mozsearch-index.zip > ${PLATFORM}.mozsearch-index.zip
         mkdir -p analysis-$PLATFORM
         unzip -q $PLATFORM.mozsearch-index.zip -d analysis-$PLATFORM
 
         # Download the Rust save-analysis files. These all get unpacked into the objdir directly because the files
         # are already in platform-specific subfolders inside the zipfile, so there won't be any collisions. The
         # rust-indexer.rs tool will take care of combining all the analysis files correctly.
-        rm -f $PLATFORM.mozsearch-rust.zip
-        wget -O $PLATFORM.mozsearch-rust.zip -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.$PLATFORM-searchfox-debug/artifacts/public/build/target.mozsearch-rust.zip
+        ${CURL} ${TC_PREFIX}/target.mozsearch-rust.zip > ${PLATFORM}.mozsearch-rust.zip
         unzip -q $PLATFORM.mozsearch-rust.zip -d objdir
 
         # Download generated sources tarballs and unpack into platform-specific folder
-        rm -f $PLATFORM.generated-files.tar.gz
-        wget -O $PLATFORM.generated-files.tar.gz -nv https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.$PLATFORM-searchfox-debug/artifacts/public/build/target.generated-files.tar.gz
+        ${CURL} ${TC_PREFIX}/target.generated-files.tar.gz > ${PLATFORM}.generated-files.tar.gz
         mkdir -p generated-$PLATFORM
         tar -x -z -C generated-$PLATFORM -f $PLATFORM.generated-files.tar.gz
 
         # Download the manifest for dist/include entries and normalize away the taskcluster paths
-        rm -f $PLATFORM.distinclude.map
-        curl -SsfL --compressed https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.$PLATFORM-searchfox-debug/artifacts/public/build/target.mozsearch-distinclude.map > $PLATFORM.distinclude.map
+        ${CURL} ${TC_PREFIX}/target.mozsearch-distinclude.map > ${PLATFORM}.distinclude.map
         dos2unix --quiet --force $PLATFORM.distinclude.map  # need --force because of \x1f column separator chars in the file
         MAPVERSION=$(head -n 1 $PLATFORM.distinclude.map)
         if [ "$MAPVERSION" != "5" ]; then
@@ -312,10 +316,6 @@ if [ -n "$INDEXED_GIT_REV" ]; then
 
     # Free up disk space, we don't need these per-platform analysis files any more.
     rm -rf analysis-*
-
-    date
-
-    curl -SsfL --compressed https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.source.source-bugzilla-info/artifacts/public/components-normalized.json > bugzilla-components.json
 
 else
     echo "WARNING: Unable to find git equivalent for hg rev $INDEXED_HG_REV; omitting Rust/C++ analysis..."
