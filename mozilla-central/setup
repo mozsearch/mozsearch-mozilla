@@ -76,7 +76,7 @@ function check_all_same {
 # This defaults to the most recent searchfox indexing run for mozilla-central.
 REVISION_TREE=mozilla-central       # replace with e.g. 'try' for testing
 REVISION_ID=latest                  # replace with e.g. 'revision.ee64db93dcc149da9313460317257b8c42eec5b2' for testing
-REVISION=$REVISION_TREE.$REVISION_ID
+REVISION="${REVISION_TREE}.${REVISION_ID}"
 
 pushd $INDEX_ROOT
 curl -SsfL --compressed https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.linux64-searchfox-debug/artifacts/public/build/target.json > target.json
@@ -90,6 +90,10 @@ INDEXED_GIT_REV=$(awk -v REV=$INDEXED_HG_REV '$2 ~ REV { print $1 }' "${WORKING}
 # In that case we don't use the analysis data at all, and offer plaintext search and
 # blame on the latest gecko-dev that we do have. In practice this scenario rarely
 # gets hit.
+
+# Rewrite REVISION to be a specific revision in case the "latest" pointer changes while
+# we're in the midst of downloading stuff. Using a specific revision id is safer.
+REVISION="${REVISION_TREE}.revision.${INDEXED_HG_REV}"
 
 if [ -n "$INDEXED_GIT_REV" ]; then
     pushd $GIT_ROOT
@@ -105,13 +109,11 @@ if [ -n "$INDEXED_GIT_REV" ]; then
     for PLATFORM in linux64 macosx64 win64 android-armv7; do
         date
 
-        # First check that the latest artifacts for the platform match the revision we want, otherwise emit a warning and skip it
-        curl -SsfL --compressed https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.$PLATFORM-searchfox-debug/artifacts/public/build/target.json > $PLATFORM.json
-        PLATFORM_HG_REV=$(python $MOZSEARCH_PATH/scripts/read-json.py $PLATFORM.json moz_source_stamp)
-        if [ "$PLATFORM_HG_REV" != "$INDEXED_HG_REV" ]; then
-            echo "WARNING: Most recent analysis for $PLATFORM was for hg rev $PLATFORM_HG_REV; expected $INDEXED_HG_REV; skipping analysis merge step for this platform."
-            continue;
-        fi
+        # First check that the the searchfox job exists for the platform and revision we want. Otherwise emit a warning and skip it.
+        curl -SsfL --compressed https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.$PLATFORM-searchfox-debug/artifacts/public/build/target.json ||
+        (   echo "WARNING: Unable to find analysis for $PLATFORM for hg rev $INDEXED_HG_REV; skipping analysis merge step for this platform." &&
+            continue
+        )
 
         echo "Downloading artifacts for $PLATFORM..."
 
@@ -313,14 +315,7 @@ if [ -n "$INDEXED_GIT_REV" ]; then
 
     date
 
-    # We use $REVISION_TREE.revision.$INDEXED_HG_REV here instead of $REVISION because
-    # $REVISION might be e.g. `mozilla-central.latest` which could resolve to a newer
-    # mozilla-central revision than the one the searchfox jobs were triggered on. That
-    # would give us a newer bugzilla components file, which wouldn't match the version
-    # of the source tree we're using. Using $INDEXED_HG_REV ensures we use the push
-    # that matches the searchfox jobs, regardless of whether we're running off a try
-    # push or the "most recent searchfox index on m-c" push.
-    curl -SsfL --compressed https://index.taskcluster.net/v1/task/gecko.v2.$REVISION_TREE.revision.$INDEXED_HG_REV.source.source-bugzilla-info/artifacts/public/components-normalized.json > bugzilla-components.json
+    curl -SsfL --compressed https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.source.source-bugzilla-info/artifacts/public/components-normalized.json > bugzilla-components.json
 
 else
     echo "WARNING: Unable to find git equivalent for hg rev $INDEXED_HG_REV; omitting Rust/C++ analysis..."
