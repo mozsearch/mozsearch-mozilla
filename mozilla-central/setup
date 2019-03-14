@@ -109,40 +109,56 @@ if [ -n "$INDEXED_GIT_REV" ]; then
 
     date
 
-    # Download the bugzilla components file
-    ${CURL} https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.source.source-bugzilla-info/artifacts/public/components-normalized.json > bugzilla-components.json
-
-    # Download the artifacts from taskcluster for each platform that we're indexing
+    # Download the bugzilla components file and the artifacts from each platform that
+    # we're indexing. But do them in parallel by emitting all the curl commands into
+    # a file and then feeding it to GNU parallel.
+    echo "${CURL} https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.source.source-bugzilla-info/artifacts/public/components-normalized.json > bugzilla-components.json" > downloads.lst
     for PLATFORM in linux64 macosx64 win64 android-armv7; do
-        date
-
-        # First check that the the searchfox job exists for the platform and revision we want. Otherwise emit a warning and skip it.
+        # First check that the the searchfox job exists for the platform and revision we want. Otherwise emit a warning and skip it. This
+        # file is small so it's cheap to download and spew to stdout as a check that the analysis data for the platform exists.
         ${CURL} https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.$PLATFORM-searchfox-debug/artifacts/public/build/target.json ||
         (   echo "WARNING: Unable to find analysis for $PLATFORM for hg rev $INDEXED_HG_REV; skipping analysis merge step for this platform." &&
             continue
         )
 
-        echo "Downloading artifacts for $PLATFORM..."
         TC_PREFIX="https://index.taskcluster.net/v1/task/gecko.v2.${REVISION}.firefox.${PLATFORM}-searchfox-debug/artifacts/public/build"
+        # C++ analysis
+        echo "${CURL} ${TC_PREFIX}/target.mozsearch-index.zip > ${PLATFORM}.mozsearch-index.zip" >> downloads.lst
+        # Rust save-analysis files
+        echo "${CURL} ${TC_PREFIX}/target.mozsearch-rust.zip > ${PLATFORM}.mozsearch-rust.zip" >> downloads.lst
+        # Generated sources tarballs
+        echo "${CURL} ${TC_PREFIX}/target.generated-files.tar.gz > ${PLATFORM}.generated-files.tar.gz" >> downloads.lst
+        # Manifest for dist/include entries
+        echo "${CURL} ${TC_PREFIX}/target.mozsearch-distinclude.map > ${PLATFORM}.distinclude.map" >> downloads.lst
+    done # end PLATFORM loop
 
-        # Download the C++ analysis and unpack into a platform-specific folder
-        ${CURL} ${TC_PREFIX}/target.mozsearch-index.zip > ${PLATFORM}.mozsearch-index.zip
+    # Do the downloads
+    parallel --halt now,fail=1 < downloads.lst
+
+    # And now process the downloads
+    for PLATFORM in linux64 macosx64 win64 android-armv7; do
+        date
+        echo "Processing platform $PLATFORM"
+
+        if [ ! -f "$PLATFORM.mozsearch-index.zip" ]; then
+            # This platform didn't have analysis data, so let's skip it
+            continue
+        fi
+
+        # Unpack the C++ analysis into a platform-specific folder
         mkdir -p analysis-$PLATFORM
         unzip -q $PLATFORM.mozsearch-index.zip -d analysis-$PLATFORM
 
-        # Download the Rust save-analysis files. These all get unpacked into the objdir directly because the files
+        # These all get unpacked into the objdir directly because the files
         # are already in platform-specific subfolders inside the zipfile, so there won't be any collisions. The
         # rust-indexer.rs tool will take care of combining all the analysis files correctly.
-        ${CURL} ${TC_PREFIX}/target.mozsearch-rust.zip > ${PLATFORM}.mozsearch-rust.zip
         unzip -q $PLATFORM.mozsearch-rust.zip -d objdir
 
-        # Download generated sources tarballs and unpack into platform-specific folder
-        ${CURL} ${TC_PREFIX}/target.generated-files.tar.gz > ${PLATFORM}.generated-files.tar.gz
+        # Unpack generated sources tarballs into platform-specific folder
         mkdir -p generated-$PLATFORM
         tar -x -z -C generated-$PLATFORM -f $PLATFORM.generated-files.tar.gz
 
-        # Download the manifest for dist/include entries and normalize away the taskcluster paths
-        ${CURL} ${TC_PREFIX}/target.mozsearch-distinclude.map > ${PLATFORM}.distinclude.map
+        # Process the dist/include manifest and normalize away the taskcluster paths
         dos2unix --quiet --force $PLATFORM.distinclude.map  # need --force because of \x1f column separator chars in the file
         MAPVERSION=$(head -n 1 $PLATFORM.distinclude.map)
         if [ "$MAPVERSION" != "5" ]; then
