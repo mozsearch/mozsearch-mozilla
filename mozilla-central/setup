@@ -87,11 +87,9 @@ INDEXED_GIT_REV=$(awk -v REV=$INDEXED_HG_REV '$2 ~ REV { print $1 }' "${WORKING}
 # the taskcluster indexing job ran. So we can download the result of that indexing
 # job and use it. Otherwise, it means gecko-dev is lagging behind the canonical hg
 # repo, and we don't have the source corresponding to the indexing run on taskcluster.
-# In that case we should just build the latest version of gecko-dev that we do have,
-# so that we have analysis data for a version of the source we have.
-# Whether or not we do the build is decided in the "build" script in the same folder
-# as this file, which detects this scenario by the absence of the
-# linux64.mozsearch-index.zip file.
+# In that case we don't use the analysis data at all, and offer plaintext search and
+# blame on the latest gecko-dev that we do have. In practice this scenario rarely
+# gets hit.
 
 if [ -n "$INDEXED_GIT_REV" ]; then
     pushd $GIT_ROOT
@@ -325,7 +323,7 @@ if [ -n "$INDEXED_GIT_REV" ]; then
     curl -SsfL --compressed https://index.taskcluster.net/v1/task/gecko.v2.$REVISION_TREE.revision.$INDEXED_HG_REV.source.source-bugzilla-info/artifacts/public/components-normalized.json > bugzilla-components.json
 
 else
-    echo "WARNING: Unable to find git equivalent for hg rev $INDEXED_HG_REV; falling back to local build..."
+    echo "WARNING: Unable to find git equivalent for hg rev $INDEXED_HG_REV; omitting Rust/C++ analysis..."
 fi
 popd
 
