@@ -6,3 +6,8 @@ set -o pipefail # Check all commands in a pipeline
 
 date
 
+pushd $INDEX_ROOT
+$CONFIG_REPO/shared/process-gecko-analysis.sh
+popd
+
+date

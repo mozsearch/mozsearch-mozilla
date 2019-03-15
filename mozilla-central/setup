@@ -69,16 +69,10 @@ if [ -n "$INDEXED_GIT_REV" ]; then
     $CONFIG_REPO/shared/fetch-tc-artifacts.sh $REVISION_TREE $INDEXED_HG_REV
 
     date
-
-    $CONFIG_REPO/shared/process-gecko-analysis.sh
-
-    date
 else
     echo "WARNING: Unable to find git equivalent for hg rev $INDEXED_HG_REV; omitting Rust/C++ analysis..."
 fi
 popd
-
-date
 
 # Generate the blame information after checking out the GIT_ROOT to appropriate
 # revision above, so that the blame repo's head matches the git repo's head.
