@@ -6,35 +6,6 @@ set -o pipefail # Check all commands in a pipeline
 
 date
 
-echo Downloading Gecko
-pushd $INDEX_ROOT
-$CONFIG_REPO/shared/fetch-gecko-tarball.sh gecko-dev $PWD
-popd
-
-date
-
-echo Downloading Gecko blame
-pushd $INDEX_ROOT
-$CONFIG_REPO/shared/fetch-gecko-tarball.sh gecko-blame $PWD
-popd
-
-date
-
-echo Downloading git to hg map
-$CONFIG_REPO/shared/fetch-hg-map.sh
-
-date
-
-echo Updating git
-pushd $GIT_ROOT
-# The repo may have been uploaded while checked out to some non-master
-# revision (to match the hg revision used in taskcluster)
-git checkout master
-git pull
-popd
-
-date
-
 # Edit this to e.g. try.revision.ee64db93dcc149da9313460317257b8c42eec5b2 or whatever
 # to test other revisions. If you do this, also set TRY_GIT_REV to some sane
 # git-equivalent of the revision because most likely it won't find anything in the mapfile.
@@ -54,26 +25,17 @@ source $CONFIG_REPO/shared/resolve-gecko-revs.sh $REVISION_TREE $REVISION_ID
 # blame on the latest gecko-dev that we do have. In practice this scenario rarely
 # gets hit.
 
+$CONFIG_REPO/shared/checkout-gecko-repos.sh "master" "$INDEXED_GIT_REV"
+
 if [ -n "$INDEXED_GIT_REV" ]; then
-    pushd $GIT_ROOT
-    # Since we're using a prebuilt index at a particular rev, sync our local repo to the same rev
-    git checkout $INDEXED_GIT_REV
-    popd
-
-    date
-
+    pushd $INDEX_ROOT
     $CONFIG_REPO/shared/fetch-tc-artifacts.sh $REVISION_TREE $INDEXED_HG_REV
+    popd
 
     date
 else
     echo "WARNING: Unable to find git equivalent for hg rev $INDEXED_HG_REV; omitting Rust/C++ analysis..."
 fi
-popd
-
-# Generate the blame information after checking out the GIT_ROOT to appropriate
-# revision above, so that the blame repo's head matches the git repo's head.
-echo "Generating blame information for central..."
-python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT $WORKING/git_hg.map
 
 # Also generate blame for some other branches, because the gecko-blame repo is
 # shared by those branches. We do this here instead of in e.g. ../mozilla-beta/setup
@@ -88,18 +50,5 @@ for BRANCH in beta release esr60; do
     echo "Generating blame information for $BRANCH..."
     BLAME_REF="refs/heads/$BRANCH" python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT $WORKING/git_hg.map
 done
-
-# Point the blame repo's HEAD to the commit matching what we have in in the src repo. Note
-# that we use `git reset --soft` because we don't need anything in the repo's working dir.
-if [ -n "$INDEXED_GIT_REV" ]; then
-    pushd $BLAME_ROOT
-    BLAME_REV=$(git log -1 --grep=$INDEXED_GIT_REV --pretty=format:%H)
-    if [ -z "$BLAME_REV" ]; then
-        echo "Unable to find blame rev for $INDEXED_GIT_REV"
-        exit 1;
-    fi
-    git reset --soft $BLAME_REV
-    popd
-fi
 
 date
