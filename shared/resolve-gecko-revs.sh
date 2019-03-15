@@ -15,6 +15,11 @@ fi
 REVISION_TREE=$1
 REVISION_ID=$2
 
+echo Downloading git to hg map
+$CONFIG_REPO/shared/fetch-hg-map.sh
+
+date
+
 REVISION="${REVISION_TREE}.${REVISION_ID}"
 CURL="curl -SsfL --compressed"
 
