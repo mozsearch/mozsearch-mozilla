@@ -105,12 +105,9 @@ if [ -n "$INDEXED_GIT_REV" ]; then
 
     date
 
-    # And now process the downloads
-    for PLATFORM in linux64 macosx64 win64 android-armv7; do
-        date
-        echo "Processing platform $PLATFORM"
-        $CONFIG_REPO/shared/process-tc-artifacts.sh $PLATFORM
-    done
+    # And now process the downloads for each platform in parallel
+    echo "linux64 macosx64 win64 android-armv7" | tr " " "\n" |
+    parallel --halt now,fail=1 "$CONFIG_REPO/shared/process-tc-artifacts.sh {}"
 
     date
 
