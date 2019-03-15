@@ -105,17 +105,8 @@ if [ -n "$INDEXED_GIT_REV" ]; then
     # Finally, merge the analysis files for the non-generated source files. All the files
     # are going to be listed in the analysis-files.list, possibly duplicated across
     # platforms, so we deduplicate the filenames and merge each filename across platforms.
-    set +x  # Turn off echoing of commands and output only relevant things to avoid bloating logfiles
-    sort analysis-dirs.list | uniq |
-    while read ANALYSIS_DIR; do
-        mkdir -p "analysis/$ANALYSIS_DIR"
-    done
-    sort analysis-files.list | uniq |
-    while read ANALYSIS_FILE; do
-        echo "Merging analyses for $ANALYSIS_FILE"
-        RUST_LOG=info $MOZSEARCH_PATH/tools/target/release/merge-analyses analysis-*/$ANALYSIS_FILE > analysis/$ANALYSIS_FILE
-    done
-    set -x
+    sort analysis-dirs.list | uniq | parallel --halt now,fail=1 'mkdir -p analysis/{}'
+    sort analysis-files.list | uniq | parallel --halt now,fail=1 "RUST_LOG=info $MOZSEARCH_PATH/tools/target/release/merge-analyses analysis-*/{} > analysis/{}"
 
     # Free up disk space, we don't need these per-platform analysis files any more.
     rm -rf analysis-*
