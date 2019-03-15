@@ -4,42 +4,10 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
-
-echo Downloading Gecko
-pushd $INDEX_ROOT
-$CONFIG_REPO/shared/fetch-gecko-tarball.sh gecko-dev $PWD
-popd
+# See ../mozilla-central/setup for documentation
 
 date
 
-echo Downloading Gecko blame
-pushd $INDEX_ROOT
-$CONFIG_REPO/shared/fetch-gecko-tarball.sh gecko-blame $PWD
-popd
-
-date
-
-echo Downloading git to hg map
-$CONFIG_REPO/shared/fetch-hg-map.sh
-
-date
-
-# Since the mozilla-central setup script updates the gecko-dev
-# and gecko-blame tarballs, there should be very little work,
-# if any, that happens here. This is just in case some more
-# stuff landed upstream since the tarballs were updated.
-
-echo Updating git
-pushd $GIT_ROOT
-git fetch origin release
-git checkout -B release origin/release
-popd
-
-echo Updating blame
-BLAME_REF="refs/heads/release" python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT $WORKING/git_hg.map
-pushd $BLAME_ROOT
-git reset --soft release
-popd
+$CONFIG_REPO/shared/checkout-gecko-repos.sh "release" ""
 
 date

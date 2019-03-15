@@ -4,42 +4,28 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
+# See ../mozilla-central/setup for documentation
 
-echo Downloading Gecko
-pushd $INDEX_ROOT
-$CONFIG_REPO/shared/fetch-gecko-tarball.sh gecko-dev $PWD
-popd
-
-date
-
-echo Downloading Gecko blame
-pushd $INDEX_ROOT
-$CONFIG_REPO/shared/fetch-gecko-tarball.sh gecko-blame $PWD
-popd
+REVISION_TREE=mozilla-beta
+REVISION_ID=latest
+TRY_GIT_REV=
 
 date
 
-echo Downloading git to hg map
-$CONFIG_REPO/shared/fetch-hg-map.sh
+source $CONFIG_REPO/shared/resolve-gecko-revs.sh $REVISION_TREE $REVISION_ID
 
 date
 
-# Since the mozilla-central setup script updates the gecko-dev
-# and gecko-blame tarballs, there should be very little work,
-# if any, that happens here. This is just in case some more
-# stuff landed upstream since the tarballs were updated.
-
-echo Updating git
-pushd $GIT_ROOT
-git fetch origin beta
-git checkout -B beta origin/beta
-popd
-
-echo Updating blame
-BLAME_REF="refs/heads/beta" python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT $WORKING/git_hg.map
-pushd $BLAME_ROOT
-git reset --soft beta
-popd
+$CONFIG_REPO/shared/checkout-gecko-repos.sh "beta" "$INDEXED_GIT_REV"
 
 date
+
+if [ -n "$INDEXED_GIT_REV" ]; then
+    pushd $INDEX_ROOT
+    $CONFIG_REPO/shared/fetch-tc-artifacts.sh $REVISION_TREE $INDEXED_HG_REV
+    popd
+
+    date
+else
+    echo "WARNING: Unable to find git equivalent for hg rev $INDEXED_HG_REV; omitting Rust/C++ analysis..."
+fi
