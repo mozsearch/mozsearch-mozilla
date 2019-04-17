@@ -38,7 +38,7 @@ echo Updating git
 pushd $GIT_ROOT
 git fetch origin
 if [ -n "$INDEXED_GIT_REV" ]; then
-    git checkout $INDEXED_GIT_REV
+    git checkout -B "$BRANCH" $INDEXED_GIT_REV
 else
     git checkout -B "$BRANCH" "origin/$BRANCH"
 fi
