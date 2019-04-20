@@ -38,6 +38,10 @@ for PLATFORM in linux64 macosx64 win64 android-armv7; do
     echo "${CURL} ${TC_PREFIX}/target.mozsearch-index.zip > ${PLATFORM}.mozsearch-index.zip" >> downloads.lst
     # Rust save-analysis files
     echo "${CURL} ${TC_PREFIX}/target.mozsearch-rust.zip > ${PLATFORM}.mozsearch-rust.zip" >> downloads.lst
+    if [ "$INDEX_RUSTLIB" == "yes" ]; then
+        # Rust stdlib src and analysis data
+        echo "${CURL} ${TC_PREFIX}/target.mozsearch-rust-stdlib.zip > ${PLATFORM}.mozsearch-rust-stdlib.zip" >> downloads.lst
+    fi
     # Generated sources tarballs
     echo "${CURL} ${TC_PREFIX}/target.generated-files.tar.gz > ${PLATFORM}.generated-files.tar.gz" >> downloads.lst
     # Manifest for dist/include entries

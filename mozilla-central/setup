@@ -13,6 +13,7 @@ date
 REVISION_TREE=mozilla-central       # replace with e.g. 'try' for testing
 REVISION_ID=latest                  # replace with e.g. 'revision.ee64db93dcc149da9313460317257b8c42eec5b2' for testing
 TRY_GIT_REV=                        # set to some gecko-dev SHA matching the above rev for testing
+export INDEX_RUSTLIB=yes            # opt in to downloading the rustlib analysis in fetch-tc-artifacts.sh
 
 # The next line populates the INDEXED_HG_REV and INDEXED_GIT_REV env vars.
 source $CONFIG_REPO/shared/resolve-gecko-revs.sh $REVISION_TREE $REVISION_ID

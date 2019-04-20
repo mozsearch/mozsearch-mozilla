@@ -27,6 +27,22 @@ unzip -q $PLATFORM.mozsearch-index.zip -d analysis-$PLATFORM
 # rust-indexer.rs tool will take care of combining all the analysis files correctly.
 unzip -q $PLATFORM.mozsearch-rust.zip -d objdir
 
+# If INDEX_RUSTLIB was set to "yes" during fetch-tc-artifacts.sh, then
+# we'll have per-platform rustlib src/analysis data in zip files, so
+# let's unpack those.
+if [ -f "$PLATFORM.mozsearch-rust-stdlib.zip" ]; then
+    # These zips have a rustlib top-level folder and then contain the
+    # rust stdlib src (all the zips have the same src tree) and analysis
+    # data for the platform. We unpack all the zips into the same
+    # destination folder, implicitly merging them. And we copy the stdlib
+    # src tree into the objdir and (ab)use the generated files machinery.
+    unzip -qn $PLATFORM.mozsearch-rust-stdlib.zip -d .
+    if [ ! -d "objdir/__RUST__" ]; then
+        mkdir -p "objdir/__RUST__"
+        cp -Rn rustlib/src/rust/src objdir/__RUST__/
+    fi
+fi
+
 # Unpack generated sources tarballs into platform-specific folder
 mkdir -p generated-$PLATFORM
 tar -x -z -C generated-$PLATFORM -f $PLATFORM.generated-files.tar.gz
