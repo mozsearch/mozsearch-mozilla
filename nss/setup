@@ -68,11 +68,3 @@ echo Generating blame information
 python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT $INDEX_ROOT/git_hg.map
 
 date
-
-SCRIPT_PATH=$(readlink -f "$0")
-DIR=$(dirname "$SCRIPT_PATH")
-pushd $GIT_ROOT
-patch -p1 <$DIR/patch
-popd
-
-date
