@@ -34,7 +34,8 @@ if [ -n "$INDEXED_GIT_REV" ]; then
 
     date
 else
-    echo "WARNING: Unable to find git equivalent for hg rev $INDEXED_HG_REV; omitting Rust/C++ analysis..."
+    echo "ERROR: Unable to find git equivalent for hg rev $INDEXED_HG_REV; please fix the mapper and retry."
+    exit 1
 fi
 
 # Also generate blame for some other branches, because the gecko-blame repo is
