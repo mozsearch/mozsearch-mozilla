@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# See ../mozilla-central/setup for documentation
+
+date
+
+$CONFIG_REPO/shared/checkout-gecko-repos.sh "esr68" ""
+
+date
