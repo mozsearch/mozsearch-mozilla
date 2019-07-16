@@ -9,7 +9,6 @@ set -o pipefail # Check all commands in a pipeline
 REVISION_TREE=mozilla-beta
 REVISION_ID=latest
 TRY_GIT_REV=
-export INDEX_RUSTLIB=yes
 
 date
 
