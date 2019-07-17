@@ -56,3 +56,40 @@ generally don't do builds at all and therefore don't get C++ or Rust analysis.
 As the `setup` and `build` steps for the mozilla-central based repositories
 are effectively the same, this code has been refactored into a set of scripts
 that lives in the `shared/` folder in this repository.
+
+## How searchfox.org stays up-to-date
+
+1. Taskcluster triggers nightly builds with searchfox build artifacts.
+   - https://searchfox.org/mozilla-central/source/.cron.yml contains a list of
+     jobs which contain a "when" filter and some kind of hook mechanism.  All
+     times are UTC and everything needs to be a multiple of 15 minutes.
+   - Firefox's nightlies are defined as part of the "nightly-desktop" build
+     of the "mozilla-central" project is scheduled to start at 10:00 UTC and
+     22:00 UTC.
+   - There are also builds like "periodic-update" for older releases that run
+     Mondays and Thursdays at 10:00 UTC.
+   - There's also a "searchfox-index" job that's also scheduled to start at
+     10:00 UTC, which I guess puts it on the same underlying task for any jobs
+     started at that time for the projects of interest for searchfox.  The entry
+     defines a "searchfox_index" "target-tasks-method" which maps to the
+     `@_target_task('searchfox_index')` decorated method in
+     https://searchfox.org/mozilla-central/source/taskcluster/taskgraph/target_tasks.py
+     which in turn maps onto the specific set of taskcluster build targets that
+     searchfox needs.
+2. AWS Lambda cron jobs trigger searchfox indexing jobs for `config.json` at
+   14:00 UTC (which is 10am Eastern Time) and `mozilla-releases.json` at
+   14:00 UTC (which is 10am Eastern Time).  These times are primarily a function
+   of when the windows searchfox job completes for the various projects and
+   platforms.  Additional jobs could be added for the 22:00 UTC build.
+   - History note: Originally searchfox didn't involve taskcluser jobs and
+     everything was run under searchfox's AWS, and the times were chosen for
+     someone (:billm) to be around to fix the builds in the morning.
+3. The indexer jobs run, for the specific example of mozilla-central:
+   - The indexer invokes https://github.com/mozsearch/mozsearch-mozilla/blob/master/mozilla-central/setup
+   - That script invokes https://github.com/mozsearch/mozsearch-mozilla/blob/master/shared/resolve-gecko-revs.sh which fetches
+     `https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.linux64-searchfox-debug/artifacts/public/build/target.json` where $REVISION is "mozilla-central.latest".  We extract the specific revision from that.
+   - Then https://github.com/mozsearch/mozsearch-mozilla/blob/master/shared/fetch-tc-artifacts.sh
+     is invoked and it tries to fetch the result of the taskcluster searchfox jobs
+     for all of our supported platforms (linux64 macosx64 win64 android-armv7)
+     using that revision.  This is frequently where we error out if the windows job
+     hasn't completed yet.
