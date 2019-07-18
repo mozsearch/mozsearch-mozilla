@@ -77,13 +77,16 @@ that lives in the `shared/` folder in this repository.
      which in turn maps onto the specific set of taskcluster build targets that
      searchfox needs.
 2. AWS Lambda cron jobs trigger searchfox indexing jobs for `config.json` at
-   14:00 UTC (which is 10am Eastern Time) and `mozilla-releases.json` at
-   14:00 UTC (which is 10am Eastern Time).  These times are primarily a function
-   of when the windows searchfox job completes for the various projects and
-   platforms.  Additional jobs could be added for the 22:00 UTC build.
-   - History note: Originally searchfox didn't involve taskcluser jobs and
-     everything was run under searchfox's AWS, and the times were chosen for
-     someone (:billm) to be around to fix the builds in the morning.
+   13:30 UTC (which is 9:30am Eastern Time) and `mozilla-releases.json` at
+   14:00 UTC (which is 10am Eastern Time).  These times are a function of when
+   the windows searchfox job completes, with `mozilla-releases.json` being
+   additionally delayed so that it can consume the byproducts of the
+   `config.json` indexer run that are uploaded back to S3 by the
+   `mozilla-central/upload` script.  If shifting the `config.json` indexer's
+   start time, make sure that the upload reliably completes before any other
+   indexing jobs are kicked off.
+   - Additional jobs could be added for the 22:00 UTC nightly build if we
+     wanted.
 3. The indexer jobs run, for the specific example of mozilla-central:
    - The indexer invokes https://github.com/mozsearch/mozsearch-mozilla/blob/master/mozilla-central/setup
    - That script invokes https://github.com/mozsearch/mozsearch-mozilla/blob/master/shared/resolve-gecko-revs.sh which fetches
