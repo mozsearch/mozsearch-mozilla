@@ -96,3 +96,37 @@ that lives in the `shared/` folder in this repository.
      for all of our supported platforms (linux64 macosx64 win64 android-armv7)
      using that revision.  This is frequently where we error out if the windows job
      hasn't completed yet.
+
+## Troubleshooting Indexer Failures
+
+Here are some of the last lines you may see due to an indexer failure.
+
+In general, the simplest course of action for an indexer failure is to terminate
+the indexer and delete its volume, then manually re-trigger the indexer.  Or
+just wait for tomorrow's indexing job.
+
+### Reference is not a tree
+
+```
++ git checkout -B release c0908ad54a95f949a1dc9f8edd3339f01423dd97
+fatal: reference is not a tree: c0908ad54a95f949a1dc9f8edd3339f01423dd97
+```
+
+vcs-sync may have failed.  The fact that we got this far means the git-hg map
+had an entry for the given revision but the revision somehow didn't make it to
+the gecko-dev repo.  :dhouse is an appropriate contact for finding out what
+happened with vcs-sync.
+
+### Requested URL returned error: 404 Not Found
+
+```
+curl: (22) The requested URL returned error: 404 Not Found
+parallel: This job failed:
+curl -SsfL --compressed https://index.taskcluster.net/v1/task/gecko.v2.mozilla-beta.revision.c76e2781238741c8c9822725da3dffc2d96c282c.firefox.win64-searchfox-debug/artifacts/public/build/target.mozsearch-index.zip > win64.mozsearch-index.zip
+```
+
+An indexing job hadn't completed by the time we got to fetching its results.
+Check treeherder for the given tree.  You can filter on "searchfox".  Frequently
+what happens is an infrastructure error happened (resulting in a blue build),
+and the rescheduled job is still running at the current moment.  If
+re-triggering, wait for the job to complete.
