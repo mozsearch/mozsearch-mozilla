@@ -7,14 +7,20 @@ set -o pipefail # Check all commands in a pipeline
 date
 
 echo Downloading NSPR
+# We used to have a hand-built tar file at nss-nspr.tar.  This included
+# pre-configured byproducts and pre-built byproducts that made building NSS
+# brittle.  The tarball never gets automatically updated, so there's also
+# potential for desynchronization versus NSS>
+#
+# On asuth's machine which is not in an AWS data-center, checking NSPR out from
+# hg only takes 4 seconds wall-time, So now we just check the thing out from hg.
+# So, if you're seeing this comment, we abandoned the tarball for now.
 pushd $INDEX_ROOT
 if [ -d "nspr" ]
 then
     echo "Found pre-existing nspr folder; skipping re-download."
 else
-    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/nss-nspr.tar
-    tar xf nss-nspr.tar
-    rm nss-nspr.tar
+    hg clone https://hg.mozilla.org/projects/nspr
 fi
 popd
 
@@ -56,7 +62,7 @@ popd
 
 date
 
-echo Updating git
+echo Updating NSS git
 pushd $GIT_ROOT
 git pull
 popd
