@@ -1,6 +1,8 @@
 {
   "mozsearch_path": "$MOZSEARCH_PATH",
 
+  "default_tree": "mozilla-central",
+
   "trees": {
     "nss": {
       "index_path": "$WORKING/nss",
