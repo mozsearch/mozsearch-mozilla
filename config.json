@@ -25,6 +25,7 @@
       "github_repo": "https://github.com/mozilla/gecko-dev",
       "hg_root": "https://hg.mozilla.org/mozilla-central",
       "dxr_root": "https://dxr.mozilla.org/mozilla-central",
+      "ccov_root": "https://coverage.moz.tools/",
       "objdir_path": "$WORKING/mozilla-central/objdir",
       "codesearch_path": "$WORKING/mozilla-central/livegrep.idx",
       "codesearch_port": 8082
