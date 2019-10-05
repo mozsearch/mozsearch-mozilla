@@ -14,9 +14,15 @@ if [ ! -f "$WORKING/git_hg.map" ]; then
     # results in a 503 error so we just get the map entries from some fixed recent date.
     DATE=2019-01-01
 
+    rm -f "$WORKING/git_hg.map.tmp"
+
     # We combine this and the projects branch for convenience, as they share a
     # lot of revisions.
     for tree in gecko-dev gecko-projects; do
-      curl -SsfL https://mapper.mozilla-releng.net/$tree/mapfile/since/$DATE >> "$WORKING/git_hg.map"
+      curl -SsfL https://mapper.mozilla-releng.net/$tree/mapfile/since/$DATE >> "$WORKING/git_hg.map.tmp"
     done
+
+    # Remove duplicate entries from the map, which almost halves its size.
+    cat "$WORKING/git_hg.map.tmp" | sort | uniq > "$WORKING/git_hg.map"
+    rm -f "$WORKING/git_hg.map.tmp"
 fi
