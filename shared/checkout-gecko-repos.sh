@@ -37,6 +37,8 @@ date
 echo Updating git
 pushd $GIT_ROOT
 git fetch origin
+git remote show projects || git remote add projects https://github.com/mozilla/gecko-projects.git
+git fetch projects
 if [ -n "$INDEXED_GIT_REV" ]; then
     git checkout -B "$BRANCH" $INDEXED_GIT_REV
 else
