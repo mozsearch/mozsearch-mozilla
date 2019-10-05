@@ -33,3 +33,4 @@ if [ ! -f "$WORKING/${TARBALL}.tar" ]; then
 fi
 
 tar xf "$WORKING/${TARBALL}.tar" -C "$DESTDIR"
+rm "$WORKING/${TARBALL}.tar"
