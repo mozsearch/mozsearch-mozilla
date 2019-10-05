@@ -12,5 +12,11 @@ set -o pipefail # Check all commands in a pipeline
 if [ ! -f "$WORKING/git_hg.map" ]; then
     # We only need "recent" mapfile entries and attempting to download the full mapfile
     # results in a 503 error so we just get the map entries from some fixed recent date.
-    wget -O "${WORKING}/git_hg.map" -nv https://mapper.mozilla-releng.net/gecko-dev/mapfile/since/2019-01-01
+    DATE=2019-01-01
+
+    # We combine this and the projects branch for convenience, as they share a
+    # lot of revisions.
+    for tree in gecko-dev gecko-projects; do
+      curl -SsfL https://mapper.mozilla-releng.net/$tree/mapfile/since/$DATE >> "$WORKING/git_hg.map"
+    done
 fi
