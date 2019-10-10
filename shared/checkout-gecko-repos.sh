@@ -8,7 +8,7 @@ if [ $# -ne 2 ]; then
     echo "Usage: $0 <branch> <git-rev>"
     echo " e.g.: $0 master 26bd1e060c5bf1f2f3f3c7f34fae152380cda29c"
     echo " e.g.: $0 beta ''"
-    echo " If the git rev is an empty string, defaults to origin/<branch>"
+    echo " If the git rev is an empty string, defaults to origin/<branch> or projects/<branch>"
     exit 1
 fi
 
@@ -42,7 +42,7 @@ git fetch projects
 if [ -n "$INDEXED_GIT_REV" ]; then
     git checkout -B "$BRANCH" $INDEXED_GIT_REV
 else
-    git checkout -B "$BRANCH" "origin/$BRANCH"
+    git checkout -B "$BRANCH" "origin/$BRANCH" || git checkout -B "$BRANCH" "projects/$BRANCH"
 fi
 popd
 
