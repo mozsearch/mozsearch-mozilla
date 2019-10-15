@@ -47,6 +47,11 @@ tar -x -z -C generated-$PLATFORM -f $PLATFORM.generated-files.tar.gz
 
 date
 
+# Run the rust analysis here.
+$MOZSEARCH_PATH/scripts/rust-analyze.sh $CONFIG_FILE $TREE_NAME $PLATFORM
+
+date
+
 # Process the dist/include manifest and normalize away the taskcluster paths
 dos2unix --quiet --force $PLATFORM.distinclude.map  # need --force because of \x1f column separator chars in the file
 MAPVERSION=$(head -n 1 $PLATFORM.distinclude.map)

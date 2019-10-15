@@ -11,6 +11,10 @@ set -o pipefail # Check all commands in a pipeline
 echo "linux64 macosx64 win64 android-armv7" | tr " " "\n" |
 parallel --halt now,fail=1 "$CONFIG_REPO/shared/process-tc-artifacts.sh {}"
 
+# the script above ran the rust analysis, so drop this hacky file to tell
+# rust-analyze.sh to not do anything.
+touch objdir/rust-analyzed
+
 # Combine the per-platform list files
 cat generated-files-*.list > generated-files.list
 cat analysis-files-*.list > analysis-files.list
