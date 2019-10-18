@@ -26,12 +26,15 @@ REVISION="${REVISION_TREE}.revision.${INDEXED_HG_REV}"
 # a file and then feeding it to GNU parallel.
 echo "${CURL} https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.source.source-bugzilla-info/artifacts/public/components-normalized.json > bugzilla-components.json" > downloads.lst
 for PLATFORM in linux64 macosx64 win64 android-armv7; do
-    # First check that the the searchfox job exists for the platform and revision we want. Otherwise emit a warning and skip it. This
-    # file is small so it's cheap to download and spew to stdout as a check that the analysis data for the platform exists.
-    ${CURL} https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.$PLATFORM-searchfox-debug/artifacts/public/build/target.json ||
-    (   echo "WARNING: Unable to find analysis for $PLATFORM for hg rev $INDEXED_HG_REV; skipping analysis merge step for this platform." &&
-        continue
-    )
+    TC_PREFIX="https://index.taskcluster.net/v1/task/gecko.v2.${REVISION}.firefox.${PLATFORM}-searchfox-debug/artifacts/public/build"
+    # First check that the searchfox job exists for the platform and revision we want. Otherwise emit a warning and skip it. This
+    # file is small so it's cheap to download as a check that the analysis data for the platform exists.
+    #
+    # Also check for moz_source_stamp, to handle tasks that exists but failed. We rely on this field for resolve-gecko-revs.sh already.
+    if ! (${CURL} "${TC_PREFIX}/target.json" | grep moz_source_stamp); then
+      echo "WARNING: Unable to find analysis for $PLATFORM for hg rev $INDEXED_HG_REV; skipping analysis merge step for this platform.";
+      continue;
+    fi
 
     TC_PREFIX="https://index.taskcluster.net/v1/task/gecko.v2.${REVISION}.firefox.${PLATFORM}-searchfox-debug/artifacts/public/build"
     # C++ analysis
