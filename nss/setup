@@ -56,8 +56,7 @@ date
 
 echo Downloading git to hg map
 pushd $INDEX_ROOT
-wget -nv https://mapper.mozilla-releng.net/nss/mapfile/full
-mv full git_hg.map
+curl -SsfL https://moz-vcssync.s3-us-west-2.amazonaws.com/mapping/nss-dev/git-mapfile.tar.bz2 | tar -xOj > git_hg.map
 popd
 
 date

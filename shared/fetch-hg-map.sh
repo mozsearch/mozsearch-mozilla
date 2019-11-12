@@ -10,16 +10,12 @@ set -o pipefail # Check all commands in a pipeline
 # download the same thing on a given indexer.
 
 if [ ! -f "$WORKING/git_hg.map" ]; then
-    # We only need "recent" mapfile entries and attempting to download the full mapfile
-    # results in a 503 error so we just get the map entries from some fixed recent date.
-    DATE=2019-01-01
-
     rm -f "$WORKING/git_hg.map.tmp"
 
     # We combine this and the projects branch for convenience, as they share a
     # lot of revisions.
     for tree in gecko-dev gecko-projects; do
-      curl -SsfL https://mapper.mozilla-releng.net/$tree/mapfile/since/$DATE >> "$WORKING/git_hg.map.tmp"
+      curl -SsfL https://moz-vcssync.s3-us-west-2.amazonaws.com/mapping/$tree/git-mapfile.tar.bz2 | tar -xOj >> "$WORKING/git_hg.map.tmp"
     done
 
     # Remove duplicate entries from the map, which almost halves its size.
