@@ -24,9 +24,9 @@ REVISION="${REVISION_TREE}.revision.${INDEXED_HG_REV}"
 # Download the bugzilla components file and the artifacts from each platform that
 # we're indexing. But do them in parallel by emitting all the curl commands into
 # a file and then feeding it to GNU parallel.
-echo "${CURL} https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.source.source-bugzilla-info/artifacts/public/components-normalized.json > bugzilla-components.json" > downloads.lst
+echo "${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.$REVISION.source.source-bugzilla-info/artifacts/public/components-normalized.json > bugzilla-components.json" > downloads.lst
 for PLATFORM in linux64 macosx64 win64 android-armv7; do
-    TC_PREFIX="https://index.taskcluster.net/v1/task/gecko.v2.${REVISION}.firefox.${PLATFORM}-searchfox-debug/artifacts/public/build"
+    TC_PREFIX="https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.${REVISION}.firefox.${PLATFORM}-searchfox-debug/artifacts/public/build"
     # First check that the searchfox job exists for the platform and revision we want. Otherwise emit a warning and skip it. This
     # file is small so it's cheap to download as a check that the analysis data for the platform exists.
     #
@@ -36,7 +36,7 @@ for PLATFORM in linux64 macosx64 win64 android-armv7; do
       continue;
     fi
 
-    TC_PREFIX="https://index.taskcluster.net/v1/task/gecko.v2.${REVISION}.firefox.${PLATFORM}-searchfox-debug/artifacts/public/build"
+    TC_PREFIX="https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.${REVISION}.firefox.${PLATFORM}-searchfox-debug/artifacts/public/build"
     # C++ analysis
     echo "${CURL} ${TC_PREFIX}/target.mozsearch-index.zip > ${PLATFORM}.mozsearch-index.zip" >> downloads.lst
     # Rust save-analysis files

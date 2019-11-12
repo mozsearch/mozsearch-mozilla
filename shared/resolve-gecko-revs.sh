@@ -24,7 +24,7 @@ REVISION="${REVISION_TREE}.${REVISION_ID}"
 CURL="curl -SsfL --compressed"
 
 pushd $INDEX_ROOT
-${CURL} https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.linux64-searchfox-debug/artifacts/public/build/target.json > target.json
+${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.$REVISION.firefox.linux64-searchfox-debug/artifacts/public/build/target.json > target.json
 INDEXED_HG_REV=$(python $MOZSEARCH_PATH/scripts/read-json.py target.json moz_source_stamp)
 # Allow caller to override the git equivalent for try pushes etc.
 if [ -n "$TRY_GIT_REV" ]; then

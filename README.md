@@ -90,7 +90,8 @@ that lives in the `shared/` folder in this repository.
 3. The indexer jobs run, for the specific example of mozilla-central:
    - The indexer invokes https://github.com/mozsearch/mozsearch-mozilla/blob/master/mozilla-central/setup
    - That script invokes https://github.com/mozsearch/mozsearch-mozilla/blob/master/shared/resolve-gecko-revs.sh which fetches
-     `https://index.taskcluster.net/v1/task/gecko.v2.$REVISION.firefox.linux64-searchfox-debug/artifacts/public/build/target.json` where $REVISION is "mozilla-central.latest".  We extract the specific revision from that.
+     `https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.$REVISION.firefox.linux64-searchfox-debug/artifacts/public/build/target.json`
+     where $REVISION is "mozilla-central.latest".  We extract the specific revision from that.
    - Then https://github.com/mozsearch/mozsearch-mozilla/blob/master/shared/fetch-tc-artifacts.sh
      is invoked and it tries to fetch the result of the taskcluster searchfox jobs
      for all of our supported platforms (linux64 macosx64 win64 android-armv7)
@@ -122,7 +123,7 @@ happened with vcs-sync.
 ```
 curl: (22) The requested URL returned error: 404 Not Found
 parallel: This job failed:
-curl -SsfL --compressed https://index.taskcluster.net/v1/task/gecko.v2.mozilla-beta.revision.c76e2781238741c8c9822725da3dffc2d96c282c.firefox.win64-searchfox-debug/artifacts/public/build/target.mozsearch-index.zip > win64.mozsearch-index.zip
+curl -SsfL --compressed https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.mozilla-beta.revision.c76e2781238741c8c9822725da3dffc2d96c282c.firefox.win64-searchfox-debug/artifacts/public/build/target.mozsearch-index.zip > win64.mozsearch-index.zip
 ```
 
 An indexing job hadn't completed by the time we got to fetching its results.
