@@ -61,18 +61,6 @@
       "objdir_path": "$WORKING/mozilla-mobile/objdir",
       "codesearch_path": "$WORKING/mozilla-mobile/livegrep.idx",
       "codesearch_port": 8085
-    },
-
-    "ash": {
-      "index_path": "$WORKING/ash",
-      "files_path": "$WORKING/ash/gecko-dev",
-      "git_path": "$WORKING/ash/gecko-dev",
-      "git_blame_path": "$WORKING/ash/gecko-blame",
-      "github_repo": "https://github.com/mozilla/gecko-projects",
-      "hg_root": "https://hg.mozilla.org/projects/ash",
-      "objdir_path": "$WORKING/ash/objdir",
-      "codesearch_path": "$WORKING/ash/livegrep.idx",
-      "codesearch_port": 8086
     }
   }
 }
