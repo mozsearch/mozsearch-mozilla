@@ -22,7 +22,8 @@ date
 
 echo Updating git
 pushd $GIT_ROOT
-git submodule update --recursive --remote
+git submodule update --remote # pull latest moz-mob code
+git submodule update --init --recursive # update nested submodule to desired revision
 git commit --allow-empty -am "Submodule update at $(date)" --author "Searchfox Indexer <searchfox-aws@mozilla.com>"
 popd
 
