@@ -13,6 +13,12 @@ fi
 PLATFORM=$1
 INDEX_ROOT=$PWD
 
+# The rust-indexer needs the ability to normalize third-party absolute
+# build paths to be relative to the source directory.  This is currently what
+# taskcluster uses, and you can see other similar normalizations below of
+# $PLATFORM.distinclude.map.
+export BUILT_DIR=/builds/worker/workspace/build/src/
+
 if [ ! -f "$PLATFORM.mozsearch-index.zip" ]; then
     # This platform didn't have analysis data, so let's skip it
     exit 0
