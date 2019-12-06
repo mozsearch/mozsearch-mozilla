@@ -22,7 +22,13 @@ date
 
 echo Updating git
 pushd $GIT_ROOT
-git submodule update --remote # pull latest moz-mob code
+# pull latest moz-mob code.  We run this twice because of problems experienced
+# at https://bugzilla.mozilla.org/show_bug.cgi?id=1596846#c7.  This may be a
+# workaround for a git regression, as this didn't happen to 2.20.1 but did
+# happen on 2.24.0 and there were various changelog comments about changing when
+# various things were resolved.  For example,
+# https://github.com/git/git/blob/master/Documentation/RelNotes/2.23.0.txt#L36
+git submodule update --remote || git submodule update --remote
 git submodule update --init --recursive # update nested submodule to desired revision
 git commit --allow-empty -am "Submodule update at $(date)" --author "Searchfox Indexer <searchfox-aws@mozilla.com>"
 popd
