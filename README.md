@@ -76,6 +76,8 @@ that lives in the `shared/` folder in this repository.
      https://searchfox.org/mozilla-central/source/taskcluster/taskgraph/target_tasks.py
      which in turn maps onto the specific set of taskcluster build targets that
      searchfox needs.
+   - Those jobs are defined in
+     https://searchfox.org/mozilla-central/source/taskcluster/ci/searchfox/kind.yml
 2. AWS Lambda cron jobs trigger searchfox indexing jobs for `config.json` at
    13:30 UTC (which is 9:30am Eastern Time) and `mozilla-releases.json` at
    14:00 UTC (which is 10am Eastern Time).  These times are a function of when
