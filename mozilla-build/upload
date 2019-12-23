@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+date
+
+echo Uploading mozilla-build
+pushd $INDEX_ROOT
+tar cf mozilla-build.tar mozilla-build
+python $AWS_ROOT/upload.py $INDEX_ROOT/mozilla-build.tar searchfox.repositories mozilla-build.tar
+rm mozilla-build.tar
+popd
+
+date
+
+echo Uploading mozilla-build blame
+pushd $INDEX_ROOT
+tar cf mozilla-build-blame.tar blame
+python $AWS_ROOT/upload.py $INDEX_ROOT/mozilla-build-blame.tar searchfox.repositories mozilla-build-blame.tar
+rm mozilla-build-blame.tar
+popd
+
+date

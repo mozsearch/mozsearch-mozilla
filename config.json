@@ -73,6 +73,17 @@
       "objdir_path": "$WORKING/ash/objdir",
       "codesearch_path": "$WORKING/ash/livegrep.idx",
       "codesearch_port": 8086
+    },
+
+    "mozilla-build": {
+      "index_path": "$WORKING/mozilla-build",
+      "files_path": "$WORKING/mozilla-build/mozilla-build",
+      "git_path": "$WORKING/mozilla-build/mozilla-build",
+      "git_blame_path": "$WORKING/mozilla-build/blame",
+      "hg_root": "https://hg.mozilla.org/mozilla-build/",
+      "objdir_path": "$WORKING/mozilla-build/dist",
+      "codesearch_path": "$WORKING/mozilla-build/livegrep.idx",
+      "codesearch_port": 8087
     }
   }
 }
