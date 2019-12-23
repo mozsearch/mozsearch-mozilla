@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+date
+
+echo Downloading mozilla-build repo
+pushd $INDEX_ROOT
+if [ -d "mozilla-build" ]
+then
+    echo "Found pre-existing folder; skipping re-download."
+else
+    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/mozilla-build.tar
+    tar xf mozilla-build.tar
+    rm mozilla-build.tar
+fi
+popd
+
+date
+
+echo Downloading mozilla-build blame.
+pushd $INDEX_ROOT
+if [ -d "blame" ]
+then
+    echo "Found pre-existing blame folder; skipping re-download."
+else
+    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/mozilla-build-blame.tar
+    tar xf mozilla-build-blame.tar
+    rm mozilla-build-blame.tar
+fi
+popd
+
+date
+
+echo Updating git
+pushd $GIT_ROOT
+git pull
+popd
+
+echo Generating blame information
+CINNABAR=1 python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT
+
+date
