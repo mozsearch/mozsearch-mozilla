@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+date
+
+echo Downloading glean repo
+pushd $INDEX_ROOT
+if [ -d "glean" ]
+then
+    echo "Found pre-existing folder; skipping re-download."
+else
+    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/glean.tar
+    tar xf glean.tar
+    rm glean.tar
+fi
+popd
+
+date
+
+echo Downloading glean blame.
+pushd $INDEX_ROOT
+if [ -d "glean-blame" ]
+then
+    echo "Found pre-existing blame folder; skipping re-download."
+else
+    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/glean-blame.tar
+    tar xf glean-blame.tar
+    rm glean-blame.tar
+fi
+popd
+
+date
+
+echo Updating git
+pushd $GIT_ROOT
+git pull
+popd
+
+echo Generating blame information
+python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT
+
+date

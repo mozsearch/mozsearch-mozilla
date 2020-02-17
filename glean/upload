@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+date
+
+echo Uploading glean
+pushd $INDEX_ROOT
+tar cf glean.tar glean
+python $AWS_ROOT/upload.py $INDEX_ROOT/glean.tar searchfox.repositories glean.tar
+rm glean.tar
+popd
+
+date
+
+echo Uploading glean blame
+pushd $INDEX_ROOT
+tar cf glean-blame.tar glean-blame
+python $AWS_ROOT/upload.py $INDEX_ROOT/glean-blame.tar searchfox.repositories glean-blame.tar
+rm glean-blame.tar
+popd
+
+date
