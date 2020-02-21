@@ -29,8 +29,13 @@ pushd $GIT_ROOT
 # various things were resolved.  For example,
 # https://github.com/git/git/blob/master/Documentation/RelNotes/2.23.0.txt#L36
 git submodule update --remote || git submodule update --remote
-git submodule update --init --recursive # update nested submodule to desired revision
+# The previous step will update the submodules of this top-level synthetic superproject,
+# and now we want to commit those changes, so that the top-level superproject points
+# to the latest version of each submodule.
+git add *
 git commit --allow-empty -am "Submodule update at $(date)" --author "Searchfox Indexer <searchfox-aws@mozilla.com>"
+# And then we update the nested submodules to the revision desired by the top-level submodules.
+git submodule update --init --recursive
 popd
 
 date
