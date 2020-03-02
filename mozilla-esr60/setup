@@ -8,6 +8,8 @@ set -o pipefail # Check all commands in a pipeline
 
 date
 
-$CONFIG_REPO/shared/checkout-gecko-repos.sh "esr60" ""
+# ESR60 isn't getting any new commits, so we can hard-code the last revision
+# for simplicity in checkout-gecko-repos.sh.
+$CONFIG_REPO/shared/checkout-gecko-repos.sh "esr60" "02b4ae79b24aae2346b1338e2bf095a571192061"
 
 date

@@ -7,8 +7,8 @@ set -o pipefail # Check all commands in a pipeline
 if [ $# -ne 2 ]; then
     echo "Usage: $0 <branch> <git-rev>"
     echo " e.g.: $0 master 26bd1e060c5bf1f2f3f3c7f34fae152380cda29c"
-    echo " e.g.: $0 beta ''"
-    echo " If the git rev is an empty string, defaults to origin/<branch> or projects/<branch>"
+    echo " If the git rev is an empty string, we assume that the git equivalent"
+    echo " for the target HG revision could not be found, and we error out."
     exit 1
 fi
 
@@ -47,11 +47,12 @@ git remote show cinnabar || git remote add cinnabar hg::https://hg.mozilla.org/m
 git config cinnabar.graft true
 git remote update cinnabar 2> >(grep -v "WARNING Cannot graft" >&2) # Filter stderr to remove warnings we don't care about
 
-if [ -n "$INDEXED_GIT_REV" ]; then
-    git checkout -B "$BRANCH" $INDEXED_GIT_REV
-else
-    git checkout -B "$BRANCH" "origin/$BRANCH" || git checkout -B "$BRANCH" "projects/$BRANCH"
+if [ -z "$INDEXED_GIT_REV" ]; then
+    echo "ERROR: Unable to find git equivalent for hg rev $INDEXED_HG_REV; please fix the mapper and retry."
+    exit 1
 fi
+
+git checkout -B "$BRANCH" $INDEXED_GIT_REV
 popd
 
 date
@@ -68,13 +69,11 @@ date
 
 # Point the blame repo's HEAD to the commit matching what we have in in the src repo. Note
 # that we use `git reset --soft` because we don't need anything in the repo's working dir.
-if [ -n "$INDEXED_GIT_REV" ]; then
-    pushd $BLAME_ROOT
-    BLAME_REV=$(git log -1 --grep=$INDEXED_GIT_REV --pretty=format:%H)
-    if [ -z "$BLAME_REV" ]; then
-        echo "Unable to find blame rev for $INDEXED_GIT_REV"
-        exit 1;
-    fi
-    git reset --soft $BLAME_REV
-    popd
+pushd $BLAME_ROOT
+BLAME_REV=$(git log -1 --grep=$INDEXED_GIT_REV --pretty=format:%H)
+if [ -z "$BLAME_REV" ]; then
+    echo "Unable to find blame rev for $INDEXED_GIT_REV"
+    exit 1;
 fi
+git reset --soft $BLAME_REV
+popd
