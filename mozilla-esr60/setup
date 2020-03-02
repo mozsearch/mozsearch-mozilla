@@ -10,6 +10,6 @@ date
 
 # ESR60 isn't getting any new commits, so we can hard-code the last revision
 # for simplicity in checkout-gecko-repos.sh.
-$CONFIG_REPO/shared/checkout-gecko-repos.sh "esr60" "02b4ae79b24aae2346b1338e2bf095a571192061"
+$CONFIG_REPO/shared/checkout-gecko-repos.sh "mozilla-esr60" "esr60" "1aeaa33a64f9873fdeb8f986ef71ec35aa672347"
 
 date

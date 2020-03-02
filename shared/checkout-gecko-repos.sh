@@ -4,16 +4,15 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-if [ $# -ne 2 ]; then
-    echo "Usage: $0 <branch> <git-rev>"
-    echo " e.g.: $0 master 26bd1e060c5bf1f2f3f3c7f34fae152380cda29c"
-    echo " If the git rev is an empty string, we assume that the git equivalent"
-    echo " for the target HG revision could not be found, and we error out."
+if [ $# -ne 3 ]; then
+    echo "Usage: $0 <tree> <branch> <hg-rev>"
+    echo " e.g.: $0 mozilla-central master 26bd1e060c5bf1f2f3f3c7f34fae152380cda29c"
     exit 1
 fi
 
-BRANCH=$1
-INDEXED_GIT_REV=$2
+REVISION_TREE=$1
+BRANCH=$2
+INDEXED_HG_REV=$3
 
 echo Downloading Gecko
 pushd $INDEX_ROOT
@@ -47,8 +46,20 @@ git remote show cinnabar || git remote add cinnabar hg::https://hg.mozilla.org/m
 git config cinnabar.graft true
 git remote update cinnabar 2> >(grep -v "WARNING Cannot graft" >&2) # Filter stderr to remove warnings we don't care about
 
-if [ -z "$INDEXED_GIT_REV" ]; then
-    echo "ERROR: Unable to find git equivalent for hg rev $INDEXED_HG_REV; please fix the mapper and retry."
+# If a try push was specified, pull it in non-graft mode so we actually pull those changes.
+if [ "$REVISION_TREE" == "try" ]; then
+    git config cinnabar.graft false
+    git cinnabar fetch hg::https://hg.mozilla.org/try $INDEXED_HG_REV
+fi
+
+INDEXED_GIT_REV=$(git cinnabar hg2git $INDEXED_HG_REV)
+
+# If INDEXED_GIT_REV gets set to 40*"0", that means the gecko-dev repo is lagging
+# lagging behind the canonical hg repo, and we don't have the source corresponding
+# to the indexing run on taskcluster. In that case we error out and abort.
+
+if [ "$INDEXED_GIT_REV" == "0000000000000000000000000000000000000000" ]; then
+    echo "ERROR: Unable to find git equivalent for hg rev $INDEXED_HG_REV; please fix gecko-dev and retry."
     exit 1
 fi
 

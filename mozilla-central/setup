@@ -14,16 +14,10 @@ REVISION_TREE=mozilla-central       # replace with e.g. 'try' for testing
 REVISION_ID=latest                  # replace with e.g. 'revision.ee64db93dcc149da9313460317257b8c42eec5b2' for testing
 TRY_GIT_REV=                        # set to some gecko-dev SHA matching the above rev for testing
 
-# The next line populates the INDEXED_HG_REV and INDEXED_GIT_REV env vars.
+# The next line populates the INDEXED_HG_REV env var.
 source $CONFIG_REPO/shared/resolve-gecko-revs.sh $REVISION_TREE $REVISION_ID
 
-# If INDEXED_GIT_REV gets set to non-empty, that means the gecko-dev repo includes
-# code indexed in the taskcluster job. So we can download the result of that indexing
-# job and use it. Otherwise, it means gecko-dev is lagging behind the canonical hg
-# repo, and we don't have the source corresponding to the indexing run on taskcluster.
-# In that case we error out and abort in checkout-gecko-repos.sh.
-
-$CONFIG_REPO/shared/checkout-gecko-repos.sh "master" "$INDEXED_GIT_REV"
+$CONFIG_REPO/shared/checkout-gecko-repos.sh $REVISION_TREE "master" "$INDEXED_HG_REV"
 
 pushd $INDEX_ROOT
 $CONFIG_REPO/shared/fetch-tc-artifacts.sh $REVISION_TREE $INDEXED_HG_REV
