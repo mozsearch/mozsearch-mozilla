@@ -8,7 +8,6 @@ set -o pipefail # Check all commands in a pipeline
 
 REVISION_TREE=mozilla-release
 REVISION_ID=latest
-TRY_GIT_REV=
 
 date
 
