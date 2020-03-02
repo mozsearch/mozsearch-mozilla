@@ -28,11 +28,6 @@ popd
 
 date
 
-echo Downloading git to hg map
-$CONFIG_REPO/shared/fetch-hg-map.sh
-
-date
-
 echo Updating git
 pushd $GIT_ROOT
 git fetch origin
