@@ -21,20 +21,15 @@ source $CONFIG_REPO/shared/resolve-gecko-revs.sh $REVISION_TREE $REVISION_ID
 # code indexed in the taskcluster job. So we can download the result of that indexing
 # job and use it. Otherwise, it means gecko-dev is lagging behind the canonical hg
 # repo, and we don't have the source corresponding to the indexing run on taskcluster.
-# In that case we error out and abort.
+# In that case we error out and abort in checkout-gecko-repos.sh.
 
 $CONFIG_REPO/shared/checkout-gecko-repos.sh "master" "$INDEXED_GIT_REV"
 
-if [ -n "$INDEXED_GIT_REV" ]; then
-    pushd $INDEX_ROOT
-    $CONFIG_REPO/shared/fetch-tc-artifacts.sh $REVISION_TREE $INDEXED_HG_REV
-    popd
+pushd $INDEX_ROOT
+$CONFIG_REPO/shared/fetch-tc-artifacts.sh $REVISION_TREE $INDEXED_HG_REV
+popd
 
-    date
-else
-    echo "ERROR: Unable to find git equivalent for hg rev $INDEXED_HG_REV; please fix the mapper and retry."
-    exit 1
-fi
+date
 
 # Also generate blame for some other branches, because the gecko-blame repo is
 # shared by those branches. We do this here instead of in e.g. ../mozilla-beta/setup

@@ -20,13 +20,8 @@ $CONFIG_REPO/shared/checkout-gecko-repos.sh "beta" "$INDEXED_GIT_REV"
 
 date
 
-if [ -n "$INDEXED_GIT_REV" ]; then
-    pushd $INDEX_ROOT
-    $CONFIG_REPO/shared/fetch-tc-artifacts.sh $REVISION_TREE $INDEXED_HG_REV
-    popd
+pushd $INDEX_ROOT
+$CONFIG_REPO/shared/fetch-tc-artifacts.sh $REVISION_TREE $INDEXED_HG_REV
+popd
 
-    date
-else
-    echo "ERROR: Unable to find git equivalent for hg rev $INDEXED_HG_REV; please fix the mapper and retry."
-    exit 1
-fi
+date
