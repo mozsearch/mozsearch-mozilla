@@ -21,9 +21,7 @@ source $CONFIG_REPO/shared/resolve-gecko-revs.sh $REVISION_TREE $REVISION_ID
 # code indexed in the taskcluster job. So we can download the result of that indexing
 # job and use it. Otherwise, it means gecko-dev is lagging behind the canonical hg
 # repo, and we don't have the source corresponding to the indexing run on taskcluster.
-# In that case we don't use the analysis data at all, and offer plaintext search and
-# blame on the latest gecko-dev that we do have. In practice this scenario rarely
-# gets hit.
+# In that case we error out and abort.
 
 $CONFIG_REPO/shared/checkout-gecko-repos.sh "master" "$INDEXED_GIT_REV"
 
