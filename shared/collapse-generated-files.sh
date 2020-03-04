@@ -34,11 +34,11 @@ function check_all_same {
     # Normalize to UNIX in-place. The z: absolute path comes from the taskcluster
     # working directory for Windows.
     dos2unix --quiet "$FIRSTFILE"
-    sed --in-place -e "s#z:/task_[0-9]*/#/builds/worker/workspace/#g" "$FIRSTFILE"
+    sed --in-place -e "s#z:/task_[0-9]*/#/builds/worker/workspace/#gI" "$FIRSTFILE"
     while [ $# -gt 0 ]; do
         NEXTFILE=$1; shift;
         dos2unix --quiet "$NEXTFILE"
-        sed --in-place -e "s#z:/task_[0-9]*/#/builds/worker/workspace/#g" "$NEXTFILE"
+        sed --in-place -e "s#z:/task_[0-9]*/#/builds/worker/workspace/#gI" "$NEXTFILE"
         cmp --quiet "$FIRSTFILE" "$NEXTFILE"
         if [ $? -ne 0 ]; then
             # Files aren't the same, echo empty string

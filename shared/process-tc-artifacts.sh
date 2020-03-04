@@ -59,7 +59,7 @@ if [ "$MAPVERSION" != "5" ]; then
     echo "WARNING: $PLATFORM.distinclude.map had unexpected version [$MAPVERSION]; check for changes in python/mozbuild/mozpack/manifests.py."
 fi
 sed --in-place -e "s#/builds/worker/workspace/build/src/##g" $PLATFORM.distinclude.map
-sed --in-place -e "s#z:/task_[0-9]*/build/src/##g" $PLATFORM.distinclude.map
+sed --in-place -e "s#z:/task_[0-9]*/build/src/##gI" $PLATFORM.distinclude.map
 
 date
 
