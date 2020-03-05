@@ -37,7 +37,7 @@
       "hg_root": "https://hg.mozilla.org/releases/mozilla-esr68",
       "objdir_path": "$WORKING/mozilla-esr68/objdir",
       "codesearch_path": "$WORKING/mozilla-esr68/livegrep.idx",
-      "codesearch_port": 8084
+      "codesearch_port": 8083
     }
   }
 }
