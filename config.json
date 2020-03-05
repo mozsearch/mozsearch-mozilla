@@ -71,7 +71,7 @@
       "hg_root": "https://hg.mozilla.org/mozilla-build/",
       "objdir_path": "$WORKING/mozilla-build/dist",
       "codesearch_path": "$WORKING/mozilla-build/livegrep.idx",
-      "codesearch_port": 8087
+      "codesearch_port": 8086
     },
 
     "glean": {
@@ -82,7 +82,7 @@
       "github_repo": "https://github.com/mozilla/glean",
       "objdir_path": "$WORKING/glean/objdir",
       "codesearch_path": "$WORKING/glean/livegrep.idx",
-      "codesearch_port": 8088
+      "codesearch_port": 8087
     }
   }
 }
