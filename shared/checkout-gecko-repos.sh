@@ -32,14 +32,14 @@ echo Updating git
 pushd $GIT_ROOT
 git fetch origin
 # Fetch projects. Currently unused but makes it easier to index project branches when needed
-git remote show projects || git remote add projects https://github.com/mozilla/gecko-projects.git
+git remote show -n projects || git remote add projects https://github.com/mozilla/gecko-projects.git
 git fetch projects
 # Fetch hg metadata and graft it to the gecko repository using cinnabar. If we want to index
 # project branches we'll want to add the equivalent hg repos and graft metadata from those as
 # well.
-git remote show cinnabar || git remote add cinnabar hg::https://hg.mozilla.org/mozilla-unified
+git remote show -n cinnabar || git remote add cinnabar hg::https://hg.mozilla.org/mozilla-unified
 git config cinnabar.graft true
-git remote update cinnabar 2> >(grep -v "WARNING Cannot graft" >&2) # Filter stderr to remove warnings we don't care about
+git remote update cinnabar 2> >(grep -v "WARNING Cannot graft" >&2) # Filter stderr to remove warnings we don't care about. Drop once our cinnabar version includes glandium/git-cinnabar#241
 
 # If a try push was specified, pull it in non-graft mode so we actually pull those changes.
 if [ "$REVISION_TREE" == "try" ]; then
