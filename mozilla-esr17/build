@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# Don't do anything here. It's not likely that we'll
+# want to do Rust/C++ indexing for ESR17, ever.

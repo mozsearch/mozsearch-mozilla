@@ -6,12 +6,12 @@ set -o pipefail # Check all commands in a pipeline
 
 # See ../mozilla-central/setup for documentation
 # The mozilla-central repo also uploads an updated gecko-dev which
-# includes esr60 commits, so we don't need our own upload script.
+# includes esr31 commits, so we don't need our own upload script.
 
 date
 
-# ESR60 isn't getting any new commits, so we can hard-code the last revision
+# ESR31 isn't getting any new commits, so we can hard-code the last revision
 # for simplicity in checkout-gecko-repos.sh.
-$CONFIG_REPO/shared/checkout-gecko-repos.sh "mozilla-esr60" "esr60" "1aeaa33a64f9873fdeb8f986ef71ec35aa672347"
+$CONFIG_REPO/shared/checkout-gecko-repos.sh "mozilla-esr31" "esr31" "777e60ca88535403b547fcb3271f4baf63c17af2"
 
 date
