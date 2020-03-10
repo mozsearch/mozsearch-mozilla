@@ -113,51 +113,6 @@ Searchfox uses semantic syntax highlighting. Types are shown in teal
 (blue-green). Definitions are shown in bold. Hovering over an
 identifier highlights other uses of that identifier.
 
-<h3>Releases</h3>
-
-<h4>Version 2.0 (May 31, 2016)</h4>
-
-<ul>
-  <li>Insta-blame
-  <li>Semantic syntax highlighting
-</ul>
-
-<h4>Version 1.5 (March 16, 2016)</h4>
-
-<ul>
-  <li>IDL support
-  <li>XBL support
-  <li>Support for C++ variables, enums, and macros
-  <li>Indexes generated code
-</ul>
-
-<h4>Version 1.0 (January 10, 2016)</h4>
-
-<ul>
-<li>Full text search of entire tree<br>
-
-Indexing is provided via <a href="https://livegrep.com">Livegrep</a>.
-
-<li>Cross-referencing JavaScript code<br>
-
-Global variables are indexed as properties. Heuristics allow code
-like <code>this.method</code> to be indexed
-as <code>Class.method</code> based on context. A variety of class
-patterns are supported, although not ES6 classes yet. Test files are
-not yet indexed. JavaScript in HTML, XUL, and XBL filed is not yet
-indexed.
-
-<li>Cross-referencing C++ code<br>
-
-Only functions are indexed. Support for fields and types is coming
-soon.  Methods are indexed by walking up the inheritance hierarchy to
-find the uppermost declaration of the method (the root). All methods
-transitively overriding that method are indexed together. With
-multiple inheritance, there may be more than one root method; in this
-case, the first one is chosen arbitrarily. This is a bug to be fixed.
-
-</ul>
-
 <h3>Bug reports</h3>
 
 Please send bug reports to
