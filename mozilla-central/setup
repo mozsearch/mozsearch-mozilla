@@ -6,11 +6,18 @@ set -o pipefail # Check all commands in a pipeline
 
 date
 
-# Edit this to e.g. try.revision.ee64db93dcc149da9313460317257b8c42eec5b2 or whatever
-# to test other revisions.
 # This defaults to the most recent searchfox indexing run for mozilla-central.
-REVISION_TREE=mozilla-central       # replace with e.g. 'try' for testing
-REVISION_ID=latest                  # replace with e.g. 'revision.ee64db93dcc149da9313460317257b8c42eec5b2' for testing
+REVISION_TREE=mozilla-central
+REVISION_ID=latest
+
+# Set TRYPUSH_REV in the environment to e.g. ee64db93dcc149da9313460317257b8c42eec5b2
+# or whatever to test a try revision. It needs to be the full rev hash, so that we can
+# find the artifacts in taskcluster.
+TRYPUSH_REV=${TRYPUSH_REV:-}
+if [ -n "$TRYPUSH_REV" ]; then
+    REVISION_TREE=try
+    REVISION_ID="revision.${TRYPUSH_REV}"
+fi
 
 # The next line populates the INDEXED_HG_REV env var.
 source $CONFIG_REPO/shared/resolve-gecko-revs.sh $REVISION_TREE $REVISION_ID
