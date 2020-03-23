@@ -27,9 +27,19 @@ if [ -d "${DESTDIR}/${TARBALL}" ]; then
 fi
 
 if [ ! -f "$WORKING/${TARBALL}.tar" ]; then
+    delete_partial_download() {
+        rm -f "$WORKING/${TARBALL}.tar"
+        exit 1
+    }
+
+    # This download can take a long time. If the user interrupts with ctrl-c, then
+    # clean up the partial download or it can cause trouble the next time the script
+    # is run.
+    trap "delete_partial_download" SIGINT
     pushd "$WORKING"
     wget -nv "https://s3-us-west-2.amazonaws.com/searchfox.repositories/${TARBALL}.tar"
     popd
+    trap - SIGINT   # clear trap now that download is done
 fi
 
 tar xf "$WORKING/${TARBALL}.tar" -C "$DESTDIR"
