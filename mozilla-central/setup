@@ -24,9 +24,7 @@ source $CONFIG_REPO/shared/resolve-gecko-revs.sh $REVISION_TREE $REVISION_ID
 
 $CONFIG_REPO/shared/checkout-gecko-repos.sh $REVISION_TREE "master" "$INDEXED_HG_REV"
 
-pushd $INDEX_ROOT
 $CONFIG_REPO/shared/fetch-tc-artifacts.sh $REVISION_TREE $INDEXED_HG_REV
-popd
 
 date
 

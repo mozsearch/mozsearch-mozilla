@@ -19,8 +19,6 @@ $CONFIG_REPO/shared/checkout-gecko-repos.sh $REVISION_TREE "release" "$INDEXED_H
 
 date
 
-pushd $INDEX_ROOT
 $CONFIG_REPO/shared/fetch-tc-artifacts.sh $REVISION_TREE $INDEXED_HG_REV
-popd
 
 date

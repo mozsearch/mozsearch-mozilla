@@ -21,6 +21,8 @@ CURL=${CURL:-"curl -SsfL --compressed"}
 # we're in the midst of downloading stuff. Using a specific revision id is safer.
 REVISION="${REVISION_TREE}.revision.${INDEXED_HG_REV}"
 
+pushd $INDEX_ROOT
+
 # Download the bugzilla components file and the artifacts from each platform that
 # we're indexing. But do them in parallel by emitting all the curl commands into
 # a file and then feeding it to GNU parallel.
@@ -55,3 +57,5 @@ parallel --halt now,fail=1 < downloads.lst
 # Clean out any leftover artifacts if we're running using KEEP_WORKING=1
 rm -rf analysis && mkdir -p analysis
 rm -rf objdir && mkdir -p objdir
+
+popd
