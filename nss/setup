@@ -54,21 +54,17 @@ popd
 
 date
 
-echo Downloading git to hg map
-pushd $INDEX_ROOT
-curl -SsfL https://moz-vcssync.s3-us-west-2.amazonaws.com/mapping/nss-dev/git-mapfile.tar.bz2 | tar -xOj > git_hg.map
-popd
-
-date
-
 echo Updating NSS git
 pushd $GIT_ROOT
 git pull
+git config remote.cinnabar.url || git remote add cinnabar hg::https://hg.mozilla.org/projects/nss
+git config cinnabar.graft true
+git remote update cinnabar 2> >(grep -v "WARNING Cannot graft" >&2) # Filter stderr to remove warnings we don't care about. Drop once our cinnabar version includes glandium/git-cinnabar#241
 popd
 
 date
 
 echo Generating blame information
-python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT $INDEX_ROOT/git_hg.map
+CINNABAR=1 python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT
 
 date
