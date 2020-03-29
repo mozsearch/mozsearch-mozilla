@@ -19,6 +19,6 @@ $CONFIG_REPO/shared/checkout-gecko-repos.sh $REVISION_TREE "esr68" "$INDEXED_HG_
 
 date
 
-$CONFIG_REPO/shared/fetch-tc-artifacts.sh $REVISION_TREE $INDEXED_HG_REV
+$CONFIG_REPO/shared/fetch-tc-artifacts.sh $REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV"
 
 date

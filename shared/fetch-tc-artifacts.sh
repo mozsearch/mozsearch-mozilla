@@ -4,14 +4,15 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-if [ $# -ne 2 ]; then
-    echo "Usage: $0 <revision-tree> <hg-rev>"
-    echo " e.g.: $0 mozilla-central 588208caeaf863f2207792eeb1bd97e6c8fceed4"
+if [ $# -ne 3 ]; then
+    echo "Usage: $0 <revision-tree> <hg-rev> <pre-existing-hg-rev>"
+    echo " e.g.: $0 mozilla-central 588208caeaf863f2207792eeb1bd97e6c8fceed4 ''"
     exit 1
 fi
 
 REVISION_TREE=$1
 INDEXED_HG_REV=$2
+PREEXISTING_HG_REV=$3
 
 # Allow caller to override what we use to download, but
 # have a sane default
@@ -22,6 +23,16 @@ CURL=${CURL:-"curl -SsfL --compressed"}
 REVISION="${REVISION_TREE}.revision.${INDEXED_HG_REV}"
 
 pushd $INDEX_ROOT
+
+if [[ -n $PREEXISTING_HG_REV && $PREEXISTING_HG_REV != $INDEXED_HG_REV ]]; then
+    echo "New hg revision $INDEXED_HG_REV doesn't match pre-existing hg revision $PREEXISTING_HG_REV, deleting old artifacts..."
+    rm -f bugzilla-components.json
+    rm -f *.mozsearch-index.zip
+    rm -f *.mozsearch-rust.zip
+    rm -f *.mozsearch-rust-stdlib.zip
+    rm -f *.generated-files.tar.gz
+    rm -f *.distinclude.map
+fi
 
 # Download the bugzilla components file and the artifacts from each platform that
 # we're indexing. But do them in parallel by emitting all the curl commands into
@@ -34,8 +45,13 @@ for PLATFORM in linux64 macosx64 win64 android-armv7; do
     #
     # Also check for moz_source_stamp, to handle tasks that exists but failed. We rely on this field for resolve-gecko-revs.sh already.
     if ! (${CURL} "${TC_PREFIX}/target.json" | grep moz_source_stamp); then
-      echo "WARNING: Unable to find analysis for $PLATFORM for hg rev $INDEXED_HG_REV; skipping analysis merge step for this platform.";
-      continue;
+        echo "WARNING: Unable to find analysis for $PLATFORM for hg rev $INDEXED_HG_REV; skipping analysis merge step for this platform."
+        continue
+    fi
+
+    if [ -f "${PLATFORM}.mozsearch-index.zip" ]; then
+        echo "Found pre-existing ${PLATFORM}.mozsearch-index.zip tarball, skipping re-download of this platform."
+        continue
     fi
 
     TC_PREFIX="https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.${REVISION}.firefox.${PLATFORM}-searchfox-debug/artifacts/public/build"
@@ -54,7 +70,7 @@ done # end PLATFORM loop
 # Do the downloads
 parallel --halt now,fail=1 < downloads.lst
 
-# Clean out any leftover artifacts if we're running using KEEP_WORKING=1
+# Clean out any artifacts left over from previous runs
 rm -rf analysis && mkdir -p analysis
 rm -rf objdir && mkdir -p objdir
 
