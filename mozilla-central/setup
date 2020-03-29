@@ -19,12 +19,13 @@ if [ -n "$TRYPUSH_REV" ]; then
     REVISION_ID="revision.${TRYPUSH_REV}"
 fi
 
-# The next line populates the INDEXED_HG_REV env var.
+# The next line populates the INDEXED_HG_REV and PREEXISTING_HG_REV env vars.
+# Note that PREEXISTING_HG_REV will generally be empty in production.
 source $CONFIG_REPO/shared/resolve-gecko-revs.sh $REVISION_TREE $REVISION_ID
 
 $CONFIG_REPO/shared/checkout-gecko-repos.sh $REVISION_TREE "master" "$INDEXED_HG_REV"
 
-$CONFIG_REPO/shared/fetch-tc-artifacts.sh $REVISION_TREE $INDEXED_HG_REV
+$CONFIG_REPO/shared/fetch-tc-artifacts.sh $REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV"
 
 date
 
