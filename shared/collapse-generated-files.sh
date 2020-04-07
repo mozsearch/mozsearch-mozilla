@@ -21,6 +21,8 @@ function move_file {
     mv "$1" "$2"
 }
 
+NORMALIZE_EXPR="s#/builds/worker/checkouts/gecko/##g;s#z:/task_[0-9]*/build/src/##gI"
+
 # Check that all the files (provided as arguments) are the same, after normalizing
 # Windows line endings and paths to UNIX. At least one argument must be provided.
 # If all the files match, the name of the first one is echo'd, otherwise the empty
@@ -31,14 +33,13 @@ function check_all_same {
         return 1;
     fi
     FIRSTFILE=$1; shift;
-    # Normalize to UNIX in-place. The z: absolute path comes from the taskcluster
-    # working directory for Windows.
+    # Normalize to UNIX in-place.
     dos2unix --quiet "$FIRSTFILE"
-    sed --in-place -e "s#z:/task_[0-9]*/#/builds/worker/workspace/#gI" "$FIRSTFILE"
+    sed --in-place -Ee "$NORMALIZE_EXPR" "$FIRSTFILE"
     while [ $# -gt 0 ]; do
         NEXTFILE=$1; shift;
         dos2unix --quiet "$NEXTFILE"
-        sed --in-place -e "s#z:/task_[0-9]*/#/builds/worker/workspace/#gI" "$NEXTFILE"
+        sed --in-place -Ee "$NORMALIZE_EXPR" "$NEXTFILE"
         cmp --quiet "$FIRSTFILE" "$NEXTFILE"
         if [ $? -ne 0 ]; then
             # Files aren't the same, echo empty string

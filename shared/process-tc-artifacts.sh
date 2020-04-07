@@ -22,23 +22,40 @@ fi
 mkdir -p analysis-$PLATFORM
 unzip -q $PLATFORM.mozsearch-index.zip -d analysis-$PLATFORM
 
-# These all get unpacked into the objdir directly because the files
-# are already in platform-specific subfolders inside the zipfile, so there won't be any collisions. The
-# rust-indexer.rs tool will take care of combining all the analysis files correctly.
-unzip -q $PLATFORM.mozsearch-rust.zip -d objdir
+# Unpack the rust save-analysis files into a platform-specific folder.  These
+# are not analysis files (yet) and these came from an objdir, so we call it an
+# objdir.
+#
+# Note that the paths inside the zip files are already platform-specific, so
+# we're not worried about collisions.  The issue is that the identifiers used
+# inside the save-analysis files are not globally unique, so if rust-indexer.rs
+# is presented with different save-analysis files for multiple platforms then
+# the result will end up corrupt if there were any differences between the
+# platforms.
+#
+# By splitting the rust files up into separate directories, we make it easier
+# to both normalize these JSON files (they include absolute file paths) and
+# run rust-indexer.rs on them without having to perform complicated path
+# filtering.
+mkdir -p objdir-$PLATFORM
+unzip -q $PLATFORM.mozsearch-rust.zip -d objdir-$PLATFORM
 
 # If we have per-platform rustlib src/analysis data, unpack those as well.
 if [ -f "$PLATFORM.mozsearch-rust-stdlib.zip" ]; then
     # These zips have a rustlib top-level folder and then contain the
-    # rust stdlib src (all the zips have the same src tree) and analysis
-    # data for the platform. We unpack all the zips into the same
-    # destination folder, implicitly merging them. And we copy the stdlib
-    # src tree into the objdir and (ab)use the generated files machinery.
-    unzip -qn $PLATFORM.mozsearch-rust-stdlib.zip -d .
-    if [ ! -d "objdir/__RUST__" ]; then
-        mkdir -p "objdir/__RUST__"
-        cp -Rn rustlib/src/rust/src objdir/__RUST__/
-    fi
+    # rust stdlib src (all the zips have the same src tree) and save-analysis
+    # data for the platform.  We copy the stdlib src tree into the
+    # (non-platform-specific) objdir to (ab)use the generated files machinery.
+    unzip -qn $PLATFORM.mozsearch-rust-stdlib.zip -d objdir-$PLATFORM
+    # Attempt to deal with the other platforms racing against us on this by
+    # using the act of creation of the directory as creating a lock on copying
+    # the files over.
+    #
+    # Note: The rust-indexer job intentionally is not consulting the source
+    # files in this directory, this is only being done for the benefit of the
+    # output-file machinery which runs after all of the parallel invocations of
+    # this script complete.
+    mkdir "objdir/__RUST__" && cp -Rn objdir-$PLATFORM/rustlib/src/rust/src/* objdir/__RUST__/ || true
 fi
 
 # Unpack generated sources tarballs into platform-specific folder
@@ -47,8 +64,56 @@ tar -x -z -C generated-$PLATFORM -f $PLATFORM.generated-files.tar.gz
 
 date
 
+# Normalize the rust save-analysis files so that instead of having absolute
+# paths they have searchfox-normalized paths where source paths have no prefix
+# and objdir paths start with __GENERATED__.
+
+# Rust stdlib looks like either "src/libstd/num.rs" on linux or
+# "src\\libstd\\num.rs" on windows.  We normalize to __GENERATED__/__RUST__.
+# We do this normalization first because there's no "src" directory at the root
+# of mozilla-central, so we can safely assume that if we have a relative path
+# that starts with "src/" that it's rust code.  Hopefully.  (If we did it later,
+# we'd be seeing the results of other absolute path normalizations.)
+NORMALIZE_EXPR='s#"src[/\\]#"__GENERATED__/__RUST__/#gI'
+# For some reason we see generated paths under checkouts like:
+# /builds/worker/checkouts/gecko/obj-arm-unknown-linux-androideabi/dist/xpcrs/rt/nsIChannel.rs
+# Handle this, and do it before we do the source normalization in the next line.
+NORMALIZE_EXPR+=';s#/builds/worker/checkouts/gecko/obj-[-a-zA-Z0-9_]+/#__GENERATED__/#g'
+# Non-windows source paths get normalized off.
+NORMALIZE_EXPR+=';s#/builds/worker/checkouts/gecko/##g'
+# Non-windows build paths get normalized to __GENERATED__.
+NORMALIZE_EXPR+=';s#/builds/worker/workspace/obj-build/#__GENERATED__/#g'
+# I haven't actually seen the same weird source path with "obj-*" under it on
+# Windows yet, but let's proactively assume such a thing will happen and add
+# the following regexp just in case.  But right now nsIChannel.rs on Windows
+# looks like: "z:/task_1589882903/workspace/obj-build/dist/xpcrs/rt/nsIChannel.rs"
+# Note that the '+' needs a backslash because sed.
+NORMALIZE_EXPR+=';s#z:[/\\]task_[0-9]*[/\\]build[/\\]src[/\\]obj-[-a-zA-Z0-9_]+[/\\]#__GENERATED__/#gI'
+# Windows source paths get normalized off.
+NORMALIZE_EXPR+=';s#z:[/\\]task_[0-9]*[/\\]build[/\\]src[/\\]##gI'
+# Windows build paths get normalized to __GENERATED__, noting we don't consume
+# the trailing slash.
+NORMALIZE_EXPR+=';s#z:[/\\]task_[0-9]*[/\\]workspace[/\\]obj-build[/\\]#__GENERATED__/#gI'
+# We use -E in order to get extended regexp support, which is necessary to be
+# able to use "+" without escaping it with a (single) backslash.
+find objdir-$PLATFORM -type f -name "*.json" | parallel -q --halt now,fail=1 sed --in-place -Ee "$NORMALIZE_EXPR" {}
+
+date
+
 # Run the rust analysis here.
-$MOZSEARCH_PATH/scripts/rust-analyze.sh $CONFIG_FILE $TREE_NAME $PLATFORM
+# Note that we specify "objdir" as the objdir_src for __GENERATED__ for source
+# purposes because the only source that's in objdir-$PLATFORM is the rustlib
+# source, and that's covered by the next line which does use objdir-$PLATFORM.
+# (We also copy that source into ojbdir, but that action is racey.  See the
+# comments where we perform the copying.)
+export RUST_LOG=info
+$MOZSEARCH_PATH/scripts/rust-analyze.sh \
+  "$CONFIG_FILE" \
+  "$TREE_NAME" \
+  "objdir-$PLATFORM" \
+  "generated-$PLATFORM" \
+  "objdir-$PLATFORM/rustlib/src/rust/src" \
+  "$INDEX_ROOT/analysis-$PLATFORM"
 
 date
 
@@ -58,8 +123,7 @@ MAPVERSION=$(head -n 1 $PLATFORM.distinclude.map)
 if [ "$MAPVERSION" != "5" ]; then
     echo "WARNING: $PLATFORM.distinclude.map had unexpected version [$MAPVERSION]; check for changes in python/mozbuild/mozpack/manifests.py."
 fi
-sed --in-place -e "s#/builds/worker/workspace/build/src/##g" $PLATFORM.distinclude.map
-sed --in-place -e "s#z:/task_[0-9]*/build/src/##gI" $PLATFORM.distinclude.map
+sed --in-place -e "$NORMALIZE_EXPR" $PLATFORM.distinclude.map
 
 date
 

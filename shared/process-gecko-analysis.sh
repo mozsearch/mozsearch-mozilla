@@ -36,13 +36,6 @@ sort generated-files.list | uniq | parallel --halt now,fail=1 "$CONFIG_REPO/shar
 
 date
 
-# Throw away any leftover per-platform generated files, and the analysis data
-# for generated files. The above loop should have extracted all the useful
-# information from these folders into the objdir/ and analysis/__GENERATED__/
-# folders.
-rm -rf generated-*
-rm -rf analysis-*/__GENERATED__
-
 # Finally, merge the analysis files for the non-generated source files. All the files
 # are going to be listed in the analysis-files.list, possibly duplicated across
 # platforms, so we deduplicate the filenames and merge each filename across platforms.
@@ -51,5 +44,10 @@ sort analysis-files.list | uniq | parallel --halt now,fail=1 "RUST_LOG=info $MOZ
 
 date
 
-# Free up disk space, we don't need these per-platform analysis files any more.
-rm -rf analysis-*
+# Delete the generated-* and analysis-* directories, but retain the tarballs
+# for ease of investigation.  (The tarballs are still available from taskcluster
+# though, and fetch-tc-artifcats.sh knows how to re-fetch them, so if we don't
+# want to waste the space, we could just make it easier to re-fetch them so
+# there's a one-liner in mozsearch's `docs/aws.md`.)
+rm -rf generated-*/
+rm -rf analysis-*/
