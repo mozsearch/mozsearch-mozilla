@@ -40,7 +40,7 @@ for BRANCH in beta release esr68 esr60 esr45 esr31 esr17; do
     git branch -f $BRANCH origin/$BRANCH || git branch -f $BRANCH projects/$BRANCH
     popd
     echo "Generating blame information for $BRANCH..."
-    CINNABAR=1 BLAME_REF="refs/heads/$BRANCH" python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT
+    BLAME_REF="refs/heads/$BRANCH" $MOZSEARCH_PATH/tools/target/release/build-blame $GIT_ROOT $BLAME_ROOT
 done
 
 date
