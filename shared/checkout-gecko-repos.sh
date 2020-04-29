@@ -69,7 +69,7 @@ echo "Generating blame information..."
 pushd $BLAME_ROOT
 git reset --soft "$BRANCH"
 popd
-CINNABAR=1 python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT
+$MOZSEARCH_PATH/tools/target/release/build-blame $GIT_ROOT $BLAME_ROOT
 
 date
 

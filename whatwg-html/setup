@@ -40,6 +40,6 @@ git pull
 popd
 
 echo Generating blame information
-python $MOZSEARCH_PATH/blame/transform-repo.py $GIT_ROOT $BLAME_ROOT
+$MOZSEARCH_PATH/tools/target/release/build-blame $GIT_ROOT $BLAME_ROOT
 
 date
