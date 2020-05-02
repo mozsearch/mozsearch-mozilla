@@ -39,7 +39,7 @@ git fetch projects
 # well.
 git config remote.cinnabar.url || git remote add cinnabar hg::https://hg.mozilla.org/mozilla-unified
 git config cinnabar.graft true
-git remote update cinnabar 2> >(grep -v "WARNING Cannot graft" >&2) # Filter stderr to remove warnings we don't care about. Drop once our cinnabar version includes glandium/git-cinnabar#241
+git remote update cinnabar
 
 # If a try push was specified, pull it in non-graft mode so we actually pull those changes.
 if [ "$REVISION_TREE" == "try" ]; then
