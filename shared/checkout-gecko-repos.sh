@@ -30,20 +30,15 @@ date
 
 echo Updating git
 pushd $GIT_ROOT
-git fetch origin
-# Fetch projects. Currently unused but makes it easier to index project branches when needed
-git config remote.projects.url || git remote add projects https://github.com/mozilla/gecko-projects.git
-git fetch projects
-# Fetch hg metadata and graft it to the gecko repository using cinnabar. If we want to index
-# project branches we'll want to add the equivalent hg repos and graft metadata from those as
-# well.
+# Fetch mozilla-unified with non-grafted cinnabar, so it will have all the necessary hg metadata.
+# If we need to fetch project branches in the future, we can fetch those also with cinnabar here
 git config remote.cinnabar.url || git remote add cinnabar hg::https://hg.mozilla.org/mozilla-unified
-git config cinnabar.graft true
-git remote update cinnabar
+git config cinnabar.graft false
+git config fetch.prune true
+git fetch cinnabar
 
 # If a try push was specified, pull it in non-graft mode so we actually pull those changes.
 if [ "$REVISION_TREE" == "try" ]; then
-    git config cinnabar.graft false
     git cinnabar fetch hg::https://hg.mozilla.org/try $INDEXED_HG_REV
 fi
 
@@ -54,7 +49,7 @@ INDEXED_GIT_REV=$(git cinnabar hg2git $INDEXED_HG_REV)
 # to the indexing run on taskcluster. In that case we error out and abort.
 
 if [ "$INDEXED_GIT_REV" == "0000000000000000000000000000000000000000" ]; then
-    echo "ERROR: Unable to find git equivalent for hg rev $INDEXED_HG_REV; please fix gecko-dev and retry."
+    echo "ERROR: Unable to find git equivalent for hg rev $INDEXED_HG_REV; please fix cinnabar and retry."
     exit 1
 fi
 
