@@ -30,12 +30,24 @@ date
 
 echo Updating git
 pushd $GIT_ROOT
-# Fetch mozilla-unified with non-grafted cinnabar, so it will have all the necessary hg metadata.
-# If we need to fetch project branches in the future, we can fetch those also with cinnabar here
-git config remote.cinnabar.url || git remote add cinnabar hg::https://hg.mozilla.org/mozilla-unified
+# Fetch the m-c repos that we care about with non-grafted cinnabar, so it will have all the necessary hg metadata.
+# This could be simplified by using mozilla-unified, but currently mozilla-unified is updated with some amount
+# of latency and that can still leave us with stale data. It's better to pull from the individual source-of-truth
+# repos directly. Note we only pull the "default/tip" branch from these remotes, rather than all the random tags
+# and offshoot branches/closed heads that have accumulated in these repos.
+# If we need to fetch project branches in the future, we can fetch those also with cinnabar here.
+# Note that this repo may still have a 'projects' and a 'cinnabar' remote left over that we don't use any more.
+git config remote.central.url || git remote add -t branches/default/tip central hg::https://hg.mozilla.org/mozilla-central
+git config remote.beta.url || git remote add -t branches/default/tip beta hg::https://hg.mozilla.org/releases/mozilla-beta
+git config remote.release.url || git remote add -t branches/default/tip release hg::https://hg.mozilla.org/releases/mozilla-release
+git config remote.esr68.url || git remote add -t branches/default/tip esr68 hg::https://hg.mozilla.org/releases/mozilla-esr68
+git config remote.esr60.url || git remote add -t branches/default/tip esr60 hg::https://hg.mozilla.org/releases/mozilla-esr60
+git config remote.esr45.url || git remote add -t branches/default/tip esr45 hg::https://hg.mozilla.org/releases/mozilla-esr45
+git config remote.esr31.url || git remote add -t branches/default/tip esr31 hg::https://hg.mozilla.org/releases/mozilla-esr31
+git config remote.esr17.url || git remote add -t branches/default/tip esr17 hg::https://hg.mozilla.org/releases/mozilla-esr17
 git config cinnabar.graft false
 git config fetch.prune true
-git fetch cinnabar
+git fetch --multiple central beta release esr68 esr60 esr45 esr31 esr17
 
 # If a try push was specified, pull it in non-graft mode so we actually pull those changes.
 if [ "$REVISION_TREE" == "try" ]; then
