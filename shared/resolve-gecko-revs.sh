@@ -24,11 +24,11 @@ pushd $INDEX_ROOT
 
 PREEXISTING_HG_REV=
 if [ -f "target.json" ]; then
-    PREEXISTING_HG_REV=$(python $MOZSEARCH_PATH/scripts/read-json.py target.json moz_source_stamp)
+    PREEXISTING_HG_REV=$($MOZSEARCH_PATH/scripts/read-json.py target.json moz_source_stamp)
     echo "Found pre-existing target.json with hg revision ${PREEXISTING_HG_REV}."
 fi
 
 ${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.$REVISION.firefox.linux64-searchfox-debug/artifacts/public/build/target.json > target.json
-INDEXED_HG_REV=$(python $MOZSEARCH_PATH/scripts/read-json.py target.json moz_source_stamp)
+INDEXED_HG_REV=$($MOZSEARCH_PATH/scripts/read-json.py target.json moz_source_stamp)
 
 popd
