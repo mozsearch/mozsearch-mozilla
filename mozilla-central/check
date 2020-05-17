@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+date
+
+# We are passed in the name of the helper script to invoke to run each check.
+# The syntax is:
+#   "$@" <searchfox user exposed path> <canonical symbol name as found in data-symbols>
+#
+# Note that "$@" is used because the command is expected to have curried
+# arguments.
+
+### Rust
+## First-Party Rust
+# libwebrender
+"$@" "gfx/webrender_bindings/src/moz2d_renderer.rs" "webrender_bindings::moz2d_renderer::Box2d"
+
+## Third-Party Rust
+"$@" "third_party/rust/euclid/src/rect.rs" "euclid::rect::Rect"
+
+## XPIDL Bindings (libxpcom)
+"$@" "__GENERATED__/dist/xpcrs/rt/nsIChannel.rs" "xpcom::interfaces::idl::nsIChannel"
