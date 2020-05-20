@@ -95,6 +95,17 @@
       "objdir_path": "$WORKING/version-control-tools/objdir",
       "codesearch_path": "$WORKING/version-control-tools/livegrep.idx",
       "codesearch_port": 8088
+    },
+
+    "ecma262": {
+      "index_path": "$WORKING/ecma262",
+      "files_path": "$WORKING/ecma262/git",
+      "git_path": "$WORKING/ecma262/git",
+      "git_blame_path": "$WORKING/ecma262/blame",
+      "github_repo": "https://github.com/tc39/ecma262/",
+      "objdir_path": "$WORKING/ecma262/objdir",
+      "codesearch_path": "$WORKING/ecma262/livegrep.idx",
+      "codesearch_port": 8089
     }
   }
 }
