@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+date
+
+echo Uploading comm-esr60
+pushd $INDEX_ROOT
+tar cf comm-esr60.tar git
+python $AWS_ROOT/upload.py $INDEX_ROOT/comm-esr60.tar searchfox.repositories comm-esr60.tar
+rm comm-esr60.tar
+popd
+
+date
+
+echo Uploading comm-esr60 blame
+pushd $INDEX_ROOT
+tar cf comm-esr60-blame.tar blame
+python $AWS_ROOT/upload.py $INDEX_ROOT/comm-esr60-blame.tar searchfox.repositories comm-esr60-blame.tar
+rm comm-esr60-blame.tar
+popd
+
+date

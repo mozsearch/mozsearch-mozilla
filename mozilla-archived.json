@@ -52,6 +52,17 @@
       "objdir_path": "$WORKING/mozilla-esr17/objdir",
       "codesearch_path": "$WORKING/mozilla-esr17/livegrep.idx",
       "codesearch_port": 8084
+    },
+
+    "comm-esr60": {
+      "index_path": "$WORKING/comm-esr60",
+      "files_path": "$WORKING/comm-esr60/git",
+      "git_path": "$WORKING/comm-esr60/git",
+      "git_blame_path": "$WORKING/comm-esr60/blame",
+      "hg_root": "https://hg.mozilla.org/releases/comm-esr60",
+      "objdir_path": "$WORKING/comm-esr60/objdir",
+      "codesearch_path": "$WORKING/comm-esr60/livegrep.idx",
+      "codesearch_port": 8085
     }
   }
 }
