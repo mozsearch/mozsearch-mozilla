@@ -17,7 +17,7 @@ date
 
 echo Uploading ecma262 blame
 pushd $INDEX_ROOT
-tar cf ecma262-blame.tar ecma262-blame
+tar cf ecma262-blame.tar blame
 python $AWS_ROOT/upload.py $INDEX_ROOT/ecma262-blame.tar searchfox.repositories ecma262-blame.tar
 rm ecma262-blame.tar
 popd
