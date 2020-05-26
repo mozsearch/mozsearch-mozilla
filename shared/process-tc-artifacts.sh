@@ -40,27 +40,27 @@ unzip -q $PLATFORM.mozsearch-index.zip -d analysis-$PLATFORM
 mkdir -p objdir-$PLATFORM
 unzip -q $PLATFORM.mozsearch-rust.zip -d objdir-$PLATFORM
 
+# Unpack generated sources tarballs into platform-specific folder
+mkdir -p generated-$PLATFORM
+tar -x -z -C generated-$PLATFORM -f $PLATFORM.generated-files.tar.gz
+
 # If we have per-platform rustlib src/analysis data, unpack those as well.
 if [ -f "$PLATFORM.mozsearch-rust-stdlib.zip" ]; then
     # These zips have a rustlib top-level folder and then contain the
     # rust stdlib src (all the zips have the same src tree) and save-analysis
-    # data for the platform.  We copy the stdlib src tree into the
-    # (non-platform-specific) objdir to (ab)use the generated files machinery.
+    # data for the platform.  We leave the save-analysis data in
+    # objdir-$PLATFORM but...
     unzip -qn $PLATFORM.mozsearch-rust-stdlib.zip -d objdir-$PLATFORM
-    # Attempt to deal with the other platforms racing against us on this by
-    # using the act of creation of the directory as creating a lock on copying
-    # the files over.
-    #
-    # Note: The rust-indexer job intentionally is not consulting the source
-    # files in this directory, this is only being done for the benefit of the
-    # output-file machinery which runs after all of the parallel invocations of
-    # this script complete.
-    mkdir "objdir/__RUST__" && cp -Rn objdir-$PLATFORM/rustlib/src/rust/src/* objdir/__RUST__/ || true
-fi
 
-# Unpack generated sources tarballs into platform-specific folder
-mkdir -p generated-$PLATFORM
-tar -x -z -C generated-$PLATFORM -f $PLATFORM.generated-files.tar.gz
+    # ...We move the stdlib src tree into the generated-$PLATFORM directory so
+    # that rust-indexer can find the source to match it up to the analysis data.
+    # The collapse-generated-files.sh magic will unify the source files and the
+    # analysis files for us, handling any deviations between platforms.
+    #
+    # All of the lib* directories live under rustlib/src/rust/src in the zip,
+    # so we just move that to be the __RUST__ directory.
+    mv -f objdir-$PLATFORM/rustlib/src/rust/src generated-$PLATFORM/__RUST__
+fi
 
 date
 
@@ -112,7 +112,6 @@ $MOZSEARCH_PATH/scripts/rust-analyze.sh \
   "$TREE_NAME" \
   "objdir-$PLATFORM" \
   "generated-$PLATFORM" \
-  "objdir-$PLATFORM/rustlib/src/rust/src" \
   "$INDEX_ROOT/analysis-$PLATFORM"
 
 date
