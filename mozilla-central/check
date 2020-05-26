@@ -23,3 +23,6 @@ date
 
 ## XPIDL Bindings (libxpcom)
 "$@" "__GENERATED__/dist/xpcrs/rt/nsIChannel.rs" "xpcom::interfaces::idl::nsIChannel"
+
+## rustlib std library stuff
+"$@" "__GENERATED__/__RUST__/liballoc/collections/btree/map.rs" "alloc::collections::btree::map::BTreeMap"
