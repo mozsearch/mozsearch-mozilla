@@ -35,9 +35,9 @@ date
 # pushing the tarball to S3, to avoid accidental clobbers. It's not a great situation
 # architecturally, but it's better for performance.
 for BRANCH in beta release esr68 esr60 esr45 esr31 esr17; do
-    echo "Updating gecko-dev branch $BRANCH to latest from upstream..."
+    echo "Updating gecko-dev branch $BRANCH to latest from cinnabar upstream..."
     pushd $GIT_ROOT
-    git branch -f $BRANCH origin/$BRANCH || git branch -f $BRANCH projects/$BRANCH
+    git branch -f $BRANCH $BRANCH/branches/default/tip
     popd
     echo "Generating blame information for $BRANCH..."
     BLAME_REF="refs/heads/$BRANCH" $MOZSEARCH_PATH/tools/target/release/build-blame $GIT_ROOT $BLAME_ROOT
