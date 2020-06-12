@@ -9,7 +9,7 @@ date
 echo Uploading ecma262
 pushd $INDEX_ROOT
 tar cf ecma262.tar git
-python $AWS_ROOT/upload.py $INDEX_ROOT/ecma262.tar searchfox.repositories ecma262.tar
+$AWS_ROOT/upload.py $INDEX_ROOT/ecma262.tar searchfox.repositories ecma262.tar
 rm ecma262.tar
 popd
 
@@ -18,7 +18,7 @@ date
 echo Uploading ecma262 blame
 pushd $INDEX_ROOT
 tar cf ecma262-blame.tar blame
-python $AWS_ROOT/upload.py $INDEX_ROOT/ecma262-blame.tar searchfox.repositories ecma262-blame.tar
+$AWS_ROOT/upload.py $INDEX_ROOT/ecma262-blame.tar searchfox.repositories ecma262-blame.tar
 rm ecma262-blame.tar
 popd
 

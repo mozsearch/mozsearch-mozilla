@@ -21,7 +21,7 @@ if [ $TARBALL_SIZE -gt $TEN_GIGS ]; then
         echo "WARNING: gecko-dev.tar is bigger than 10GB even after git gc. Try more aggressive gc, or increase size limit"
     fi
 fi
-python $AWS_ROOT/upload.py $INDEX_ROOT/gecko-dev.tar searchfox.repositories gecko-dev.tar
+$AWS_ROOT/upload.py $INDEX_ROOT/gecko-dev.tar searchfox.repositories gecko-dev.tar
 rm gecko-dev.tar
 popd
 
@@ -42,7 +42,7 @@ if [ $TARBALL_SIZE -gt $FIVE_GIGS ]; then
         echo "WARNING: gecko-blame.tar is bigger than 5GB even after git gc. Try more aggressive gc, or increase size limit"
     fi
 fi
-python $AWS_ROOT/upload.py $INDEX_ROOT/gecko-blame.tar searchfox.repositories gecko-blame.tar
+$AWS_ROOT/upload.py $INDEX_ROOT/gecko-blame.tar searchfox.repositories gecko-blame.tar
 rm gecko-blame.tar
 popd
 
