@@ -9,7 +9,7 @@ date
 echo Uploading mozilla-build
 pushd $INDEX_ROOT
 tar cf mozilla-build.tar mozilla-build
-python $AWS_ROOT/upload.py $INDEX_ROOT/mozilla-build.tar searchfox.repositories mozilla-build.tar
+$AWS_ROOT/upload.py $INDEX_ROOT/mozilla-build.tar searchfox.repositories mozilla-build.tar
 rm mozilla-build.tar
 popd
 
@@ -18,7 +18,7 @@ date
 echo Uploading mozilla-build blame
 pushd $INDEX_ROOT
 tar cf mozilla-build-blame.tar blame
-python $AWS_ROOT/upload.py $INDEX_ROOT/mozilla-build-blame.tar searchfox.repositories mozilla-build-blame.tar
+$AWS_ROOT/upload.py $INDEX_ROOT/mozilla-build-blame.tar searchfox.repositories mozilla-build-blame.tar
 rm mozilla-build-blame.tar
 popd
 

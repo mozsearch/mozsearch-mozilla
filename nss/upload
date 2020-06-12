@@ -9,7 +9,7 @@ date
 echo Uploading NSPR
 pushd $INDEX_ROOT
 tar cf nss-git.tar git
-python $AWS_ROOT/upload.py $INDEX_ROOT/nss-git.tar searchfox.repositories nss-git.tar
+$AWS_ROOT/upload.py $INDEX_ROOT/nss-git.tar searchfox.repositories nss-git.tar
 rm nss-git.tar
 popd
 
@@ -18,7 +18,7 @@ date
 echo Uploading NSS blame
 pushd $INDEX_ROOT
 tar cf nss-blame.tar blame
-python $AWS_ROOT/upload.py $INDEX_ROOT/nss-blame.tar searchfox.repositories nss-blame.tar
+$AWS_ROOT/upload.py $INDEX_ROOT/nss-blame.tar searchfox.repositories nss-blame.tar
 rm nss-blame.tar
 popd
 
