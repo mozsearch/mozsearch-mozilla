@@ -25,4 +25,6 @@ date
 "$@" "__GENERATED__/dist/xpcrs/rt/nsIChannel.rs" "xpcom::interfaces::idl::nsIChannel"
 
 ## rustlib std library stuff
-"$@" "__GENERATED__/__RUST__/liballoc/collections/btree/map.rs" "alloc::collections::btree::map::BTreeMap"
+"$@" "__GENERATED__/__RUST_STDLIB__/liballoc/collections/btree/map.rs" "alloc::collections::btree::map::BTreeMap"
+
+## TODO: Add webrender's shaders.rs once the test run completes.
