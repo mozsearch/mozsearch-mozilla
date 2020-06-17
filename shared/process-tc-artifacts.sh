@@ -44,6 +44,63 @@ unzip -q $PLATFORM.mozsearch-rust.zip -d objdir-$PLATFORM
 mkdir -p generated-$PLATFORM
 tar -x -z -C generated-$PLATFORM -f $PLATFORM.generated-files.tar.gz
 
+date
+
+# ### Normalize generated source files by rust build-scripts. ###
+#
+# These will look like:
+#   x86_64-unknown-linux-gnu/debug/build/cranelift-codegen-17ba72a9572695af/out/binemit-x86.rs
+# which can be generalized to:
+#   ${RUST_PLATFORM}/${BUILD_TYPE}/build/${CRATE_NAME}-${CRATE_HASH}/out/${FILE_PATH}
+# and which we want to end up with the following path scheme inside this
+# platform specific directory:
+#   __RUST_BUILD_SCRIPT__/${CRATE_NAME}/${FILE_PATH}
+# which will in the end look like (where __linux64__ varies per platform):
+#   __GENERATED__/__linux64__/__RUST_BUILD_SCRIPT__/${CRATE_NAME}/${FILE_PATH}
+#
+# It's also necessary for similar translations to be performed when performing
+# fixups against the save-analysis files.
+
+# Do all of this in the generated-$PLATFORM directory.
+pushd generated-$PLATFORM
+
+declare -A RUST_PLAT_DIRS
+RUST_PLAT_DIRS["linux64"]="x86_64-unknown-linux-gnu"
+RUST_PLAT_DIRS["macosx64"]="x86_64-apple-darwin"
+RUST_PLAT_DIRS["win64"]="x86_64-pc-windows-msvc"
+RUST_PLAT_DIRS["android-armv7"]="thumbv7neon-linux-androideabi"
+RUST_PLATFORM=${RUST_PLAT_DIRS[$PLATFORM]}
+
+function move_file {
+    mkdir -p "$(dirname $2)"
+    mv "$1" "$2"
+}
+
+# Use sed to get a list of all files that match the patterns we specify above
+# and print out ONLY those files, with each resulting line containing the
+# source path followed by a space followed by the target path.  We will then
+# move the files to their target using the `move_file` helper from above which
+# will create the directories as needed.
+#
+# Note that things may very well break if the paths start having spaces inside
+# them.  In which case some kind of quoting an unquoting will become necessary,
+# but I'm not implementing that ahead of time because it's very easy to shoot
+# oneself in the foot when adding quoting.
+#
+# note that we use "p" to print the output which would not otherwise appear.
+PATH_TRANSFORM="s#^(${RUST_PLATFORM}/(debug|release)/build/([^/]+)-[0-9a-f]+/out/(.+))\$#\1 __RUST_BUILD_SCRIPT__/\3/\4#p"
+# -n: Causes no output except the "p" for print directive in the expression.
+# -E: extended regexps, don't have to backslash escape things like `+`
+# -e: The actual expression to run
+find "$RUST_PLATFORM" -type f | sed -nEe "$PATH_TRANSFORM" | while read -r source target; do
+  move_file "$source" "$target"
+done
+
+# leave the generated-$PLATFORM directory
+popd
+
+date
+
 # If we have per-platform rustlib src/analysis data, unpack those as well.
 if [ -f "$PLATFORM.mozsearch-rust-stdlib.zip" ]; then
     # These zips have a rustlib top-level folder and then contain the
@@ -58,23 +115,25 @@ if [ -f "$PLATFORM.mozsearch-rust-stdlib.zip" ]; then
     # analysis files for us, handling any deviations between platforms.
     #
     # All of the lib* directories live under rustlib/src/rust/src in the zip,
-    # so we just move that to be the __RUST__ directory.
-    mv -f objdir-$PLATFORM/rustlib/src/rust/src generated-$PLATFORM/__RUST__
+    # so we just move that to be the __RUST_STDLIB__ directory.
+    mv -f objdir-$PLATFORM/rustlib/src/rust/src generated-$PLATFORM/__RUST_STDLIB__
 fi
 
 date
 
+# ### Normalize save-analysis files ###
+#
 # Normalize the rust save-analysis files so that instead of having absolute
 # paths they have searchfox-normalized paths where source paths have no prefix
 # and objdir paths start with __GENERATED__.
 
 # Rust stdlib looks like either "src/libstd/num.rs" on linux or
-# "src\\libstd\\num.rs" on windows.  We normalize to __GENERATED__/__RUST__.
+# "src\\libstd\\num.rs" on windows.  We normalize to __GENERATED__/__RUST_STDLIB__.
 # We do this normalization first because there's no "src" directory at the root
 # of mozilla-central, so we can safely assume that if we have a relative path
 # that starts with "src/" that it's rust code.  Hopefully.  (If we did it later,
 # we'd be seeing the results of other absolute path normalizations.)
-NORMALIZE_EXPR='s#"src[/\\]#"__GENERATED__/__RUST__/#gI'
+NORMALIZE_EXPR='s#"src[/\\]#"__GENERATED__/__RUST_STDLIB__/#gI'
 # For some reason we see generated paths under checkouts like:
 # /builds/worker/checkouts/gecko/obj-arm-unknown-linux-androideabi/dist/xpcrs/rt/nsIChannel.rs
 # Handle this, and do it before we do the source normalization in the next line.
@@ -94,6 +153,14 @@ NORMALIZE_EXPR+=';s#z:[/\\]task_[0-9]*[/\\]build[/\\]src[/\\]##gI'
 # Windows build paths get normalized to __GENERATED__, noting we don't consume
 # the trailing slash.
 NORMALIZE_EXPR+=';s#z:[/\\]task_[0-9]*[/\\]workspace[/\\]obj-build[/\\]#__GENERATED__/#gI'
+# Apply the equivalent of the __RUST_BUILD_SCRIPT__ transform from the preceding
+# section.  The regexp is double-quote aware so that we can avoid the filename
+# capture group escaping beyond the bounds of the quoted string.  To this end,
+# we leverage the fact that we can mix types of quoting.  '"quoted"'"$FOO" is
+# effectively the same as "\"quoted\"$foo" but we don't need to escape the
+# quotes.  We wrap everything but "${RUST_PLATFORM}" in single-quotes below.
+NORMALIZE_EXPR+=';s#"__GENERATED__/'"${RUST_PLATFORM}"'/(debug|release)/build/([^/]+)-[0-9a-f]+/out/([^"]+)"#"__GENERATED__/__RUST_BUILD_SCRIPT__/\2/\3"#g'
+
 # We use -E in order to get extended regexp support, which is necessary to be
 # able to use "+" without escaping it with a (single) backslash.
 find objdir-$PLATFORM -type f -name "*.json" | parallel -q --halt now,fail=1 sed --in-place -Ee "$NORMALIZE_EXPR" {}
@@ -122,7 +189,7 @@ MAPVERSION=$(head -n 1 $PLATFORM.distinclude.map)
 if [ "$MAPVERSION" != "5" ]; then
     echo "WARNING: $PLATFORM.distinclude.map had unexpected version [$MAPVERSION]; check for changes in python/mozbuild/mozpack/manifests.py."
 fi
-sed --in-place -e "$NORMALIZE_EXPR" $PLATFORM.distinclude.map
+sed --in-place -Ee "$NORMALIZE_EXPR" $PLATFORM.distinclude.map
 
 date
 
