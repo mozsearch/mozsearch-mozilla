@@ -27,4 +27,11 @@ date
 ## rustlib std library stuff
 "$@" "__GENERATED__/__RUST_STDLIB__/liballoc/collections/btree/map.rs" "alloc::collections::btree::map::BTreeMap"
 
-## TODO: Add webrender's shaders.rs once the test run completes.
+## Check that webrender's build-script generated shaders.rs exists for linux
+# Because this file includes a bunch of hashes and paths, it ends up being
+# platform specific.  We could check all platforms, but historically Windows
+# analyses are sometimes missing, and we intentionally made that condition
+# non-fatal.  Also, this is primarily a test of our normalization logic in
+# `process-tc-artifacts.sh` which involves platforms, but the logic isn't
+# particularly platform specific.
+"$@" "__GENERATED__/__linux64__/__RUST_BUILD_SCRIPT__/webrender/shaders.rs" "webrender::shader_source::OPTIMIZED_SHADERS"
