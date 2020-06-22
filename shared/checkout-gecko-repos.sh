@@ -40,6 +40,7 @@ pushd $GIT_ROOT
 git config remote.central.url || git remote add -t branches/default/tip central hg::https://hg.mozilla.org/mozilla-central
 git config remote.beta.url || git remote add -t branches/default/tip beta hg::https://hg.mozilla.org/releases/mozilla-beta
 git config remote.release.url || git remote add -t branches/default/tip release hg::https://hg.mozilla.org/releases/mozilla-release
+git config remote.esr78.url || git remote add -t branches/default/tip esr78 hg::https://hg.mozilla.org/releases/mozilla-esr78
 git config remote.esr68.url || git remote add -t branches/default/tip esr68 hg::https://hg.mozilla.org/releases/mozilla-esr68
 git config remote.esr60.url || git remote add -t branches/default/tip esr60 hg::https://hg.mozilla.org/releases/mozilla-esr60
 git config remote.esr45.url || git remote add -t branches/default/tip esr45 hg::https://hg.mozilla.org/releases/mozilla-esr45
@@ -47,7 +48,7 @@ git config remote.esr31.url || git remote add -t branches/default/tip esr31 hg::
 git config remote.esr17.url || git remote add -t branches/default/tip esr17 hg::https://hg.mozilla.org/releases/mozilla-esr17
 git config cinnabar.graft false
 git config fetch.prune true
-git fetch --multiple central beta release esr68 esr60 esr45 esr31 esr17
+git fetch --multiple central beta release esr78 esr68 esr60 esr45 esr31 esr17
 
 # If a try push was specified, pull it in non-graft mode so we actually pull those changes.
 if [ "$REVISION_TREE" == "try" ]; then
