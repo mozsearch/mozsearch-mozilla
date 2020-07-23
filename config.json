@@ -106,6 +106,17 @@
       "objdir_path": "$WORKING/ecma262/objdir",
       "codesearch_path": "$WORKING/ecma262/livegrep.idx",
       "codesearch_port": 8089
+    },
+
+    "kaios": {
+      "index_path": "$WORKING/kaios",
+      "files_path": "$WORKING/kaios/git",
+      "git_path": "$WORKING/kaios/git",
+      "git_blame_path": "$WORKING/kaios/blame",
+      "hg_root": "https://hg.mozilla.org/projects/kaios/",
+      "objdir_path": "$WORKING/kaios/objdir",
+      "codesearch_path": "$WORKING/kaios/livegrep.idx",
+      "codesearch_port": 8090
     }
   }
 }
