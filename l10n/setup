@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+date
+
+echo Downloading l10n repo
+pushd $INDEX_ROOT
+if [ -d "git" ]
+then
+    echo "Found pre-existing l10n git folder; skipping re-download."
+else
+    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/l10n.tar
+    tar xf l10n.tar
+    rm l10n.tar
+fi
+popd
+
+date
+
+echo Updating git
+pushd $GIT_ROOT
+# pull latest subrepos. We can't just do a `git submodule update --remote`
+# because the submodules are cinnabar clones, and git doesn't like that. We
+# can't even do `git submodule foreach 'git pull'` so we have to resort to
+# looping manually like cavepeople or something.
+git config fetch.prune true
+for submod in *; do
+    pushd $submod
+    git pull
+    popd
+done
+# The previous step will update the submodules of this top-level synthetic superproject,
+# and now we want to commit those changes, so that the top-level superproject points
+# to the latest version of each submodule.
+git add *
+git commit --allow-empty -am "Submodule update at $(date)" --author "Searchfox Indexer <searchfox-aws@mozilla.com>"
+popd
+
+date

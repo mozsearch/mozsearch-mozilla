@@ -1,0 +1,14 @@
+{
+  "mozsearch_path": "$MOZSEARCH_PATH",
+
+  "trees": {
+    "l10n": {
+      "index_path": "$WORKING/l10n",
+      "files_path": "$WORKING/l10n/git",
+      "git_path": "$WORKING/l10n/git",
+      "objdir_path": "$WORKING/l10n/objdir",
+      "codesearch_path": "$WORKING/l10n/livegrep.idx",
+      "codesearch_port": 8081
+    }
+  }
+}
