@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+date
+
+echo Uploading llvm
+pushd $INDEX_ROOT
+tar cf llvm.tar git
+$AWS_ROOT/upload.py $INDEX_ROOT/llvm.tar searchfox.repositories llvm.tar
+rm llvm.tar
+popd
+
+date
+
+echo Uploading llvm blame
+pushd $INDEX_ROOT
+tar cf llvm-blame.tar blame
+$AWS_ROOT/upload.py $INDEX_ROOT/llvm-blame.tar searchfox.repositories llvm-blame.tar
+rm llvm-blame.tar
+popd
+
+date

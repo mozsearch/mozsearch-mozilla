@@ -9,6 +9,17 @@
       "objdir_path": "$WORKING/l10n/objdir",
       "codesearch_path": "$WORKING/l10n/livegrep.idx",
       "codesearch_port": 8081
+    },
+
+    "llvm": {
+      "index_path": "$WORKING/llvm",
+      "files_path": "$WORKING/llvm/git",
+      "git_path": "$WORKING/llvm/git",
+      "git_blame_path": "$WORKING/llvm/blame",
+      "github_repo": "https://github.com/llvm/llvm-project",
+      "objdir_path": "$WORKING/llvm/objdir",
+      "codesearch_path": "$WORKING/llvm/livegrep.idx",
+      "codesearch_port": 8082
     }
   }
 }
