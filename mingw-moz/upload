@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# Don't upload anything here. The mingw repo will do the uploading
