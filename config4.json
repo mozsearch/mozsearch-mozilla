@@ -20,6 +20,26 @@
       "objdir_path": "$WORKING/llvm/objdir",
       "codesearch_path": "$WORKING/llvm/livegrep.idx",
       "codesearch_port": 8082
+    },
+
+    "mingw": {
+      "index_path": "$WORKING/mingw",
+      "files_path": "$WORKING/mingw/git",
+      "git_path": "$WORKING/mingw/git",
+      "git_blame_path": "$WORKING/mingw/blame",
+      "objdir_path": "$WORKING/mingw/objdir",
+      "codesearch_path": "$WORKING/mingw/livegrep.idx",
+      "codesearch_port": 8083
+    },
+
+    "mingw-moz": {
+      "index_path": "$WORKING/mingw-moz",
+      "files_path": "$WORKING/mingw-moz/git",
+      "git_path": "$WORKING/mingw-moz/git",
+      "git_blame_path": "$WORKING/mingw-moz/blame",
+      "objdir_path": "$WORKING/mingw-moz/objdir",
+      "codesearch_path": "$WORKING/mingw-moz/livegrep.idx",
+      "codesearch_port": 8084
     }
   }
 }
