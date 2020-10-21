@@ -29,7 +29,7 @@ pushd $GIT_ROOT
 git config fetch.prune true
 for submod in *; do
     pushd $submod
-    git pull
+    git pull || echo "WARNING: The ${submod} subrepo inside l10n-central seems to be missing!"
     popd
 done
 # The previous step will update the submodules of this top-level synthetic superproject,
