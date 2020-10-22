@@ -116,7 +116,11 @@ if [ -f "$PLATFORM.mozsearch-rust-stdlib.zip" ]; then
     #
     # All of the lib* directories live under rustlib/src/rust/src in the zip,
     # so we just move that to be the __RUST_STDLIB__ directory.
-    mv -f objdir-$PLATFORM/rustlib/src/rust/src generated-$PLATFORM/__RUST_STDLIB__
+    # In rust-src-1.47 the folder structure changed to have "library" instead
+    # of "src", so we try both here, since this code needs to work with rust
+    # versions before and after 1.47.
+    mv -f objdir-$PLATFORM/rustlib/src/rust/src generated-$PLATFORM/__RUST_STDLIB__ ||
+        mv -f objdir-$PLATFORM/rustlib/src/rust/library generated-$PLATFORM/__RUST_STDLIB__
 fi
 
 date
@@ -128,12 +132,14 @@ date
 # and objdir paths start with __GENERATED__.
 
 # Rust stdlib looks like either "src/libstd/num.rs" on linux or
-# "src\\libstd\\num.rs" on windows.  We normalize to __GENERATED__/__RUST_STDLIB__.
-# We do this normalization first because there's no "src" directory at the root
+# "src\\libstd\\num.rs" on windows, prior to 1.47. 1.47 and up has "library"
+# instead of "src"..  We normalize to __GENERATED__/__RUST_STDLIB__.
+# We do this normalization first because there's no "src"/"library" directory at the root
 # of mozilla-central, so we can safely assume that if we have a relative path
-# that starts with "src/" that it's rust code.  Hopefully.  (If we did it later,
+# that starts with "src/" or "library" that it's rust code.  Hopefully.  (If we did it later,
 # we'd be seeing the results of other absolute path normalizations.)
 NORMALIZE_EXPR='s#"src[/\\]#"__GENERATED__/__RUST_STDLIB__/#gI'
+NORMALIZE_EXPR+=';s#"library[/\\]#"__GENERATED__/__RUST_STDLIB__/#gI'
 # For some reason we see generated paths under checkouts like:
 # /builds/worker/checkouts/gecko/obj-arm-unknown-linux-androideabi/dist/xpcrs/rt/nsIChannel.rs
 # Handle this, and do it before we do the source normalization in the next line.
