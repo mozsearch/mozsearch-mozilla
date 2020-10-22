@@ -25,7 +25,7 @@ date
 "$@" "__GENERATED__/dist/xpcrs/rt/nsIChannel.rs" "xpcom::interfaces::idl::nsIChannel"
 
 ## rustlib std library stuff
-"$@" "__GENERATED__/__RUST_STDLIB__/liballoc/collections/btree/map.rs" "alloc::collections::btree::map::BTreeMap"
+"$@" "__GENERATED__/__RUST_STDLIB__/alloc/src/collections/btree/map.rs" "alloc::collections::btree::map::BTreeMap"
 
 ## Check that webrender's build-script generated shaders.rs exists for linux
 # Because this file includes a bunch of hashes and paths, it ends up being
