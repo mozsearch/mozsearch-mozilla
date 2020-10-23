@@ -40,6 +40,18 @@
       "objdir_path": "$WORKING/mingw-moz/objdir",
       "codesearch_path": "$WORKING/mingw-moz/livegrep.idx",
       "codesearch_port": 8084
+    },
+
+    "rust": {
+      "index_path": "$WORKING/rust",
+      "files_path": "$WORKING/rust/git",
+      "git_path": "$WORKING/rust/git",
+      "walk_submodules": false,
+      "git_blame_path": "$WORKING/rust/blame",
+      "github_repo": "https://github.com/rust-lang/rust",
+      "objdir_path": "$WORKING/rust/objdir",
+      "codesearch_path": "$WORKING/rust/livegrep.idx",
+      "codesearch_port": 8085
     }
   }
 }
