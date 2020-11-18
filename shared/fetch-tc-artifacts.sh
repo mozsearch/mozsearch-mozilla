@@ -54,7 +54,7 @@ echo "${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko
 # attempt to fetch the correct revision but fail over to the "latest" revision
 # if we couldn't get the explicit revision.  And coverage data is optional; we
 # won't error out if we can't fetch any coverage.
-echo "${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/project.relman.code-coverage.production.repo.${REVISION_TREE}.${INDEXED_HG_REV}/artifacts/public/code-coverage-report.json -o code-coverage-report.json || ${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/project.relman.code-coverage.production.repo.${REVISION_TREE}.latest/artifacts/public/code-coverage-report.json -o code-coverage-report.json || true" >> downloads.lst
+echo "${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/project.relman.code-coverage.production.repo.${REVISION_TREE}.${INDEXED_HG_REV}/artifacts/public/code-coverage-report.json -o code-coverage-report.json || true" >> downloads.lst
 for PLATFORM in linux64 macosx64 win64 android-armv7; do
     TC_PREFIX="https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.${REVISION}.firefox.${PLATFORM}-searchfox-debug/artifacts/public/build"
     # First check that the searchfox job exists for the platform and revision we want. Otherwise emit a warning and skip it. This
