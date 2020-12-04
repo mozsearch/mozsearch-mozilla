@@ -119,8 +119,8 @@ if [ -f "$PLATFORM.mozsearch-rust-stdlib.zip" ]; then
     # In rust-src-1.47 the folder structure changed to have "library" instead
     # of "src", so we try both here, since this code needs to work with rust
     # versions before and after 1.47.
-    mv -f objdir-$PLATFORM/rustlib/src/rust/src generated-$PLATFORM/__RUST_STDLIB__ ||
-        mv -f objdir-$PLATFORM/rustlib/src/rust/library generated-$PLATFORM/__RUST_STDLIB__
+    mv -f objdir-$PLATFORM/rustlib/src/rust/library generated-$PLATFORM/__RUST_STDLIB__ ||
+        mv -f objdir-$PLATFORM/rustlib/src/rust/src generated-$PLATFORM/__RUST_STDLIB__
 fi
 
 date
