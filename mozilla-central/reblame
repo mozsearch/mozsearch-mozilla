@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# Build blame for the other branches. For each branch, we create
+# a branch in the blame repo from the previous completed branch, so
+# as to minimize the amount of new work needed. The order of branches
+# in the loop is also selected to reduce unnecessary work; changing the
+# order should not affect correctness but may increase redundant work.
+BRANCHES="beta release esr78 esr68 esr60 esr45 esr31 esr17"
+$CONFIG_REPO/shared/rebuild-blame.sh --git-repo-dir gecko-dev --blame-repo-dir gecko-blame --tarball-base gecko --branches "${BRANCHES}" $*
