@@ -56,8 +56,8 @@
 
     "whatwg-html": {
       "index_path": "$WORKING/whatwg-html",
-      "files_path": "$WORKING/whatwg-html/html",
-      "git_path": "$WORKING/whatwg-html/html",
+      "files_path": "$WORKING/whatwg-html/git",
+      "git_path": "$WORKING/whatwg-html/git",
       "git_blame_path": "$WORKING/whatwg-html/blame",
       "github_repo": "https://github.com/whatwg/html",
       "objdir_path": "$WORKING/whatwg-html/objdir",
@@ -67,8 +67,8 @@
 
     "mozilla-build": {
       "index_path": "$WORKING/mozilla-build",
-      "files_path": "$WORKING/mozilla-build/mozilla-build",
-      "git_path": "$WORKING/mozilla-build/mozilla-build",
+      "files_path": "$WORKING/mozilla-build/git",
+      "git_path": "$WORKING/mozilla-build/git",
       "git_blame_path": "$WORKING/mozilla-build/blame",
       "hg_root": "https://hg.mozilla.org/mozilla-build/",
       "objdir_path": "$WORKING/mozilla-build/dist",
@@ -78,9 +78,9 @@
 
     "glean": {
       "index_path": "$WORKING/glean",
-      "files_path": "$WORKING/glean/glean",
-      "git_path": "$WORKING/glean/glean",
-      "git_blame_path": "$WORKING/glean/glean-blame",
+      "files_path": "$WORKING/glean/git",
+      "git_path": "$WORKING/glean/git",
+      "git_blame_path": "$WORKING/glean/blame",
       "github_repo": "https://github.com/mozilla/glean",
       "objdir_path": "$WORKING/glean/objdir",
       "codesearch_path": "$WORKING/glean/livegrep.idx",

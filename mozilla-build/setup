@@ -8,7 +8,7 @@ date
 
 echo Downloading mozilla-build repo
 pushd $INDEX_ROOT
-if [ -d "mozilla-build" ]
+if [ -d "git" ]
 then
     echo "Found pre-existing folder; skipping re-download."
 else
