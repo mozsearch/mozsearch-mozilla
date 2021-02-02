@@ -8,9 +8,9 @@ date
 
 echo Uploading WHATWG HTML
 pushd $INDEX_ROOT
-tar cf whatwg-html-git.tar html
-$AWS_ROOT/upload.py $INDEX_ROOT/whatwg-html-git.tar searchfox.repositories whatwg-html-git.tar
-rm whatwg-html-git.tar
+tar cf whatwg-html.tar git
+$AWS_ROOT/upload.py $INDEX_ROOT/whatwg-html.tar searchfox.repositories whatwg-html.tar
+rm whatwg-html.tar
 popd
 
 date

@@ -8,13 +8,13 @@ date
 
 echo Downloading WHATWG HTML repo
 pushd $INDEX_ROOT
-if [ -d "html" ]
+if [ -d "git" ]
 then
-    echo "Found pre-existing html folder; skipping re-download."
+    echo "Found pre-existing git folder; skipping re-download."
 else
-    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/whatwg-html-git.tar
-    tar xf whatwg-html-git.tar
-    rm whatwg-html-git.tar
+    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/whatwg-html.tar
+    tar xf whatwg-html.tar
+    rm whatwg-html.tar
 fi
 popd
 
