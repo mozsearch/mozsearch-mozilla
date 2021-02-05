@@ -42,7 +42,7 @@ if [ -d "mozilla" ]
 then
     echo "Found pre-existing mozilla subfolder; skipping re-download."
 else
-    $CONFIG_REPO/shared/fetch-gecko-tarball.sh gecko-dev $PWD
+    $CONFIG_REPO/shared/fetch-gecko-tarball.sh gecko $PWD
     mv gecko-dev mozilla
 fi
 

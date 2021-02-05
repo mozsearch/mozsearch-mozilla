@@ -8,21 +8,21 @@ date
 
 echo Uploading Gecko
 pushd $INDEX_ROOT
-tar cf gecko-dev.tar gecko-dev
+tar cf gecko.tar gecko-dev
 # If the tarball gets bigger than 10GB, re-compress the repo
-TARBALL_SIZE=$(stat -c '%s' gecko-dev.tar)
+TARBALL_SIZE=$(stat -c '%s' gecko.tar)
 TEN_GIGS=$((10 * 1000 * 1000 * 1000))
 if [ $TARBALL_SIZE -gt $TEN_GIGS ]; then
     git --git-dir=gecko-dev/.git gc
-    tar cf gecko-dev.tar gecko-dev
+    tar cf gecko.tar gecko-dev
     # If it's still bigger than 10GB, spit out a warning
-    TARBALL_SIZE=$(stat -c '%s' gecko-dev.tar)
+    TARBALL_SIZE=$(stat -c '%s' gecko.tar)
     if [ $TARBALL_SIZE -gt $TEN_GIGS ]; then
-        echo "WARNING: gecko-dev.tar is bigger than 10GB even after git gc. Try more aggressive gc, or increase size limit"
+        echo "WARNING: gecko.tar is bigger than 10GB even after git gc. Try more aggressive gc, or increase size limit"
     fi
 fi
-$AWS_ROOT/upload.py $INDEX_ROOT/gecko-dev.tar searchfox.repositories gecko-dev.tar
-rm gecko-dev.tar
+$AWS_ROOT/upload.py $INDEX_ROOT/gecko.tar searchfox.repositories gecko.tar
+rm gecko.tar
 popd
 
 date

@@ -16,7 +16,7 @@ INDEXED_HG_REV=$3
 
 echo Downloading Gecko
 pushd $INDEX_ROOT
-$CONFIG_REPO/shared/fetch-gecko-tarball.sh gecko-dev $PWD
+$CONFIG_REPO/shared/fetch-gecko-tarball.sh gecko $PWD
 popd
 
 date
