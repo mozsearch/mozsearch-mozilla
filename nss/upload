@@ -8,9 +8,9 @@ date
 
 echo Uploading NSPR
 pushd $INDEX_ROOT
-tar cf nss-git.tar git
-$AWS_ROOT/upload.py $INDEX_ROOT/nss-git.tar searchfox.repositories nss-git.tar
-rm nss-git.tar
+tar cf nss.tar git
+$AWS_ROOT/upload.py $INDEX_ROOT/nss.tar searchfox.repositories nss.tar
+rm nss.tar
 popd
 
 date

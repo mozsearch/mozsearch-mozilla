@@ -32,9 +32,9 @@ if [ -d "git" ]
 then
     echo "Found pre-existing git folder; skipping re-download."
 else
-    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/nss-git.tar
-    tar xf nss-git.tar
-    rm nss-git.tar
+    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/nss.tar
+    tar xf nss.tar
+    rm nss.tar
 fi
 popd
 
