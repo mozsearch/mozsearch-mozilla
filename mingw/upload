@@ -8,6 +8,7 @@ date
 
 echo Uploading mingw
 pushd $INDEX_ROOT
+$CONFIG_REPO/shared/git-maintenance.sh ./git
 tar cf mingw.tar git
 $AWS_ROOT/upload.py $INDEX_ROOT/mingw.tar searchfox.repositories mingw.tar
 rm mingw.tar
@@ -17,6 +18,7 @@ date
 
 echo Uploading mingw blame
 pushd $INDEX_ROOT
+$CONFIG_REPO/shared/git-maintenance.sh ./blame
 tar cf mingw-blame.tar blame
 $AWS_ROOT/upload.py $INDEX_ROOT/mingw-blame.tar searchfox.repositories mingw-blame.tar
 rm mingw-blame.tar

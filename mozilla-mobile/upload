@@ -8,6 +8,7 @@ date
 
 echo Uploading mozilla-mobile
 pushd $INDEX_ROOT
+$CONFIG_REPO/shared/git-maintenance.sh ./mozilla-mobile
 tar cf mozilla-mobile.tar mozilla-mobile
 $AWS_ROOT/upload.py $INDEX_ROOT/mozilla-mobile.tar searchfox.repositories mozilla-mobile.tar
 rm mozilla-mobile.tar

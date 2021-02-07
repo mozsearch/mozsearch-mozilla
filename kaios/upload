@@ -8,19 +8,8 @@ date
 
 echo Uploading kaios
 pushd $INDEX_ROOT
+$CONFIG_REPO/shared/git-maintenance.sh ./git
 tar cf kaios.tar git
-# If the tarball gets bigger than 10GB, re-compress the repo
-TARBALL_SIZE=$(stat -c '%s' kaios.tar)
-TEN_GIGS=$((10 * 1000 * 1000 * 1000))
-if [ $TARBALL_SIZE -gt $TEN_GIGS ]; then
-    git --git-dir=git/.git gc
-    tar cf kaios.tar git
-    # If it's still bigger than 10GB, spit out a warning
-    TARBALL_SIZE=$(stat -c '%s' kaios.tar)
-    if [ $TARBALL_SIZE -gt $TEN_GIGS ]; then
-        echo "WARNING: kaios.tar is bigger than 10GB even after git gc. Try more aggressive gc, or increase size limit"
-    fi
-fi
 $AWS_ROOT/upload.py $INDEX_ROOT/kaios.tar searchfox.repositories kaios.tar
 rm kaios.tar
 popd
@@ -29,19 +18,8 @@ date
 
 echo Uploading kaios blame
 pushd $INDEX_ROOT
+$CONFIG_REPO/shared/git-maintenance.sh ./blame
 tar cf kaios-blame.tar blame
-# If the tarball gets bigger than 5GB, re-compress the repo
-TARBALL_SIZE=$(stat -c '%s' kaios-blame.tar)
-FIVE_GIGS=$((5 * 1000 * 1000 * 1000))
-if [ $TARBALL_SIZE -gt $FIVE_GIGS ]; then
-    git --git-dir=blame/.git gc
-    tar cf kaios-blame.tar blame
-    # If it's still bigger than 5GB, spit out a warning
-    TARBALL_SIZE=$(stat -c '%s' kaios-blame.tar)
-    if [ $TARBALL_SIZE -gt $FIVE_GIGS ]; then
-        echo "WARNING: kaios-blame.tar is bigger than 5GB even after git gc. Try more aggressive gc, or increase size limit"
-    fi
-fi
 $AWS_ROOT/upload.py $INDEX_ROOT/kaios-blame.tar searchfox.repositories kaios-blame.tar
 rm kaios-blame.tar
 popd
