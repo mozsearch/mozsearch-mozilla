@@ -8,6 +8,7 @@ date
 
 echo Uploading mozilla-build
 pushd $INDEX_ROOT
+$CONFIG_REPO/shared/git-maintenance.sh ./git
 tar cf mozilla-build.tar git
 $AWS_ROOT/upload.py $INDEX_ROOT/mozilla-build.tar searchfox.repositories mozilla-build.tar
 rm mozilla-build.tar
@@ -17,6 +18,7 @@ date
 
 echo Uploading mozilla-build blame
 pushd $INDEX_ROOT
+$CONFIG_REPO/shared/git-maintenance.sh ./blame
 tar cf mozilla-build-blame.tar blame
 $AWS_ROOT/upload.py $INDEX_ROOT/mozilla-build-blame.tar searchfox.repositories mozilla-build-blame.tar
 rm mozilla-build-blame.tar

@@ -8,6 +8,7 @@ date
 
 echo Uploading l10n
 pushd $INDEX_ROOT
+$CONFIG_REPO/shared/git-maintenance.sh ./git
 tar cf l10n.tar git
 $AWS_ROOT/upload.py $INDEX_ROOT/l10n.tar searchfox.repositories l10n.tar
 rm l10n.tar
