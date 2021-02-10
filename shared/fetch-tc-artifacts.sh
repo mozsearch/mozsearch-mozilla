@@ -46,14 +46,20 @@ fi
 # Download the bugzilla components file and the artifacts from each platform that
 # we're indexing. But do them in parallel by emitting all the curl commands into
 # a file and then feeding it to GNU parallel.
-echo "${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.$REVISION.source.source-bugzilla-info/artifacts/public/components-normalized.json > bugzilla-components.json" > downloads.lst
+
+# The components job periodically fails when someone adds a new file to the tree
+# without ensuring there's a moz.build file that covers it, so we fail over to
+# using the "latest" version of the components file in that case when we don't
+# have the data for the exact revision.  This means some files may have stale or
+# missing "File a bug..." UI in the navigation panel, but this is acceptable.
+echo "${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.$REVISION.source.source-bugzilla-info/artifacts/public/components-normalized.json -o bugzilla-components.json \
+   || ${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.latest.source.source-bugzilla-info/artifacts/public/components-normalized.json -o bugzilla-components.json" > downloads.lst
 echo "${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.$REVISION.source.test-info-all/artifacts/public/test-info-all-tests.json -o test-info-all-tests.json || true" >> downloads.lst
 echo "${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.$REVISION.source.source-wpt-metadata-summary/artifacts/public/summary.json -o wpt-metadata-summary.json || true" >> downloads.lst
-# Unfortunately, at the current time, we can't rely on the specific coverage data
-# for the given revision to already have been built (see bug 1566874), so we
-# attempt to fetch the correct revision but fail over to the "latest" revision
-# if we couldn't get the explicit revision.  And coverage data is optional; we
-# won't error out if we can't fetch any coverage.
+# Coverage data currently requires that we use the exact version or not use any
+# coverage data because mozilla-central's merges will usually involve a ton of
+# patches, making stale data potentially very misleading.  See Bug 1677903 for
+# more discussion.
 echo "${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/project.relman.code-coverage.production.repo.${REVISION_TREE}.${INDEXED_HG_REV}/artifacts/public/code-coverage-report.json -o code-coverage-report.json || true" >> downloads.lst
 for PLATFORM in linux64 macosx64 win64 android-armv7; do
     TC_PREFIX="https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.${REVISION}.firefox.${PLATFORM}-searchfox-debug/artifacts/public/build"
