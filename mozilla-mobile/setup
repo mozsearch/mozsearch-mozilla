@@ -8,7 +8,7 @@ date
 
 echo Downloading mozilla-mobile repo
 pushd $INDEX_ROOT
-if [ -d "mozilla-mobile" ]
+if [ -d "git" ]
 then
     echo "Found pre-existing mozilla-mobile folder; skipping re-download."
 else
