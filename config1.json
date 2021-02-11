@@ -34,9 +34,9 @@
 
     "comm-central": {
       "index_path": "$WORKING/comm-central",
-      "files_path": "$WORKING/comm-central/comm-central",
-      "git_path": "$WORKING/comm-central/comm-central",
-      "git_blame_path": "$WORKING/comm-central/comm-central-blame",
+      "files_path": "$WORKING/comm-central/git",
+      "git_path": "$WORKING/comm-central/git",
+      "git_blame_path": "$WORKING/comm-central/blame",
       "github_repo": "https://github.com/mozilla/releases-comm-central",
       "hg_root": "https://hg.mozilla.org/comm-central",
       "objdir_path": "$WORKING/comm-central/objdir",
