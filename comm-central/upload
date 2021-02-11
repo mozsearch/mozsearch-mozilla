@@ -8,8 +8,8 @@ date
 
 echo Uploading comm-central
 pushd $INDEX_ROOT
-$CONFIG_REPO/shared/git-maintenance.sh ./comm-central
-tar --exclude='comm-central/mozilla' -cf comm-central.tar comm-central
+$CONFIG_REPO/shared/git-maintenance.sh ./git
+tar --exclude='comm-central/mozilla' -cf comm-central.tar git
 $AWS_ROOT/upload.py $INDEX_ROOT/comm-central.tar searchfox.repositories comm-central.tar
 rm comm-central.tar
 popd
@@ -18,8 +18,8 @@ date
 
 echo Uploading comm-central blame
 pushd $INDEX_ROOT
-$CONFIG_REPO/shared/git-maintenance.sh ./comm-central-blame
-tar cf comm-central-blame.tar comm-central-blame
+$CONFIG_REPO/shared/git-maintenance.sh ./blame
+tar cf comm-central-blame.tar blame
 $AWS_ROOT/upload.py $INDEX_ROOT/comm-central-blame.tar searchfox.repositories comm-central-blame.tar
 rm comm-central-blame.tar
 popd

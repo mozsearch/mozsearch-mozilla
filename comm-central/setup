@@ -8,9 +8,9 @@ date
 
 echo Downloading comm-central...
 pushd $INDEX_ROOT
-if [ -d "comm-central" ]
+if [ -d "git" ]
 then
-    echo "Found pre-existing comm-central folder; skipping re-download."
+    echo "Found pre-existing comm-central git folder; skipping re-download."
 else
     wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/comm-central.tar
     tar xf comm-central.tar
@@ -22,9 +22,9 @@ date
 
 echo Downloading comm-central blame...
 pushd $INDEX_ROOT
-if [ -d "comm-central-blame" ]
+if [ -d "blame" ]
 then
-    echo "Found pre-existing comm-central-blame folder; skipping re-download."
+    echo "Found pre-existing blame folder; skipping re-download."
 else
     wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/comm-central-blame.tar
     tar xf comm-central-blame.tar
@@ -37,7 +37,7 @@ date
 # We also need to put a copy of mozilla-central into the mozilla/ folder
 
 echo "Downloading mozilla..."
-pushd $INDEX_ROOT/comm-central
+pushd $INDEX_ROOT/git
 if [ -d "mozilla" ]
 then
     echo "Found pre-existing mozilla subfolder; skipping re-download."
