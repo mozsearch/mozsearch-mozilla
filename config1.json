@@ -11,7 +11,6 @@
       "git_blame_path": "$WORKING/nss/blame",
       "github_repo": "https://github.com/nss-dev/nss",
       "hg_root": "https://hg.mozilla.org/projects/nss",
-      "dxr_root": "https://dxr.mozilla.org/nss",
       "objdir_path": "$WORKING/nss/dist",
       "codesearch_path": "$WORKING/nss/livegrep.idx",
       "codesearch_port": 8081
@@ -24,7 +23,6 @@
       "git_blame_path": "$WORKING/mozilla-central/gecko-blame",
       "github_repo": "https://github.com/mozilla/gecko-dev",
       "hg_root": "https://hg.mozilla.org/mozilla-central",
-      "dxr_root": "https://dxr.mozilla.org/mozilla-central",
       "ccov_root": "https://coverage.moz.tools/",
       "wpt_root": "testing/web-platform",
       "objdir_path": "$WORKING/mozilla-central/objdir",

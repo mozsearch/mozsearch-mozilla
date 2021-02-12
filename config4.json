@@ -93,7 +93,6 @@
       "git_path": "$WORKING/version-control-tools/git",
       "git_blame_path": "$WORKING/version-control-tools/blame",
       "hg_root": "https://hg.mozilla.org/hgcustom/version-control-tools",
-      "dxr_root": "https://dxr.mozilla.org/hgcustom_version-control-tools",
       "objdir_path": "$WORKING/version-control-tools/objdir",
       "codesearch_path": "$WORKING/version-control-tools/livegrep.idx",
       "codesearch_port": 8089

@@ -9,7 +9,6 @@
       "git_blame_path": "$WORKING/mozilla-beta/gecko-blame",
       "github_repo": "https://github.com/mozilla/gecko-dev",
       "hg_root": "https://hg.mozilla.org/releases/mozilla-beta",
-      "dxr_root": "https://dxr.mozilla.org/mozilla-beta",
       "objdir_path": "$WORKING/mozilla-beta/objdir",
       "codesearch_path": "$WORKING/mozilla-beta/livegrep.idx",
       "codesearch_port": 8081
@@ -22,7 +21,6 @@
       "git_blame_path": "$WORKING/mozilla-release/gecko-blame",
       "github_repo": "https://github.com/mozilla/gecko-dev",
       "hg_root": "https://hg.mozilla.org/releases/mozilla-release",
-      "dxr_root": "https://dxr.mozilla.org/mozilla-release",
       "objdir_path": "$WORKING/mozilla-release/objdir",
       "codesearch_path": "$WORKING/mozilla-release/livegrep.idx",
       "codesearch_port": 8082
