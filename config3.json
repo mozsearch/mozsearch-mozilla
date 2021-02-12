@@ -9,7 +9,6 @@
       "git_blame_path": "$WORKING/mozilla-esr60/gecko-blame",
       "github_repo": "https://github.com/mozilla/gecko-dev",
       "hg_root": "https://hg.mozilla.org/releases/mozilla-esr60",
-      "dxr_root": "https://dxr.mozilla.org/mozilla-esr60",
       "objdir_path": "$WORKING/mozilla-esr60/objdir",
       "codesearch_path": "$WORKING/mozilla-esr60/livegrep.idx",
       "codesearch_port": 8081
@@ -22,7 +21,6 @@
       "git_blame_path": "$WORKING/mozilla-esr45/gecko-blame",
       "github_repo": "https://github.com/mozilla/gecko-dev",
       "hg_root": "https://hg.mozilla.org/releases/mozilla-esr45",
-      "dxr_root": "https://dxr.mozilla.org/mozilla-esr45",
       "objdir_path": "$WORKING/mozilla-esr45/objdir",
       "codesearch_path": "$WORKING/mozilla-esr45/livegrep.idx",
       "codesearch_port": 8082
@@ -35,7 +33,6 @@
       "git_blame_path": "$WORKING/mozilla-esr31/gecko-blame",
       "github_repo": "https://github.com/mozilla/gecko-dev",
       "hg_root": "https://hg.mozilla.org/releases/mozilla-esr31",
-      "dxr_root": "https://dxr.mozilla.org/mozilla-esr31",
       "objdir_path": "$WORKING/mozilla-esr31/objdir",
       "codesearch_path": "$WORKING/mozilla-esr31/livegrep.idx",
       "codesearch_port": 8083
@@ -48,7 +45,6 @@
       "git_blame_path": "$WORKING/mozilla-esr17/gecko-blame",
       "github_repo": "https://github.com/mozilla/gecko-dev",
       "hg_root": "https://hg.mozilla.org/releases/mozilla-esr17",
-      "dxr_root": "https://dxr.mozilla.org/mozilla-esr17",
       "objdir_path": "$WORKING/mozilla-esr17/objdir",
       "codesearch_path": "$WORKING/mozilla-esr17/livegrep.idx",
       "codesearch_port": 8084
