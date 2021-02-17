@@ -69,8 +69,8 @@ that lives in the `shared/` folder in this repository.
    - There are also builds like "periodic-update" for older releases that run
      Mondays and Thursdays at 10:00 UTC.
    - There's also a "searchfox-index" job that's also scheduled to start at
-     10:00 UTC, which I guess puts it on the same underlying task for any jobs
-     started at that time for the projects of interest for searchfox.  The entry
+     10:00 UTC and 22:00 UTC for mozilla-central and 10:00 UTC for mozilla-beta,
+     mozilla-release, and mozilla-esr78.  The entry
      defines a "searchfox_index" "target-tasks-method" which maps to the
      `@_target_task('searchfox_index')` decorated method in
      https://searchfox.org/mozilla-central/source/taskcluster/taskgraph/target_tasks.py
@@ -78,17 +78,15 @@ that lives in the `shared/` folder in this repository.
      searchfox needs.
    - Those jobs are defined in
      https://searchfox.org/mozilla-central/source/taskcluster/ci/searchfox/kind.yml
-2. AWS Lambda cron jobs trigger searchfox indexing jobs for `config.json` at
-   13:30 UTC (which is 9:30am Eastern Time) and `mozilla-releases.json` at
-   14:00 UTC (which is 10am Eastern Time).  These times are a function of when
-   the windows searchfox job completes, with `mozilla-releases.json` being
-   additionally delayed so that it can consume the byproducts of the
-   `config.json` indexer run that are uploaded back to S3 by the
-   `mozilla-central/upload` script.  If shifting the `config.json` indexer's
-   start time, make sure that the upload reliably completes before any other
-   indexing jobs are kicked off.
-   - Additional jobs could be added for the 22:00 UTC nightly build if we
-     wanted.
+2. AWS Lambda cron jobs trigger searchfox indexing jobs using "EventBridge", currently:
+   - `config1.json` which hosts mozilla-central:
+     - 16:00 UTC for the 10:00 UTC nightly, allowing time for coverage jobs to run
+     - 04:00 UTC for the 22:00 UTC nightly, allowing time for coverage jobs to run
+   - `config2.json`:
+     - 13:00 UTC for the 10:00 UTC triggered indexing jobs, allowing time for the taskcluster jobs to complete
+   - `config3.json`: This is only ever run manually because it contains very rarely updated repositories.
+   - `config4.json`:
+     - 12:00 UTC for the 10:00 UTC triggered indexing jobs, allowing time for the taskcluster jobs to complete
 3. The indexer jobs run, for the specific example of mozilla-central:
    - The indexer invokes https://github.com/mozsearch/mozsearch-mozilla/blob/master/mozilla-central/setup
    - That script invokes https://github.com/mozsearch/mozsearch-mozilla/blob/master/shared/resolve-gecko-revs.sh which fetches
