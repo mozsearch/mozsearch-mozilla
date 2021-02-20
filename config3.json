@@ -4,8 +4,8 @@
   "trees": {
     "mozilla-esr60": {
       "index_path": "$WORKING/mozilla-esr60",
-      "files_path": "$WORKING/mozilla-esr60/gecko-dev",
-      "git_path": "$WORKING/mozilla-esr60/gecko-dev",
+      "files_path": "$WORKING/mozilla-esr60/git",
+      "git_path": "$WORKING/mozilla-esr60/git",
       "git_blame_path": "$WORKING/mozilla-esr60/gecko-blame",
       "github_repo": "https://github.com/mozilla/gecko-dev",
       "hg_root": "https://hg.mozilla.org/releases/mozilla-esr60",
@@ -16,8 +16,8 @@
 
     "mozilla-esr45": {
       "index_path": "$WORKING/mozilla-esr45",
-      "files_path": "$WORKING/mozilla-esr45/gecko-dev",
-      "git_path": "$WORKING/mozilla-esr45/gecko-dev",
+      "files_path": "$WORKING/mozilla-esr45/git",
+      "git_path": "$WORKING/mozilla-esr45/git",
       "git_blame_path": "$WORKING/mozilla-esr45/gecko-blame",
       "github_repo": "https://github.com/mozilla/gecko-dev",
       "hg_root": "https://hg.mozilla.org/releases/mozilla-esr45",
@@ -28,8 +28,8 @@
 
     "mozilla-esr31": {
       "index_path": "$WORKING/mozilla-esr31",
-      "files_path": "$WORKING/mozilla-esr31/gecko-dev",
-      "git_path": "$WORKING/mozilla-esr31/gecko-dev",
+      "files_path": "$WORKING/mozilla-esr31/git",
+      "git_path": "$WORKING/mozilla-esr31/git",
       "git_blame_path": "$WORKING/mozilla-esr31/gecko-blame",
       "github_repo": "https://github.com/mozilla/gecko-dev",
       "hg_root": "https://hg.mozilla.org/releases/mozilla-esr31",
@@ -40,8 +40,8 @@
 
     "mozilla-esr17": {
       "index_path": "$WORKING/mozilla-esr17",
-      "files_path": "$WORKING/mozilla-esr17/gecko-dev",
-      "git_path": "$WORKING/mozilla-esr17/gecko-dev",
+      "files_path": "$WORKING/mozilla-esr17/git",
+      "git_path": "$WORKING/mozilla-esr17/git",
       "git_blame_path": "$WORKING/mozilla-esr17/gecko-blame",
       "github_repo": "https://github.com/mozilla/gecko-dev",
       "hg_root": "https://hg.mozilla.org/releases/mozilla-esr17",

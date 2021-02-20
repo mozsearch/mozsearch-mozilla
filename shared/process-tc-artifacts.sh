@@ -258,7 +258,7 @@ while read GENERATED_ANALYSIS; do
         # is the path of the source tree relative to the gecko-dev root (because of
         # the normalization step after downloading the file).
         REAL_SOURCE=$(awk -F '\x1f' -v KEY="$GENERATED_ANALYSIS" 'KEY == "./" $2 { print $3; exit }' ../../../../$PLATFORM.distinclude.map)
-        if [ -f "$INDEX_ROOT/gecko-dev/$REAL_SOURCE" ]; then
+        if [ -f "$GIT_ROOT/$REAL_SOURCE" ]; then
             # Found the real source file this analysis data is for, so let's squash it over
             ANALYSIS_FOR_SOURCE="$INDEX_ROOT/analysis-$PLATFORM/$REAL_SOURCE"
             echo "Squashing analysis for __GENERATED__/dist/include/$GENERATED_ANALYSIS into analysis-$PLATFORM/$REAL_SOURCE"

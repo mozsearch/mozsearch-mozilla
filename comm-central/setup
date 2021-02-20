@@ -43,7 +43,7 @@ then
     echo "Found pre-existing mozilla subfolder; skipping re-download."
 else
     $CONFIG_REPO/shared/fetch-gecko-tarball.sh gecko $PWD
-    mv gecko-dev mozilla
+    mv git mozilla
 fi
 
 date

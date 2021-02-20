@@ -8,8 +8,8 @@ date
 
 echo Uploading Gecko
 pushd $INDEX_ROOT
-$CONFIG_REPO/shared/git-maintenance.sh ./gecko-dev
-tar cf gecko.tar gecko-dev
+$CONFIG_REPO/shared/git-maintenance.sh ./git
+tar cf gecko.tar git
 $AWS_ROOT/upload.py $INDEX_ROOT/gecko.tar searchfox.repositories gecko.tar
 rm gecko.tar
 popd
