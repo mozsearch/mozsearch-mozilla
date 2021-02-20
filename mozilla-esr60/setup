@@ -5,7 +5,7 @@ set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
 # See ../mozilla-central/setup for documentation
-# The mozilla-central repo also uploads an updated gecko-dev which
+# The mozilla-central repo also uploads an updated gecko.tar which
 # includes esr60 commits, so we don't need our own upload script.
 
 date

@@ -22,13 +22,12 @@ TARBALL="$1"
 DESTDIR="$2"
 
 # This is a bit of a hack, but there are only two allowed values for
-# TARBALL so it's not terrible. And anyway (almost) no other repo
+# TARBALL so it's not terrible. And anyway no other repo
 # respects this convention of having the top-level folder inside the
-# tarball match the tarball name, since most repos use "git" and "blame"
-# folders inside their tarballs, and someday the gecko tarballs will
-# as well.
+# tarball match the tarball name, since all repos use "git" and "blame"
+# folders inside their tarballs.
 if [[ "$TARBALL" == "gecko" ]]; then
-    TARBALL_FOLDER="gecko-dev"
+    TARBALL_FOLDER="git"
 elif [[ "$TARBALL" == "gecko-blame" ]]; then
     TARBALL_FOLDER="gecko-blame"
 fi
