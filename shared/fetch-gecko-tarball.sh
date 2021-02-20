@@ -29,7 +29,7 @@ DESTDIR="$2"
 if [[ "$TARBALL" == "gecko" ]]; then
     TARBALL_FOLDER="git"
 elif [[ "$TARBALL" == "gecko-blame" ]]; then
-    TARBALL_FOLDER="gecko-blame"
+    TARBALL_FOLDER="blame"
 fi
 
 if [ -d "${DESTDIR}/${TARBALL_FOLDER}" ]; then
