@@ -20,7 +20,7 @@
       "index_path": "$WORKING/mozilla-central",
       "files_path": "$WORKING/mozilla-central/git",
       "git_path": "$WORKING/mozilla-central/git",
-      "git_blame_path": "$WORKING/mozilla-central/gecko-blame",
+      "git_blame_path": "$WORKING/mozilla-central/blame",
       "github_repo": "https://github.com/mozilla/gecko-dev",
       "hg_root": "https://hg.mozilla.org/mozilla-central",
       "ccov_root": "https://coverage.moz.tools/",

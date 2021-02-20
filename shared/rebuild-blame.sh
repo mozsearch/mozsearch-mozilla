@@ -124,7 +124,7 @@ rm -rf "${GIT_REPO_DIR}" "${BLAME_REPO_DIR}"
 
 if [[ "$UPLOAD" == "yes" ]]; then
     if [[ "$UPLOAD_INPLACE" == "yes" ]]; then
-        # Copy the existing gecko-blame tarball into the backups folder
+        # Copy the existing blame tarball into the backups folder
         aws s3 cp "s3://searchfox.repositories/${TARBALL_BASE}-blame.tar" "s3://searchfox.repositories/backups/${TARBALL_BASE}-blame.tar" --acl public-read || true
         aws s3 cp "./${TARBALL_BASE}-blame.tar" "s3://searchfox.repositories/${TARBALL_BASE}-blame.tar" --acl public-read
     else

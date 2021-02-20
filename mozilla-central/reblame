@@ -10,4 +10,4 @@ set -o pipefail # Check all commands in a pipeline
 # in the loop is also selected to reduce unnecessary work; changing the
 # order should not affect correctness but may increase redundant work.
 BRANCHES="beta release esr78 esr68 esr60 esr45 esr31 esr17"
-$CONFIG_REPO/shared/rebuild-blame.sh --blame-repo-dir gecko-blame --tarball-base gecko --branches "${BRANCHES}" $*
+$CONFIG_REPO/shared/rebuild-blame.sh --tarball-base gecko --branches "${BRANCHES}" $*

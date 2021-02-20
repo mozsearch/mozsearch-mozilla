@@ -18,8 +18,8 @@ date
 
 echo Uploading Gecko blame
 pushd $INDEX_ROOT
-$CONFIG_REPO/shared/git-maintenance.sh ./gecko-blame
-tar cf gecko-blame.tar gecko-blame
+$CONFIG_REPO/shared/git-maintenance.sh ./blame
+tar cf gecko-blame.tar blame
 $AWS_ROOT/upload.py $INDEX_ROOT/gecko-blame.tar searchfox.repositories gecko-blame.tar
 rm gecko-blame.tar
 popd
