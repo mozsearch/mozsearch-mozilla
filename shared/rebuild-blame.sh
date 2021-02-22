@@ -88,7 +88,7 @@ if [[ -z "$TARBALL_BASE" ]]; then
     exit 1
 fi
 
-curl -SfL "https://s3-us-west-2.amazonaws.com/searchfox.repositories/${TARBALL_BASE}.tar" -o "${TARBALL_BASE}.tar"
+curl -sSfL "https://s3-us-west-2.amazonaws.com/searchfox.repositories/${TARBALL_BASE}.tar" -o "${TARBALL_BASE}.tar"
 tar xf "${TARBALL_BASE}.tar"
 
 # Init a new blame repo
@@ -116,7 +116,7 @@ for BRANCH in $BRANCHES; do
 done
 
 pushd "${BLAME_REPO_DIR}"
-git gc
+git gc --aggressive
 popd
 
 tar cf "${TARBALL_BASE}-blame.tar" "${BLAME_REPO_DIR}"
