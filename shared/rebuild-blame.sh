@@ -116,7 +116,7 @@ for BRANCH in $BRANCHES; do
 done
 
 pushd "${BLAME_REPO_DIR}"
-git gc --aggressive
+git gc
 popd
 
 tar cf "${TARBALL_BASE}-blame.tar" "${BLAME_REPO_DIR}"
