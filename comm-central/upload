@@ -9,7 +9,7 @@ date
 echo Uploading comm-central
 pushd $INDEX_ROOT
 $CONFIG_REPO/shared/git-maintenance.sh ./git
-tar --exclude='comm-central/mozilla' -cf comm-central.tar git
+tar --exclude='git/mozilla' -cf comm-central.tar git
 $AWS_ROOT/upload.py $INDEX_ROOT/comm-central.tar searchfox.repositories comm-central.tar
 rm comm-central.tar
 popd
