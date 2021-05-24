@@ -34,7 +34,7 @@ date
 # because it's best to have only one indexer instance responsible for updating and
 # pushing the tarball to S3, to avoid accidental clobbers. It's not a great situation
 # architecturally, but it's better for performance.
-for BRANCH in beta release esr78 esr68 esr60 esr45 esr31 esr17; do
+for BRANCH in pine beta release esr78 esr68 esr60 esr45 esr31 esr17; do
     echo "Updating gecko-dev branch $BRANCH to latest from cinnabar upstream..."
     pushd $GIT_ROOT
     git branch -f $BRANCH $BRANCH/branches/default/tip

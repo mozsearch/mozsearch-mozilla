@@ -118,6 +118,17 @@
       "objdir_path": "$WORKING/kaios/objdir",
       "codesearch_path": "$WORKING/kaios/livegrep.idx",
       "codesearch_port": 8091
+    },
+
+    "mozilla-pine": {
+      "index_path": "$WORKING/mozilla-pine",
+      "files_path": "$WORKING/mozilla-pine/git",
+      "git_path": "$WORKING/mozilla-pine/git",
+      "git_blame_path": "$WORKING/mozilla-pine/blame",
+      "hg_root": "https://hg.mozilla.org/projects/pine",
+      "objdir_path": "$WORKING/mozilla-pine/objdir",
+      "codesearch_path": "$WORKING/mozilla-pine/livegrep.idx",
+      "codesearch_port": 8092
     }
   }
 }

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# For now we don't do any C++ analysis, but we may end up doing so.
