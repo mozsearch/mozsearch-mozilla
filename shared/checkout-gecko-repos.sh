@@ -38,6 +38,7 @@ pushd $GIT_ROOT
 # If we need to fetch project branches in the future, we can fetch those also with cinnabar here.
 # Note that this repo may still have a 'projects' and a 'cinnabar' remote left over that we don't use any more.
 git config remote.central.url || git remote add -t branches/default/tip central hg::https://hg.mozilla.org/mozilla-central
+git config remote.pine.url || git remote add -t branches/default/tip pine hg::https://hg.mozilla.org/projects/pine
 git config remote.beta.url || git remote add -t branches/default/tip beta hg::https://hg.mozilla.org/releases/mozilla-beta
 git config remote.release.url || git remote add -t branches/default/tip release hg::https://hg.mozilla.org/releases/mozilla-release
 git config remote.esr78.url || git remote add -t branches/default/tip esr78 hg::https://hg.mozilla.org/releases/mozilla-esr78
@@ -48,7 +49,7 @@ git config remote.esr31.url || git remote add -t branches/default/tip esr31 hg::
 git config remote.esr17.url || git remote add -t branches/default/tip esr17 hg::https://hg.mozilla.org/releases/mozilla-esr17
 git config cinnabar.graft false
 git config fetch.prune true
-git fetch --multiple central beta release esr78 esr68 esr60 esr45 esr31 esr17
+git fetch --multiple central pine beta release esr78 esr68 esr60 esr45 esr31 esr17
 
 # If a try push was specified, pull it in non-graft mode so we actually pull those changes.
 if [ "$REVISION_TREE" == "try" ]; then
