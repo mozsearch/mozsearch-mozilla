@@ -63,6 +63,16 @@ that lives in the `shared/` folder in this repository.
    - https://searchfox.org/mozilla-central/source/.cron.yml contains a list of
      jobs which contain a "when" filter and some kind of hook mechanism.  All
      times are UTC and everything needs to be a multiple of 15 minutes.
+     - Although this file mentions projects/branches other than mozilla-central,
+       these definitions only have an effect for their own branch and do not
+       impact other branches until the release/merge process propagates them to
+       that branches.
+     - In other words, the file in mozilla-central can mention mozilla-beta as
+       much as it wants, but none of those settings will impact mozilla-beta
+       until mozilla-central gets branched to mozilla-beta. Similarly, making
+       changes that mention an ESR branch that has already branched will never
+       have any effect on that ESR branch unless someone merges those changes
+       to the ESR branch.
    - Firefox's nightlies are defined as part of the "nightly-desktop" build
      of the "mozilla-central" project is scheduled to start at 10:00 UTC and
      22:00 UTC.
