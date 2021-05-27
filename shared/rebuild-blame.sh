@@ -116,7 +116,21 @@ for BRANCH in $BRANCHES; do
 done
 
 pushd "${BLAME_REPO_DIR}"
-git gc
+# After building the blame with fast-import the pack delta compression is
+# generally quite bad. We can reduce the space requirement by asking
+# git to repack the repository and compute new delta compression chains.
+# See https://stackoverflow.com/a/28721047 for a more detailed discussion.
+# This will often reduce space requirement by 2x or more. However, it has
+# a tendency to OOM, so we restrict the amount of memory allowed to 3G
+# per thread. On our current indexer instances (8 cores, 32G memory) this
+# works well. It still causes an OOM on the whatwg-html blame repo, because
+# it happens while writing the repacked objects rather than during
+# the repacking itself. So what we do is first try with 3G per thread, and
+# if that fails, try again with 2G per thread. This gives us the benefit
+# of faster/better repacking on repos that don't OOM with 3G, and falls
+# back to 2G if that fails. If we find repos that OOM even with 2G we can
+# reduce that further on the fallback call.
+git repack -f -a -d --depth=250 --window=250 --window-memory=3g || git repack -f -a -d --depth=250 --window=250 --window-memory=2g
 popd
 
 tar cf "${TARBALL_BASE}-blame.tar" "${BLAME_REPO_DIR}"
