@@ -10,4 +10,6 @@ if [[ $(date +%A) == "Saturday" ]]; then
     date
     git --git-dir="${GIT_REPO_DIR}/.git" gc
     date
+    git --git-dir="${GIT_REPO_DIR}/.git" cinnabar fsck || true
+    date
 fi
