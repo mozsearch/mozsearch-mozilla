@@ -26,27 +26,16 @@
       "codesearch_port": 8082
     },
 
-    "mozilla-esr68": {
-      "index_path": "$WORKING/mozilla-esr68",
-      "files_path": "$WORKING/mozilla-esr68/git",
-      "git_path": "$WORKING/mozilla-esr68/git",
-      "git_blame_path": "$WORKING/mozilla-esr68/blame",
+    "mozilla-esr91": {
+      "index_path": "$WORKING/mozilla-esr91",
+      "files_path": "$WORKING/mozilla-esr91/git",
+      "git_path": "$WORKING/mozilla-esr91/git",
+      "git_blame_path": "$WORKING/mozilla-esr91/blame",
       "github_repo": "https://github.com/mozilla/gecko-dev",
-      "hg_root": "https://hg.mozilla.org/releases/mozilla-esr68",
-      "objdir_path": "$WORKING/mozilla-esr68/objdir",
-      "codesearch_path": "$WORKING/mozilla-esr68/livegrep.idx",
+      "hg_root": "https://hg.mozilla.org/releases/mozilla-esr91",
+      "objdir_path": "$WORKING/mozilla-esr91/objdir",
+      "codesearch_path": "$WORKING/mozilla-esr91/livegrep.idx",
       "codesearch_port": 8083
-    },
-
-    "comm-esr68": {
-      "index_path": "$WORKING/comm-esr68",
-      "files_path": "$WORKING/comm-esr68/git",
-      "git_path": "$WORKING/comm-esr68/git",
-      "git_blame_path": "$WORKING/comm-esr68/blame",
-      "hg_root": "https://hg.mozilla.org/releases/comm-esr68",
-      "objdir_path": "$WORKING/comm-esr68/objdir",
-      "codesearch_path": "$WORKING/comm-esr68/livegrep.idx",
-      "codesearch_port": 8084
     },
 
     "mozilla-esr78": {
@@ -57,7 +46,7 @@
       "hg_root": "https://hg.mozilla.org/releases/mozilla-esr78",
       "objdir_path": "$WORKING/mozilla-esr78/objdir",
       "codesearch_path": "$WORKING/mozilla-esr78/livegrep.idx",
-      "codesearch_port": 8085
+      "codesearch_port": 8084
     },
 
     "comm-esr78": {
@@ -68,7 +57,7 @@
       "hg_root": "https://hg.mozilla.org/releases/comm-esr78",
       "objdir_path": "$WORKING/comm-esr78/objdir",
       "codesearch_path": "$WORKING/comm-esr78/livegrep.idx",
-      "codesearch_port": 8086
+      "codesearch_port": 8085
     }
   }
 }
