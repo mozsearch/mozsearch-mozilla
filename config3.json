@@ -59,6 +59,29 @@
       "objdir_path": "$WORKING/comm-esr60/objdir",
       "codesearch_path": "$WORKING/comm-esr60/livegrep.idx",
       "codesearch_port": 8085
+    },
+
+    "mozilla-esr68": {
+      "index_path": "$WORKING/mozilla-esr68",
+      "files_path": "$WORKING/mozilla-esr68/git",
+      "git_path": "$WORKING/mozilla-esr68/git",
+      "git_blame_path": "$WORKING/mozilla-esr68/blame",
+      "github_repo": "https://github.com/mozilla/gecko-dev",
+      "hg_root": "https://hg.mozilla.org/releases/mozilla-esr68",
+      "objdir_path": "$WORKING/mozilla-esr68/objdir",
+      "codesearch_path": "$WORKING/mozilla-esr68/livegrep.idx",
+      "codesearch_port": 8086
+    },
+
+    "comm-esr68": {
+      "index_path": "$WORKING/comm-esr68",
+      "files_path": "$WORKING/comm-esr68/git",
+      "git_path": "$WORKING/comm-esr68/git",
+      "git_blame_path": "$WORKING/comm-esr68/blame",
+      "hg_root": "https://hg.mozilla.org/releases/comm-esr68",
+      "objdir_path": "$WORKING/comm-esr68/objdir",
+      "codesearch_path": "$WORKING/comm-esr68/livegrep.idx",
+      "codesearch_port": 8087
     }
   }
 }
