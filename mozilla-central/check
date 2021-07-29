@@ -16,7 +16,7 @@ date
 ### Rust
 ## First-Party Rust
 # libwebrender
-"$@" "gfx/webrender_bindings/src/moz2d_renderer.rs" "webrender_bindings::moz2d_renderer::Box2d"
+"$@" "gfx/webrender_bindings/src/moz2d_renderer.rs" "webrender_bindings::moz2d_renderer::CacheKey"
 
 ## Third-Party Rust
 "$@" "third_party/rust/euclid/src/rect.rs" "euclid::rect::Rect"
