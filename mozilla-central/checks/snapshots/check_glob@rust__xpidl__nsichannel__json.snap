@@ -1,0 +1,14 @@
+---
+source: tests/test_check_insta.rs
+expression: "&json_results"
+
+---
+[
+  {
+    "kind": "def",
+    "loc": "00015:11-21",
+    "pretty": "xpcom::interfaces::idl::nsIChannel",
+    "sym": "xpcom::interfaces::idl::nsIChannel",
+    "target": 1
+  }
+]
