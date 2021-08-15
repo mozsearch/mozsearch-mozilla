@@ -1,0 +1,14 @@
+---
+source: tests/test_check_insta.rs
+expression: "&json_results"
+
+---
+[
+  {
+    "kind": "def",
+    "loc": "00066:17-34",
+    "pretty": "webrender::shader_source::OPTIMIZED_SHADERS",
+    "sym": "webrender::shader_source::OPTIMIZED_SHADERS",
+    "target": 1
+  }
+]

@@ -1,0 +1,11 @@
+---
+source: tests/test_check_insta.rs
+expression: "&aggr_str"
+
+---
+<div role="row" id="line-143" class="source-line-with-number">
+  <div role="cell" class="line-number" data-line-number="143"></div>
+  <code role="cell" class="source-line"><span class="syn_reserved" >pub</span> <span class="syn_reserved" >struct</span> <span data-symbols="alloc::collections::btree::map::BTreeMap" data-i="4" >BTreeMap</span>&lt;K, V> {
+</code>
+</div>
+

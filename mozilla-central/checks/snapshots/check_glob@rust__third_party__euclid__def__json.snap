@@ -1,0 +1,14 @@
+---
+source: tests/test_check_insta.rs
+expression: "&json_results"
+
+---
+[
+  {
+    "kind": "def",
+    "loc": "00052:11-15",
+    "pretty": "euclid::rect::Rect",
+    "sym": "euclid::rect::Rect",
+    "target": 1
+  }
+]

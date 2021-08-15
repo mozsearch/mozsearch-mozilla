@@ -1,0 +1,14 @@
+---
+source: tests/test_check_insta.rs
+expression: "&json_results"
+
+---
+[
+  {
+    "kind": "def",
+    "loc": "00277:7-15",
+    "pretty": "webrender_bindings::moz2d_renderer::CacheKey",
+    "sym": "webrender_bindings::moz2d_renderer::CacheKey",
+    "target": 1
+  }
+]
