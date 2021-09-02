@@ -8,10 +8,19 @@ date
 
 echo Uploading mozilla-mobile
 pushd $INDEX_ROOT
+
+echo "Running maintenance on mozilla-mobile submodules..."
+pushd ./git
+git submodule foreach --recursive "${CONFIG_REPO}/shared/git-maintenance.sh \$PWD"
+popd
+echo "Running maintenance on mozilla-mobile supermodule..."
 $CONFIG_REPO/shared/git-maintenance.sh ./git
+echo "Maintenance complete!"
+
 tar cf mozilla-mobile.tar git
 $AWS_ROOT/upload.py $INDEX_ROOT/mozilla-mobile.tar searchfox.repositories mozilla-mobile.tar
 rm mozilla-mobile.tar
+
 popd
 
 date
