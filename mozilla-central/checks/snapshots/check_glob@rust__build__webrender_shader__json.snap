@@ -5,10 +5,10 @@ expression: "&json_results"
 ---
 [
   {
-    "kind": "def",
     "loc": "00066:17-34",
+    "target": 1,
+    "kind": "def",
     "pretty": "webrender::shader_source::OPTIMIZED_SHADERS",
-    "sym": "webrender::shader_source::OPTIMIZED_SHADERS",
-    "target": 1
+    "sym": "webrender::shader_source::OPTIMIZED_SHADERS"
   }
 ]
