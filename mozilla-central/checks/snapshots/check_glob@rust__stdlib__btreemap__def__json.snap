@@ -5,10 +5,10 @@ expression: "&json_results"
 ---
 [
   {
-    "kind": "def",
     "loc": "00143:11-19",
+    "target": 1,
+    "kind": "def",
     "pretty": "alloc::collections::btree::map::BTreeMap",
-    "sym": "alloc::collections::btree::map::BTreeMap",
-    "target": 1
+    "sym": "alloc::collections::btree::map::BTreeMap"
   }
 ]

@@ -5,10 +5,10 @@ expression: "&json_results"
 ---
 [
   {
-    "kind": "def",
     "loc": "00052:11-15",
+    "target": 1,
+    "kind": "def",
     "pretty": "euclid::rect::Rect",
-    "sym": "euclid::rect::Rect",
-    "target": 1
+    "sym": "euclid::rect::Rect"
   }
 ]
