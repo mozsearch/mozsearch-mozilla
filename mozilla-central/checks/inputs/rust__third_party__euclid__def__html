@@ -1,1 +1,0 @@
-filter-analysis "third_party/rust/euclid/src/rect.rs" -k def -s "euclid::rect::Rect" | show-html
