@@ -5,7 +5,7 @@ expression: "&aggr_str"
 ---
 <div role="row" id="line-277" class="source-line-with-number nesting-sticky-line">
   <div role="cell" class="line-number" data-line-number="277"></div>
-  <code role="cell" class="source-line"><span class="syn_reserved" >struct</span> <span data-symbols="webrender_bindings::moz2d_renderer::CacheKey" data-i="309" >CacheKey</span> {
+  <code role="cell" class="source-line"><span class="syn_reserved" >struct</span> <span data-symbols="webrender_bindings::moz2d_renderer::CacheKey" data-i="308" >CacheKey</span> {
 </code>
 </div>
 
