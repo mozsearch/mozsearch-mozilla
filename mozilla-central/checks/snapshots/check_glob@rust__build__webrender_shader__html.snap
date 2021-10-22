@@ -3,8 +3,8 @@ source: tests/test_check_insta.rs
 expression: "&aggr_str"
 
 ---
-<div role="row" id="line-66" class="source-line-with-number">
-  <div role="cell" class="line-number" data-line-number="66"></div>
+<div role="row" id="line-67" class="source-line-with-number">
+  <div role="cell" class="line-number" data-line-number="67"></div>
   <code role="cell" class="source-line">  <span class="syn_reserved" >pub</span> <span class="syn_reserved" >static</span> <span class="syn_reserved" >ref</span> <span data-symbols="webrender::shader_source::OPTIMIZED_SHADERS,webrender::shader_source::OPTIMIZED_SHADERS" data-i="188" >OPTIMIZED_SHADERS</span>: <span data-symbols="std::collections::hash::map::HashMap" data-i="189" >HashMap</span>&lt;(<span data-symbols="webrender_build::shader::ShaderVersion" data-i="190" >ShaderVersion</span>, &amp;'static str), <span data-symbols="webrender::shader_source::OptimizedSourceWithDigest" data-i="191" >OptimizedSourceWithDigest</span>> = {
 </code>
 </div>
