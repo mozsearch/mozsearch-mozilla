@@ -4,8 +4,8 @@ expression: "&aggr_str"
 
 ---
 <div role="row" id="line-NORM" class="source-line-with-number nesting-sticky-line">
-  <div role="cell"><div class="cov-strip cov-no-data"></div></div>
-  <div role="cell"><div class="blame-strip"></div></div>
+  <div role="cell"></div>
+  <div role="cell"></div>
   <div role="cell" class="line-number" data-line-number="NORM"></div>
   <code role="cell" class="source-line"><span class="syn_reserved" >pub</span> <span class="syn_reserved" >struct</span> <span data-symbols="xpcom::interfaces::idl::nsIChannel" data-i="NORM">nsIChannel</span> {
 </code>
