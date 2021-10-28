@@ -1,1 +1,1 @@
-filter-analysis "__GENERATED__/__linux64__/__RUST_BUILD_SCRIPT__/webrender/shaders.rs" -k def -s "webrender::shader_source::OPTIMIZED_SHADERS" | show-html
+filter-analysis "__GENERATED__/__linux64__/__RUST_BUILD_SCRIPT__/webrender/shaders.rs" -k def -s "webrender::shader_source::OPTIMIZED_SHADERS" | show-html | production-filter

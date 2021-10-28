@@ -5,7 +5,7 @@ expression: "&json_results"
 ---
 [
   {
-    "loc": "00015:11-21",
+    "loc": "NORM:11-21",
     "target": 1,
     "kind": "def",
     "pretty": "xpcom::interfaces::idl::nsIChannel",

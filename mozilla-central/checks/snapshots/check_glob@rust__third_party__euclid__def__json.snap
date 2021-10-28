@@ -5,7 +5,7 @@ expression: "&json_results"
 ---
 [
   {
-    "loc": "00052:11-15",
+    "loc": "NORM:11-15",
     "target": 1,
     "kind": "def",
     "pretty": "euclid::rect::Rect",

@@ -5,7 +5,7 @@ expression: "&json_results"
 ---
 [
   {
-    "loc": "00067:17-34",
+    "loc": "NORM:17-34",
     "target": 1,
     "kind": "def",
     "pretty": "webrender::shader_source::OPTIMIZED_SHADERS",
