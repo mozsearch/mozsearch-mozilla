@@ -1,1 +1,1 @@
-filter-analysis "gfx/webrender_bindings/src/moz2d_renderer.rs" -k def -s "webrender_bindings::moz2d_renderer::CacheKey" | show-html
+filter-analysis "gfx/webrender_bindings/src/moz2d_renderer.rs" -k def -s "webrender_bindings::moz2d_renderer::CacheKey" | show-html | production-filter

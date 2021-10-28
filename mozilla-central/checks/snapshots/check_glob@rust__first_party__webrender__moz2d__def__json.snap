@@ -5,7 +5,7 @@ expression: "&json_results"
 ---
 [
   {
-    "loc": "00277:7-15",
+    "loc": "NORM:7-15",
     "target": 1,
     "kind": "def",
     "pretty": "webrender_bindings::moz2d_renderer::CacheKey",

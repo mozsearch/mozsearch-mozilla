@@ -5,7 +5,7 @@ expression: "&json_results"
 ---
 [
   {
-    "loc": "00143:11-19",
+    "loc": "NORM:11-19",
     "target": 1,
     "kind": "def",
     "pretty": "alloc::collections::btree::map::BTreeMap",
