@@ -28,7 +28,11 @@ pushd $GIT_ROOT
 # happen on 2.24.0 and there were various changelog comments about changing when
 # various things were resolved.  For example,
 # https://github.com/git/git/blob/master/Documentation/RelNotes/2.23.0.txt#L36
-git submodule update --remote || git submodule update --remote
+#
+# the prune stuff is to deal with encountering this error:
+#   error: cannot lock ref 'refs/remotes/origin/mergify': 'refs/remotes/origin/mergify/bp/main/pr-5560' exists; cannot create 'refs/remotes/origin/mergify'
+# I'm wrapping it in the and because we still want to do the update.
+git submodule update --remote || git submodule update --remote || (git submodule foreach --recursive git remote prune origin && git submodule update --remote)
 # The previous step will update the submodules of this top-level synthetic superproject,
 # and now we want to commit those changes, so that the top-level superproject points
 # to the latest version of each submodule.
