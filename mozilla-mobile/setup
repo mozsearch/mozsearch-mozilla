@@ -32,6 +32,16 @@ pushd $GIT_ROOT
 # the prune stuff is to deal with encountering this error:
 #   error: cannot lock ref 'refs/remotes/origin/mergify': 'refs/remotes/origin/mergify/bp/main/pr-5560' exists; cannot create 'refs/remotes/origin/mergify'
 # I'm wrapping it in the and because we still want to do the update.
+#
+# And now we're also:
+# - forcibly cleaning up gc logs before doing stuff
+# - run git gc before doing stuff.
+#   - this is because of:
+#     `warning: There are too many unreachable loose objects; run 'git prune' to remove them.`
+#   - despite us running it on saturdays in all repositories via the git-maintenance.sh helper
+#   - and this may not be enough!
+rm -f .git/modules/*/gc.log
+git gc
 git submodule update --remote || git submodule update --remote || (git submodule foreach --recursive git remote prune origin && git submodule update --remote)
 # The previous step will update the submodules of this top-level synthetic superproject,
 # and now we want to commit those changes, so that the top-level superproject points
