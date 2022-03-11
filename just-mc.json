@@ -1,0 +1,21 @@
+{
+  "mozsearch_path": "$MOZSEARCH_PATH",
+
+  "default_tree": "mozilla-central",
+
+  "trees": {
+    "mozilla-central": {
+      "index_path": "$WORKING/mozilla-central",
+      "files_path": "$WORKING/mozilla-central/git",
+      "git_path": "$WORKING/mozilla-central/git",
+      "git_blame_path": "$WORKING/mozilla-central/blame",
+      "github_repo": "https://github.com/mozilla/gecko-dev",
+      "hg_root": "https://hg.mozilla.org/mozilla-central",
+      "ccov_root": "https://coverage.moz.tools/",
+      "wpt_root": "testing/web-platform",
+      "objdir_path": "$WORKING/mozilla-central/objdir",
+      "codesearch_path": "$WORKING/mozilla-central/livegrep.idx",
+      "codesearch_port": 8082
+    }
+  }
+}
