@@ -7,3 +7,8 @@ def filter_js(path):
     if 'js/src/tests' in path or 'jit-test' in path:
         return False
     return True
+
+def filter_idl(path):
+    # ESR17 doesn't even have an XPIDL parser we'll recognize but let's bypass
+    # trying to use a modern one.
+    return False
