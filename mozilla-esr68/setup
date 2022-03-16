@@ -5,20 +5,15 @@ set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
 # See ../mozilla-central/setup for documentation
-
-REVISION_TREE=mozilla-esr68
-REVISION_ID=latest
-
-date
-
-source $CONFIG_REPO/shared/resolve-gecko-revs.sh $REVISION_TREE $REVISION_ID
+# The mozilla-central repo also uploads an updated gecko.tar which
+# includes esr68 commits, so we don't need our own upload script.
 
 date
 
-$CONFIG_REPO/shared/checkout-gecko-repos.sh $REVISION_TREE "esr68" "$INDEXED_HG_REV"
-
-date
-
-$CONFIG_REPO/shared/fetch-tc-artifacts.sh $REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV"
+# ESR68 isn't getting any new commits, so we can hard-code the last revision
+# for simplicity in checkout-gecko-repos.sh.
+# Disclaimer: this rev is actually one behind the current tip which was about
+# removing the cron jobs.
+$CONFIG_REPO/shared/checkout-gecko-repos.sh "mozilla-esr68" "esr68" "f72861bb0a1c7914e5f6af56e632f2197c1cd984"
 
 date
