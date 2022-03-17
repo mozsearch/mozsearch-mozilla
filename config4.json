@@ -129,6 +129,17 @@
       "objdir_path": "$WORKING/mozilla-pine/objdir",
       "codesearch_path": "$WORKING/mozilla-pine/livegrep.idx",
       "codesearch_port": 8092
+    },
+
+    "mozilla-vpn-client": {
+      "index_path": "$WORKING/mozilla-vpn-client",
+      "files_path": "$WORKING/mozilla-vpn-client/git",
+      "git_path": "$WORKING/mozilla-vpn-client/git",
+      "walk_submodules": false,
+      "git_blame_path": "$WORKING/mozilla-vpn-client/blame",
+      "objdir_path": "$WORKING/mozilla-vpn-client/objdir",
+      "codesearch_path": "$WORKING/mozilla-vpn-client/livegrep.idx",
+      "codesearch_port": 8093
     }
   }
 }
