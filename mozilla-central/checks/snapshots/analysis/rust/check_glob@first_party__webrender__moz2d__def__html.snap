@@ -1,7 +1,6 @@
 ---
 source: tests/test_check_insta.rs
 expression: "&aggr_str"
-
 ---
 <div role="row" id="line-NORM" class="source-line-with-number nesting-sticky-line">
   <div role="cell"></div>
