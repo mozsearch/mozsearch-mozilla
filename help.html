@@ -14,14 +14,17 @@ Please send bug reports to
 
 <h3>Query Language</h3>
 
-Queries entered into the search box use exact string matching. No
-search operators are supported. Case insensitive matching and regular
-expression matching can be requested with the check boxes.
+<p>Searchfox supports both text and file path searches.</p>
+           
+<p>Queries entered into the search box use exact string matching. No
+search operators are supported. Case insensitive matching and
+<a href="https://github.com/google/re2/wiki/syntax">regular expression matching</a>
+can be requested with the check boxes.</p>
 
-Path filtering uses globbing. A path matches even if only a substring
+<p>Path filtering uses globbing. A path matches even if only a substring
 of the path is matched by the glob. Use the <code>^</code>
 and <code>$</code> operators to match the beginning or end of the
-path. Here are some examples:
+path. Here are some examples:</p>
 
 <dl>
 
