@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+date
+
+# Note!  This ends up including the flatpak artifacts, and we want that.
+echo Uploading webkit
+pushd $INDEX_ROOT
+$CONFIG_REPO/shared/git-maintenance.sh ./git
+tar cf - git | lz4 - wubkat.tar.lz4
+$AWS_ROOT/upload.py $INDEX_ROOT/wubkat.tar.lz4 searchfox.repositories wubkat.tar.lz4
+rm wubkat.tar.lz4
+popd
+
+date
+
+echo Uploading webkit blame
+pushd $INDEX_ROOT
+$CONFIG_REPO/shared/git-maintenance.sh ./blame
+tar cf - git | lz4 - wubkat-blame.tar.lz4
+$AWS_ROOT/upload.py $INDEX_ROOT/wubkat-blame.tar.lz4 searchfox.repositories wubkat-blame.tar.lz4
+rm wubkat-blame.tar.lz4
+popd
+
+date

@@ -1,0 +1,18 @@
+{
+    "mozsearch_path": "$MOZSEARCH_PATH",
+
+    "default_tree": "wubkat",
+
+    "trees": {
+      "wubkat": {
+        "index_path": "$WORKING/wubkat",
+        "files_path": "$WORKING/wubkat/git",
+        "git_path": "$WORKING/wubkat/git",
+        "git_blame_path": "$WORKING/wubkat/blame",
+        "github_repo": "https://github.com/WebKit/Webkit",
+        "objdir_path": "$WORKING/wubkat/objdir",
+        "codesearch_path": "$WORKING/wubkat/livegrep.idx",
+        "codesearch_port": 8081
+      }
+    }
+  }
