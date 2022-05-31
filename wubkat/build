@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+date
+
+# the starting point for the build logic here is from:
+# https://github.com/dpino/webkit-index-config/blob/master/webkit/build
+#
+# our primary changes here are:
+# - we handle the dependencies and flatpak updating in `setup` so that we can
+#   persist the downloaded flatpak state in `upload` because the flatpak server
+#   seems to only be able to talk to our AWS instances at very slow speeds like
+#   600kB/s.  (It started faster and goes downhill from there.  We're talking
+#   hours for a full download, though.)
+# - we dump the indexer setup to "config" like other build scripts so we can
+#   look at it afterwards rather than sourcing it directly.
+
+date
+
+# Add the special clang flags.
+$MOZSEARCH_PATH/scripts/indexer-setup.py > $INDEX_ROOT/config
+. $INDEX_ROOT/config
+
+mkdir -p $OBJDIR
+cd $OBJDIR
+
+# Default WebKit port.
+PORT=${PORT:-GTK}
+
+# C Flags are encoded into CC var.
+# Remove prefix (clang) and store flags into C_FLAGS.
+C_FLAGS=${CC:6}
+CC=${CC:0:5}
+
+# CXX Flags are encoded into CXX var.
+# Remove prefix (clang++) and store flags into CXX_FLAGS.
+CXX_FLAGS=${CXX:8}
+CXX=${CXX:0:7}
+
+date
+
+cmake $FILES_ROOT \
+    -DCMAKE_C_COMPILER="$CC" \
+    -DCMAKE_CXX_COMPILER="$CXX" \
+    -DCMAKE_C_FLAGS="$C_FLAGS" \
+    -DCMAKE_CXX_FLAGS="$CXX_FLAGS" \
+    -DUSE_WPE_RENDERER=OFF \
+    -DUSE_LCMS=OFF \
+    -DENABLE_BUBBLEWRAP_SANDBOX=OFF \
+    -DENABLE_GAMEPAD=OFF \
+    -DUSE_SOUP2=ON \
+    -DCMAKE_BUILD_TYPE=Debug \
+    -DPORT=$PORT
+
+date
+
+make -j$(nproc)
+cd -
+
+date

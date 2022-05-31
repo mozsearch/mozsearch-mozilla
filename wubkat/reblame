@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# XXX this won't work with lz4 yet, so just error
+exit 1
+#$CONFIG_REPO/shared/rebuild-blame.sh --tarball-base wubkat $*
