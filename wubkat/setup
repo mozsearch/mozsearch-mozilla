@@ -48,6 +48,9 @@ date
 
 echo Installing/updating system build dependencies
 
+# Update the apt index
+sudo apt-get update
+
 # gtk/install-dependencies below will install a bunch of stuff, but it seems like
 # it maybe missed these things I've added after flatpak, but they may also be
 # transitive deps of some of the below.
