@@ -82,6 +82,28 @@
       "objdir_path": "$WORKING/comm-esr68/objdir",
       "codesearch_path": "$WORKING/comm-esr68/livegrep.idx",
       "codesearch_port": 8087
+    },
+
+    "mozilla-esr78": {
+      "index_path": "$WORKING/mozilla-esr78",
+      "files_path": "$WORKING/mozilla-esr78/git",
+      "git_path": "$WORKING/mozilla-esr78/git",
+      "git_blame_path": "$WORKING/mozilla-esr78/blame",
+      "hg_root": "https://hg.mozilla.org/releases/mozilla-esr78",
+      "objdir_path": "$WORKING/mozilla-esr78/objdir",
+      "codesearch_path": "$WORKING/mozilla-esr78/livegrep.idx",
+      "codesearch_port": 8088
+    },
+
+    "comm-esr78": {
+      "index_path": "$WORKING/comm-esr78",
+      "files_path": "$WORKING/comm-esr78/git",
+      "git_path": "$WORKING/comm-esr78/git",
+      "git_blame_path": "$WORKING/comm-esr78/blame",
+      "hg_root": "https://hg.mozilla.org/releases/comm-esr78",
+      "objdir_path": "$WORKING/comm-esr78/objdir",
+      "codesearch_path": "$WORKING/comm-esr78/livegrep.idx",
+      "codesearch_port": 8089
     }
   }
 }
