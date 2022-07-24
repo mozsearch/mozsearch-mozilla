@@ -6,9 +6,28 @@ set -o pipefail # Check all commands in a pipeline
 
 date
 
+# NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
+#
+# >>> mozilla-central is special because we like code coverage data! <<<
+#     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#
+# Unless a `TRYPUSH_REV` is specified below, we are going to use the
+# `project.relman.code-coverage.production.repo.mozilla-central.latest` route
+# in order to try and find a recent hg revision to use that has coverage.
+#
+# To do this, we are going to use a few taskcluster APIs directly via curl.
+# Arguably, a better idea is to use the `taskcluster` binary, but we only
+# actually need to hit 2 URLs here and so the moving parts theory favors not
+# provisioning `taskcluster` yet, but it would probably be a reasonable step.
+
 # This defaults to the most recent searchfox indexing run for mozilla-central.
 REVISION_TREE=mozilla-central
 REVISION_ID=latest
+
+TC_ROOT_URL=https://firefox-ci-tc.services.mozilla.com
+TC_INDEX_API_URL=${TC_ROOT_URL}/api/index/v1/task
+COVERAGE_ROUTE=project.relman.code-coverage.production.repo.${REVISION_TREE}.latest
+TC_QUEUE_API_URL=${TC_ROOT_URL}/api/queue/v1/task
 
 # Set TRYPUSH_REV in the environment to e.g. ee64db93dcc149da9313460317257b8c42eec5b2
 # or whatever to test a try revision. It needs to be the full rev hash, so that we can
@@ -17,6 +36,26 @@ TRYPUSH_REV=${TRYPUSH_REV:-}
 if [ -n "$TRYPUSH_REV" ]; then
     REVISION_TREE=try
     REVISION_ID="revision.${TRYPUSH_REV}"
+    echo "TRYPUSH_REV was used, ignoring coverage-based revision choice. Using: ${REVISION_ID}"
+else
+    # find the taskId that the "latest" code coverage for our tree
+    COV_TASKID=$(curl -ssL "${TC_INDEX_API_URL}/${COVERAGE_ROUTE}" | jq -Mr '.taskId')
+    # get the task definition JSON and save it into a variable so we can pick
+    # multiple fields out
+    COV_TASK_INFO=$(curl -ssL "${TC_QUEUE_API_URL}/${COV_TASKID}")
+    # The revision to index is passed specifically to the job
+    COV_HG_REV=$(jq -Mr '.payload.env.REVISION' <<< $COV_TASK_INFO)
+    # How many whole days have passed since the coverage aggregation task was
+    # started and now?  If it's been less than a day (therefore "0"), the data
+    # is good enough for our purposes.
+    COV_RECENCY_DAYS=$(jq -Mr '.created | sub("\\.[0-9]+Z$"; "Z") | (now - fromdate) / (24 * 60 * 60) | floor' <<< $COV_TASK_INFO)
+
+    if [[ $COV_RECENCY_DAYS = "0" ]]; then
+        REVISION_ID="revision.${COV_HG_REV}"
+        echo "Coverage data is recent enough, using explicit revision: ${REVISION_ID}"
+    else
+        echo "Coverage data is ${COV_RECENCY_DAYS} old, sticking with: ${REVISION_ID}"
+    fi
 fi
 
 # The next line populates the INDEXED_HG_REV and PREEXISTING_HG_REV env vars.
