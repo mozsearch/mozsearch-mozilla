@@ -180,6 +180,20 @@
       "objdir_path": "$WORKING/mozilla-vpn-client/objdir",
       "codesearch_path": "$WORKING/mozilla-vpn-client/livegrep.idx",
       "codesearch_port": 8093
+    },
+
+    "mozilla-elm": {
+      "priority": 190,
+      "on_error": "continue",
+      "cache": "codesearch",
+      "index_path": "$WORKING/mozilla-elm",
+      "files_path": "$WORKING/mozilla-elm/git",
+      "git_path": "$WORKING/mozilla-elm/git",
+      "git_blame_path": "$WORKING/mozilla-elm/blame",
+      "hg_root": "https://hg.mozilla.org/projects/elm",
+      "objdir_path": "$WORKING/mozilla-elm/objdir",
+      "codesearch_path": "$WORKING/mozilla-elm/livegrep.idx",
+      "codesearch_port": 8094
     }
   }
 }
