@@ -1,8 +1,12 @@
 {
   "mozsearch_path": "$MOZSEARCH_PATH",
+  "instance_type": "t3.2xlarge",
 
   "trees": {
     "mozilla-esr60": {
+      "priority": 10,
+      "on_error": "continue",
+      "cache": "codesearch",
       "index_path": "$WORKING/mozilla-esr60",
       "files_path": "$WORKING/mozilla-esr60/git",
       "git_path": "$WORKING/mozilla-esr60/git",
@@ -15,6 +19,9 @@
     },
 
     "mozilla-esr45": {
+      "priority": 10,
+      "on_error": "continue",
+      "cache": "codesearch",
       "index_path": "$WORKING/mozilla-esr45",
       "files_path": "$WORKING/mozilla-esr45/git",
       "git_path": "$WORKING/mozilla-esr45/git",
@@ -27,6 +34,9 @@
     },
 
     "mozilla-esr31": {
+      "priority": 10,
+      "on_error": "continue",
+      "cache": "codesearch",
       "index_path": "$WORKING/mozilla-esr31",
       "files_path": "$WORKING/mozilla-esr31/git",
       "git_path": "$WORKING/mozilla-esr31/git",
@@ -39,6 +49,9 @@
     },
 
     "mozilla-esr17": {
+      "priority": 10,
+      "on_error": "continue",
+      "cache": "codesearch",
       "index_path": "$WORKING/mozilla-esr17",
       "files_path": "$WORKING/mozilla-esr17/git",
       "git_path": "$WORKING/mozilla-esr17/git",
@@ -51,6 +64,9 @@
     },
 
     "comm-esr60": {
+      "priority": 10,
+      "on_error": "continue",
+      "cache": "codesearch",
       "index_path": "$WORKING/comm-esr60",
       "files_path": "$WORKING/comm-esr60/git",
       "git_path": "$WORKING/comm-esr60/git",
@@ -62,6 +78,9 @@
     },
 
     "mozilla-esr68": {
+      "priority": 10,
+      "on_error": "continue",
+      "cache": "codesearch",
       "index_path": "$WORKING/mozilla-esr68",
       "files_path": "$WORKING/mozilla-esr68/git",
       "git_path": "$WORKING/mozilla-esr68/git",
@@ -74,6 +93,9 @@
     },
 
     "comm-esr68": {
+      "priority": 10,
+      "on_error": "continue",
+      "cache": "codesearch",
       "index_path": "$WORKING/comm-esr68",
       "files_path": "$WORKING/comm-esr68/git",
       "git_path": "$WORKING/comm-esr68/git",
@@ -85,6 +107,9 @@
     },
 
     "mozilla-esr78": {
+      "priority": 10,
+      "on_error": "continue",
+      "cache": "codesearch",
       "index_path": "$WORKING/mozilla-esr78",
       "files_path": "$WORKING/mozilla-esr78/git",
       "git_path": "$WORKING/mozilla-esr78/git",
@@ -96,6 +121,9 @@
     },
 
     "comm-esr78": {
+      "priority": 10,
+      "on_error": "continue",
+      "cache": "codesearch",
       "index_path": "$WORKING/comm-esr78",
       "files_path": "$WORKING/comm-esr78/git",
       "git_path": "$WORKING/comm-esr78/git",
