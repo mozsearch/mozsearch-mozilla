@@ -1,10 +1,13 @@
 {
   "mozsearch_path": "$MOZSEARCH_PATH",
-
   "default_tree": "mozilla-central",
+  "instance_type": "t3.2xlarge",
 
   "trees": {
     "nss": {
+      "priority": 10,
+      "on_error": "continue",
+      "cache": "codesearch",
       "index_path": "$WORKING/nss",
       "files_path": "$WORKING/nss/git",
       "git_path": "$WORKING/nss/git",
@@ -17,6 +20,9 @@
     },
 
     "mozilla-central": {
+      "priority": 1000,
+      "on_error": "halt",
+      "cache": "everything",
       "index_path": "$WORKING/mozilla-central",
       "files_path": "$WORKING/mozilla-central/git",
       "git_path": "$WORKING/mozilla-central/git",
@@ -31,6 +37,9 @@
     },
 
     "comm-central": {
+      "priority": 5,
+      "on_error": "continue",
+      "cache": "codesearch",
       "index_path": "$WORKING/comm-central",
       "files_path": "$WORKING/comm-central/git",
       "git_path": "$WORKING/comm-central/git",
@@ -43,6 +52,9 @@
     },
 
     "mozilla-mobile": {
+      "priority": 20,
+      "on_error": "continue",
+      "cache": "codesearch",
       "index_path": "$WORKING/mozilla-mobile",
       "files_path": "$WORKING/mozilla-mobile/git",
       "git_path": "$WORKING/mozilla-mobile/git",

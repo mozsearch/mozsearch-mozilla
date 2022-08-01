@@ -1,10 +1,13 @@
 {
     "mozsearch_path": "$MOZSEARCH_PATH",
-
     "default_tree": "wubkat",
+    "instance_type": "t3.xlarge",
 
     "trees": {
       "wubkat": {
+        "priority": 100,
+        "on_error": "continue",
+        "cache": "codesearch",
         "index_path": "$WORKING/wubkat",
         "files_path": "$WORKING/wubkat/git",
         "git_path": "$WORKING/wubkat/git",

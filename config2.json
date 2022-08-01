@@ -1,8 +1,12 @@
 {
   "mozsearch_path": "$MOZSEARCH_PATH",
+  "instance_type": "t3.2xlarge",
 
   "trees": {
     "mozilla-beta": {
+      "priority": 120,
+      "on_error": "continue",
+      "cache": "codesearch",
       "index_path": "$WORKING/mozilla-beta",
       "files_path": "$WORKING/mozilla-beta/git",
       "git_path": "$WORKING/mozilla-beta/git",
@@ -15,6 +19,9 @@
     },
 
     "mozilla-release": {
+      "priority": 110,
+      "on_error": "continue",
+      "cache": "codesearch",
       "index_path": "$WORKING/mozilla-release",
       "files_path": "$WORKING/mozilla-release/git",
       "git_path": "$WORKING/mozilla-release/git",
@@ -27,6 +34,9 @@
     },
 
     "mozilla-esr102": {
+      "priority": 20,
+      "on_error": "continue",
+      "cache": "codesearch",
       "index_path": "$WORKING/mozilla-esr102",
       "files_path": "$WORKING/mozilla-esr102/git",
       "git_path": "$WORKING/mozilla-esr102/git",
@@ -39,6 +49,9 @@
     },
 
     "comm-esr102": {
+      "priority": 5,
+      "on_error": "continue",
+      "cache": "codesearch",
       "index_path": "$WORKING/comm-esr102",
       "files_path": "$WORKING/comm-esr102/git",
       "git_path": "$WORKING/comm-esr102/git",
@@ -50,6 +63,9 @@
     },
 
     "mozilla-esr91": {
+      "priority": 10,
+      "on_error": "continue",
+      "cache": "codesearch",
       "index_path": "$WORKING/mozilla-esr91",
       "files_path": "$WORKING/mozilla-esr91/git",
       "git_path": "$WORKING/mozilla-esr91/git",
@@ -62,6 +78,9 @@
     },
 
     "comm-esr91": {
+      "priority": 4,
+      "on_error": "continue",
+      "cache": "codesearch",
       "index_path": "$WORKING/comm-esr91",
       "files_path": "$WORKING/comm-esr91/git",
       "git_path": "$WORKING/comm-esr91/git",
