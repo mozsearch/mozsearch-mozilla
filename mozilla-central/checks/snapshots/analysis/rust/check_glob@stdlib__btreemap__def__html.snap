@@ -6,7 +6,7 @@ expression: "&aggr_str"
   <div role="cell"></div>
   <div role="cell"></div>
   <div role="cell" class="line-number" data-line-number="NORM"></div>
-  <code role="cell" class="source-line"><span class="syn_reserved" >pub</span> <span class="syn_reserved" >struct</span> <span data-symbols="alloc::collections::btree::map::BTreeMap" data-i="NORM">BTreeMap</span>&lt;K, V> {
+  <code role="cell" class="source-line"><span class="syn_reserved" >pub</span> <span class="syn_reserved" >struct</span> <span data-symbols="alloc::collections::btree::map::BTreeMap" data-i="NORM">BTreeMap</span>&lt;
 </code>
 </div>
 
