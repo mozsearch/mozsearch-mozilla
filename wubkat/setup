@@ -54,51 +54,31 @@ sudo apt-get update
 
 # gtk/install-dependencies below will install a bunch of stuff, but it seems like
 # it maybe missed these things I've added after flatpak, but they may also be
-# transitive deps of some of the below.
+# transitive deps of some of the below.  (And now with the return to
+# install-dependencies with explicit 22.04 these may not be needed at all, but
+# we'll see.)
 sudo apt-get install -y flatpak libcairo-dev libharfbuzz-dev gi-docgen
 
 date
 
-# This is what `sudo $FILES_ROOT/Tools/gtk/install-dependencies` would do but
-# with things that cause errors and break installation of stuff removed.
-sudo apt-get install -y --no-install-recommends autoconf automake autopoint autotools-dev \
-  bubblewrap cmake gawk gperf gtk-doc-tools intltool itstool libasound2-dev libatk1.0-dev \
-  libepoxy-dev libevent-dev libfile-copy-recursive-perl libgcrypt20-dev libgstreamer1.0-dev \
-  libgstreamer-plugins-bad1.0-dev libgstreamer-plugins-base1.0-dev libjpeg-dev libkate-dev \
-  liblcms2-dev libopenjp2-7-dev libpng-dev libseccomp-dev libsqlite3-dev libsystemd-dev \
-  libtasn1-6-dev libtool libwayland-dev libwebp-dev libwoff-dev libxslt1-dev ninja-build patch \
-  ruby apache2 curl fonts-liberation gdb libcgi-pm-perl psmisc pulseaudio-utils python3-gi \
-  ruby-highline ruby-json flatpak libglib2.0-bin git gsettings-desktop-schemas-dev gyp \
-  libegl1-mesa-dev libexpat1-dev libfdk-aac-dev libgles2-mesa-dev liborc-0.4-dev libproxy-dev \
-  libpsl-dev libtool-bin libxml-libxml-perl python3-setuptools uuid-dev yasm git-svn subversion \
-  gstreamer1.0-gl gstreamer1.0-libav gstreamer1.0-plugins-bad gstreamer1.0-plugins-base \
-  gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-pulseaudio geoclue-2.0 \
-  gnome-common libedit-dev libenchant-2-dev libfaad-dev libffi-dev libgirepository1.0-dev \
-  libgl1-mesa-dev libgl1-mesa-glx libgtk-3-dev libgudev-1.0-dev libhyphen-dev libmount-dev \
-  libmpg123-dev libnotify-dev libopus-dev libpango1.0-dev libpulse-dev librsvg2-dev \
-  libsecret-1-dev libsoup2.4-dev libsrtp2-dev libtheora-dev libupower-glib-dev libvorbis-dev \
-  libvpx-dev libxcomposite-dev libxt-dev libxtst-dev nasm xfonts-utils cups-daemon dbus-x11 \
-  hunspell hunspell-en-gb hunspell-en-us python3-yaml weston xvfb bison flex \
-  gobject-introspection icon-naming-utils libcups2-dev libdrm-dev libevdev-dev \
-  libgbm-dev libgnutls28-dev libgpg-error-dev libinput-dev libjson-glib-dev libmtdev-dev \
-  libp11-kit-dev libpciaccess-dev libssl-dev libtiff5-dev libudev-dev libunistring-dev libv4l-dev \
-  libxcb-composite0-dev libxcb-xfixes0-dev libxfont2 libxfont-dev libxkbcommon-x11-dev \
-  libxkbfile-dev python3-dev ragel x11proto-gl-dev x11proto-input-dev x11proto-randr-dev \
-  x11proto-scrnsaver-dev x11proto-video-dev x11proto-xf86dri-dev \
-  xtrans-dev xutils-dev
-
-# gi-docgen caused a failure at 99% completion for WebKit2WebExtension with a
-# non-helpful `xml.etree.ElementTree.ParseError: unclosed token: line 41073, column 6`
-# and we don't need that, so let's just turn gi-docgen into a no-op
-sudo rm /usr/bin/gi-docgen
-sudo ln -s /usr/bin/true /usr/bin/gi-docgen
-
-date
-
+# Support for 22.04 seems to have been officially added in
+# https://searchfox.org/wubkat/commit/aa960b1a0c7b980efdbc66718239a449b5966a0c
+# so we're now using it directly again.
 # As noted above, this is disabled because it tries to install packages that
 # don't exist on ubuntu22.04 and so the command ends up not doing anything at
 # all, which is obviously not helpful.
-#sudo $FILES_ROOT/Tools/gtk/install-dependencies
+sudo $FILES_ROOT/Tools/gtk/install-dependencies
+
+date
+
+# WIP: Tentatively removing this gi-docgen hack since the ubuntu 22.04 support
+# may have fixed this.
+#
+# gi-docgen caused a failure at 99% completion for WebKit2WebExtension with a
+# non-helpful `xml.etree.ElementTree.ParseError: unclosed token: line 41073, column 6`
+# and we don't need that, so let's just turn gi-docgen into a no-op
+#sudo rm /usr/bin/gi-docgen
+#sudo ln -s /usr/bin/true /usr/bin/gi-docgen
 
 date
 

@@ -6,7 +6,7 @@
     "trees": {
       "wubkat": {
         "priority": 100,
-        "on_error": "continue",
+        "on_error": "halt",
         "cache": "codesearch",
         "index_path": "$WORKING/wubkat",
         "files_path": "$WORKING/wubkat/git",
