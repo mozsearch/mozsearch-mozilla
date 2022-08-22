@@ -57,7 +57,7 @@ sudo apt-get update
 # transitive deps of some of the below.  (And now with the return to
 # install-dependencies with explicit 22.04 these may not be needed at all, but
 # we'll see.)
-sudo apt-get install -y flatpak libcairo-dev libharfbuzz-dev gi-docgen
+sudo apt-get install -y libcairo-dev libharfbuzz-dev gi-docgen
 
 date
 
@@ -79,14 +79,3 @@ date
 # and we don't need that, so let's just turn gi-docgen into a no-op
 #sudo rm /usr/bin/gi-docgen
 #sudo ln -s /usr/bin/true /usr/bin/gi-docgen
-
-date
-
-echo Updating webkit SDK flatpaks
-
-pushd $FILES_ROOT
-$FILES_ROOT/Tools/Scripts/update-webkitgtk-libs
-popd
-
-date
-
