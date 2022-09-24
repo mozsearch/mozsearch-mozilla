@@ -138,8 +138,24 @@ date
 # of mozilla-central, so we can safely assume that if we have a relative path
 # that starts with "src/" or "library" that it's rust code.  Hopefully.  (If we did it later,
 # we'd be seeing the results of other absolute path normalizations.)
-NORMALIZE_EXPR='s#"src[/\\]#"__GENERATED__/__RUST_STDLIB__/#gI'
-NORMALIZE_EXPR+=';s#"library[/\\]#"__GENERATED__/__RUST_STDLIB__/#gI'
+#
+# Note: We have now moved our pattern from `"foo` to `:"foo` because this
+# naive sed transform got tricked by a rust comment which contained the example
+# code `let src = fs::metadata("src")?;` and which then ends up in JSON as
+# `let src = fs::metadata(\"src\")?;` and which our aggregate transforms ended
+# up converting into corrupt JSON:
+# `"value":"/     let src = fs::metadata(\"__GENERATED__/__RUST_STDLIB__/")?;",`
+# where we ate what we thought was a trailing directory backslash but was in
+# fact an escaping backslash!
+#
+# We do this in this manner because sed doesn't support lookaround constraints
+# which means we need to actually match on the surrounding JSON.
+#
+# If we end up needing to do more of this stuff in the future, we should switch
+# to using something that actually understands JSON, but with save-analysis
+# going away, we ideally won't need to deal with that.
+NORMALIZE_EXPR='s#:"src[/\\]#:"__GENERATED__/__RUST_STDLIB__/#gI'
+NORMALIZE_EXPR+=';s#:"library[/\\]#:"__GENERATED__/__RUST_STDLIB__/#gI'
 # For some reason we see generated paths under checkouts like:
 # /builds/worker/checkouts/gecko/obj-arm-unknown-linux-androideabi/dist/xpcrs/rt/nsIChannel.rs
 # Handle this, and do it before we do the source normalization in the next line.
@@ -165,7 +181,7 @@ NORMALIZE_EXPR+=';s#z:[/\\]task_[0-9]*[/\\]workspace[/\\]obj-build[/\\]#__GENERA
 # we leverage the fact that we can mix types of quoting.  '"quoted"'"$FOO" is
 # effectively the same as "\"quoted\"$foo" but we don't need to escape the
 # quotes.  We wrap everything but "${RUST_PLATFORM}" in single-quotes below.
-NORMALIZE_EXPR+=';s#"__GENERATED__/'"${RUST_PLATFORM}"'/(debug|release)/build/([^/]+)-[0-9a-f]+/out/([^"]+)"#"__GENERATED__/__RUST_BUILD_SCRIPT__/\2/\3"#g'
+NORMALIZE_EXPR+=';s#:"__GENERATED__/'"${RUST_PLATFORM}"'/(debug|release)/build/([^/]+)-[0-9a-f]+/out/([^"]+)"#:"__GENERATED__/__RUST_BUILD_SCRIPT__/\2/\3"#g'
 
 # We use -E in order to get extended regexp support, which is necessary to be
 # able to use "+" without escaping it with a (single) backslash.
