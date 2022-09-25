@@ -60,6 +60,14 @@ if [ "$ALL_SAME_AS" != "" ]; then
     # Also merge the analyses files
     MERGED_ANALYSIS="analysis/__GENERATED__/$GENERATED_FILE"
     mkdir -p "$(dirname $MERGED_ANALYSIS)"
+    # TODO: this analysis-* glob seems like it ends up not matching anything
+    # sometimes and this line or even this whole loop could benefit from use of
+    # "shopt -s nullglob" as documented at
+    # https://mywiki.wooledge.org/glob#nullglob but which I'm not doing right
+    # now because it demands some deeper level of investigation.  Also, we
+    # should probably just consider moving more of this logic directly into
+    # rust code if only because it could let us provide better instrumentation
+    # of the path of every file and avoid piles of dos2unix, sed, bash, etc.
     RUST_LOG=info $MOZSEARCH_PATH/tools/target/release/merge-analyses analysis-*/__GENERATED__/$GENERATED_FILE > $MERGED_ANALYSIS
     exit 0
 fi
