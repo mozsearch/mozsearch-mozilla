@@ -154,8 +154,8 @@ date
 # If we end up needing to do more of this stuff in the future, we should switch
 # to using something that actually understands JSON, but with save-analysis
 # going away, we ideally won't need to deal with that.
-NORMALIZE_EXPR='s#:"src[/\\]\+#:"__GENERATED__/__RUST_STDLIB__/#gI'
-NORMALIZE_EXPR+=';s#:"library[/\\]\+#:"__GENERATED__/__RUST_STDLIB__/#gI'
+NORMALIZE_EXPR='s#:"src[/\\]+#:"__GENERATED__/__RUST_STDLIB__/#gI'
+NORMALIZE_EXPR+=';s#:"library[/\\]+#:"__GENERATED__/__RUST_STDLIB__/#gI'
 # For some reason we see generated paths under checkouts like:
 # /builds/worker/checkouts/gecko/obj-arm-unknown-linux-androideabi/dist/xpcrs/rt/nsIChannel.rs
 # Handle this, and do it before we do the source normalization in the next line.
@@ -169,12 +169,12 @@ NORMALIZE_EXPR+=';s#/builds/worker/workspace/obj-build/#__GENERATED__/#g'
 # the following regexp just in case.  But right now nsIChannel.rs on Windows
 # looks like: "z:/task_1589882903/workspace/obj-build/dist/xpcrs/rt/nsIChannel.rs"
 # Note that the '+' needs a backslash because sed.
-NORMALIZE_EXPR+=';s#z:[/\\]\+task_[0-9]*[/\\]\+build[/\\]\+src[/\\]\+obj-[-a-zA-Z0-9_]+[/\\]\+#__GENERATED__/#gI'
+NORMALIZE_EXPR+=';s#z:[/\\]+task_[0-9]*[/\\]+build[/\\]+src[/\\]+obj-[-a-zA-Z0-9_]+[/\\]+#__GENERATED__/#gI'
 # Windows source paths get normalized off.
-NORMALIZE_EXPR+=';s#z:[/\\]\+task_[0-9]*[/\\]\+build[/\\]\+src[/\\]\+##gI'
+NORMALIZE_EXPR+=';s#z:[/\\]+task_[0-9]*[/\\]+build[/\\]+src[/\\]+##gI'
 # Windows build paths get normalized to __GENERATED__, noting we don't consume
 # the trailing slash.
-NORMALIZE_EXPR+=';s#z:[/\\]\+task_[0-9]*[/\\]\+workspace[/\\]\+obj-build[/\\]\+#__GENERATED__/#gI'
+NORMALIZE_EXPR+=';s#z:[/\\]+task_[0-9]*[/\\]+workspace[/\\]+obj-build[/\\]+#__GENERATED__/#gI'
 # Apply the equivalent of the __RUST_BUILD_SCRIPT__ transform from the preceding
 # section.  The regexp is double-quote aware so that we can avoid the filename
 # capture group escaping beyond the bounds of the quoted string.  To this end,
