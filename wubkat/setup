@@ -42,6 +42,21 @@ git remote prune origin || true
 git pull origin main || handle_tree_error "wubkat git pull"
 popd
 
+date
+
+echo Figuring out what revision to use.
+USE_REV=$(./last-successful-build-to-git-commit.sh -GTK-Linux-64-bit-Release-Ubuntu-LTS-Build $GIT_ROOT)
+echo Checking out last successfully built revision "${USE_REV}"
+
+date
+
+pushd $GIT_ROOT
+git checkout "${USE_REV}"
+popd
+echo Revision should now be checked out.
+
+date
+
 echo Generating blame information
 $MOZSEARCH_PATH/tools/target/release/build-blame $GIT_ROOT $BLAME_ROOT
 
@@ -64,18 +79,6 @@ date
 # Support for 22.04 seems to have been officially added in
 # https://searchfox.org/wubkat/commit/aa960b1a0c7b980efdbc66718239a449b5966a0c
 # so we're now using it directly again.
-# As noted above, this is disabled because it tries to install packages that
-# don't exist on ubuntu22.04 and so the command ends up not doing anything at
-# all, which is obviously not helpful.
 sudo $FILES_ROOT/Tools/gtk/install-dependencies
 
 date
-
-# WIP: Tentatively removing this gi-docgen hack since the ubuntu 22.04 support
-# may have fixed this.
-#
-# gi-docgen caused a failure at 99% completion for WebKit2WebExtension with a
-# non-helpful `xml.etree.ElementTree.ParseError: unclosed token: line 41073, column 6`
-# and we don't need that, so let's just turn gi-docgen into a no-op
-#sudo rm /usr/bin/gi-docgen
-#sudo ln -s /usr/bin/true /usr/bin/gi-docgen
