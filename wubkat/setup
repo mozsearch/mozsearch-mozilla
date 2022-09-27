@@ -45,7 +45,7 @@ popd
 date
 
 echo Figuring out what revision to use.
-USE_REV=$(./last-successful-build-to-git-commit.sh -GTK-Linux-64-bit-Release-Ubuntu-LTS-Build $GIT_ROOT)
+USE_REV=$($CONFIG_REPO/wubkat/last-successful-build-to-git-commit.sh -GTK-Linux-64-bit-Release-Ubuntu-LTS-Build $GIT_ROOT)
 echo Checking out last successfully built revision "${USE_REV}"
 
 date
