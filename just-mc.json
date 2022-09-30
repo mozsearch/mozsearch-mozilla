@@ -1,10 +1,14 @@
 {
   "mozsearch_path": "$MOZSEARCH_PATH",
+  "config_repo": "$CONFIG_REPO",
 
   "default_tree": "mozilla-central",
 
   "trees": {
     "mozilla-central": {
+      "priority": 1000,
+      "on_error": "halt",
+      "cache": "everything",
       "index_path": "$WORKING/mozilla-central",
       "files_path": "$WORKING/mozilla-central/git",
       "git_path": "$WORKING/mozilla-central/git",
