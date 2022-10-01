@@ -53,9 +53,14 @@ fi
 # have the data for the exact revision.  This means some files may have stale or
 # missing "File a bug..." UI in the navigation panel, but this is acceptable.
 echo "${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.$REVISION.source.source-bugzilla-info/artifacts/public/components-normalized.json -o bugzilla-components.json \
-   || ${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.latest.source.source-bugzilla-info/artifacts/public/components-normalized.json -o bugzilla-components.json" > downloads.lst
+   || ${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.${REVISION_TREE}.latest.source.source-bugzilla-info/artifacts/public/components-normalized.json -o bugzilla-components.json" > downloads.lst
 echo "${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.$REVISION.source.test-info-all/artifacts/public/test-info-all-tests.json -o test-info-all-tests.json || true" >> downloads.lst
-echo "${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.$REVISION.source.source-wpt-metadata-summary/artifacts/public/summary.json -o wpt-metadata-summary.json || true" >> downloads.lst
+# Right now the WPT metadata job explicitly only runs when files it is interested
+# in have changed.  So if we can't find the specific revision of interest, let's
+# just fail over to latest.  Because this is per-tree, there ideally shouldn't
+# be insane inconsistencies.
+echo "${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.$REVISION.source.source-wpt-metadata-summary/artifacts/public/summary.json -o wpt-metadata-summary.json || \
+      ${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.${REVISION_TREE}.latest.source.source-wpt-metadata-summary/artifacts/public/summary.json -o wpt-metadata-summary.json || true" >> downloads.lst
 # Coverage data currently requires that we use the exact version or not use any
 # coverage data because mozilla-central's merges will usually involve a ton of
 # patches, making stale data potentially very misleading.  See Bug 1677903 for
