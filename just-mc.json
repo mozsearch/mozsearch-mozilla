@@ -1,8 +1,8 @@
 {
   "mozsearch_path": "$MOZSEARCH_PATH",
   "config_repo": "$CONFIG_REPO",
-
   "default_tree": "mozilla-central",
+  "instance_type": "t3.xlarge",
 
   "trees": {
     "mozilla-central": {

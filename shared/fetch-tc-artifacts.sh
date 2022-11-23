@@ -61,6 +61,17 @@ echo "${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko
 # be insane inconsistencies.
 echo "${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.$REVISION.source.source-wpt-metadata-summary/artifacts/public/summary.json -o wpt-metadata-summary.json || \
       ${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.${REVISION_TREE}.latest.source.source-wpt-metadata-summary/artifacts/public/summary.json -o wpt-metadata-summary.json || true" >> downloads.lst
+# WPT MANIFEST.json files generated via
+# https://searchfox.org/mozilla-central/source/taskcluster/ci/source-test/wpt-manifest.yml
+#
+# Similar to the WPT metadata jobs above, these currently only get built on changes,
+# but it turns out we just aren't setting dependencies correctly in our taskcluster
+# m-c jobs, so we can address this.
+#
+# Note that these end up in a tarball and we need to extract these, etc.
+echo "${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.$REVISION.source.manifest-upload/artifacts/public/manifests.tar.gz -o wpt-manifests.tar.gz || \
+      ${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.${REVISION_TREE}.latest.source.manifest-upload/artifacts/public/manifests.tar.gz -o wpt-manifests.tar.gz || true" >> downloads.lst
+
 # Coverage data currently requires that we use the exact version or not use any
 # coverage data because mozilla-central's merges will usually involve a ton of
 # patches, making stale data potentially very misleading.  See Bug 1677903 for
@@ -101,5 +112,16 @@ parallel --halt now,fail=1 < downloads.lst
 # Clean out any artifacts left over from previous runs
 rm -rf analysis && mkdir -p analysis
 rm -rf objdir && mkdir -p objdir
+
+# Extract the WPT MANIFEST.json files and rename them if we have them.
+if [[ -f wpt-manifests.tar.gz ]]; then
+    mkdir manifest-extract
+    pushd manifest-extract
+    tar xvzf ../wpt-manifests.tar.gz
+    mv meta/MANIFEST.json ../wpt-manifest.json || true
+    mv mozilla/meta/MANIFEST.json ../wpt-mozilla-manifest.json || true
+    popd
+    rm -rf manifest-extract
+fi
 
 popd
