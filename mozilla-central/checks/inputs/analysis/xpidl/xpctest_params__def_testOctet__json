@@ -1,1 +1,1 @@
-filter-analysis js/xpconnect/tests/idl/xpctest_params.idl -k idl -i "testOctet"
+filter-analysis js/xpconnect/tests/idl/xpctest_params.idl -k idl -i "nsIXPCTestParams::testOctet"
