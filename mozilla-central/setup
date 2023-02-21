@@ -51,8 +51,17 @@ else
     COV_RECENCY_DAYS=$(jq -Mr '.created | sub("\\.[0-9]+Z$"; "Z") | (now - fromdate) / (24 * 60 * 60) | floor' <<< $COV_TASK_INFO)
 
     if [[ $COV_RECENCY_DAYS = "0" ]]; then
-        REVISION_ID="revision.${COV_HG_REV}"
-        echo "Coverage data is recent enough, using explicit revision: ${REVISION_ID}"
+        # We also need to check that the revision is itself recent enough, see
+        # bug 1818083.
+        COV_HG_REV_TARGET_INFO=$(curl -SsfL --compressed "${TC_INDEX_API_URL}/gecko.v2.${REVISION_TREE}.revision.${COV_HG_REV}.firefox.linux64-searchfox-debug/artifacts/public/build/target.json")
+        COV_BUILDID=$(jq -Mr .buildid <<< $COV_HG_REV_TARGET_INFO)
+        COV_BUILDID_IS_RECENT=$(jq -Mr --arg today $(date +%Y%m%d) --arg yesterday $(date --date yesterday +%Y%m%d) '.buildid | startswith($today) or startswith($yesterday)' <<< $COV_HG_REV_TARGET_INFO)
+        if [ $COV_BUILDID_IS_RECENT = "true" ]; then
+            REVISION_ID="revision.${COV_HG_REV}"
+            echo "Coverage data is recent enough, using explicit revision: ${REVISION_ID}"
+        else
+            echo "Coverage data is recent, but it's for an old revision (${COV_HG_REV}, ${COV_BUILDID}), sticking with: ${REVISION_ID}"
+        fi
     else
         echo "Coverage data is ${COV_RECENCY_DAYS} old, sticking with: ${REVISION_ID}"
     fi
