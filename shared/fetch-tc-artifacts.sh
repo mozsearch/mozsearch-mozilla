@@ -39,6 +39,7 @@ if [[ -n $PREEXISTING_HG_REV && $PREEXISTING_HG_REV != $INDEXED_HG_REV ]]; then
     rm -f *.mozsearch-index.zip
     rm -f *.mozsearch-rust.zip
     rm -f *.mozsearch-rust-stdlib.zip
+    rm -r *.mozsearch-scip-index.zip
     rm -f *.generated-files.tar.gz
     rm -f *.distinclude.map
 fi
@@ -47,20 +48,24 @@ fi
 # we're indexing. But do them in parallel by emitting all the curl commands into
 # a file and then feeding it to GNU parallel.
 
+TC_TASK="https://firefox-ci-tc.services.mozilla.com/api/index/v1/task"
+TC_REV_PREFIX="${TC_TASK}/gecko.v2.${REVISION}"
+TC_LATEST_PREFIX="${TC_TASK}/gecko.v2.${REVISION_TREE}.latest"
+
 # The components job periodically fails when someone adds a new file to the tree
 # without ensuring there's a moz.build file that covers it, so we fail over to
 # using the "latest" version of the components file in that case when we don't
 # have the data for the exact revision.  This means some files may have stale or
 # missing "File a bug..." UI in the navigation panel, but this is acceptable.
-echo "${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.$REVISION.source.source-bugzilla-info/artifacts/public/components-normalized.json -o bugzilla-components.json \
-   || ${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.${REVISION_TREE}.latest.source.source-bugzilla-info/artifacts/public/components-normalized.json -o bugzilla-components.json" > downloads.lst
-echo "${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.$REVISION.source.test-info-all/artifacts/public/test-info-all-tests.json -o test-info-all-tests.json || true" >> downloads.lst
+echo "${CURL} ${TC_REV_PREFIX}.source.source-bugzilla-info/artifacts/public/components-normalized.json -o bugzilla-components.json \
+   || ${CURL} ${TC_LATEST_PREFIX}.source.source-bugzilla-info/artifacts/public/components-normalized.json -o bugzilla-components.json" > downloads.lst
+echo "${CURL} ${TC_REV_PREFIX}.source.test-info-all/artifacts/public/test-info-all-tests.json -o test-info-all-tests.json || true" >> downloads.lst
 # Right now the WPT metadata job explicitly only runs when files it is interested
 # in have changed.  So if we can't find the specific revision of interest, let's
 # just fail over to latest.  Because this is per-tree, there ideally shouldn't
 # be insane inconsistencies.
-echo "${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.$REVISION.source.source-wpt-metadata-summary/artifacts/public/summary.json -o wpt-metadata-summary.json || \
-      ${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.${REVISION_TREE}.latest.source.source-wpt-metadata-summary/artifacts/public/summary.json -o wpt-metadata-summary.json || true" >> downloads.lst
+echo "${CURL} ${TC_REV_PREFIX}.source.source-wpt-metadata-summary/artifacts/public/summary.json -o wpt-metadata-summary.json || \
+      ${CURL} ${TC_LATEST_PREFIX}.source.source-wpt-metadata-summary/artifacts/public/summary.json -o wpt-metadata-summary.json || true" >> downloads.lst
 # WPT MANIFEST.json files generated via
 # https://searchfox.org/mozilla-central/source/taskcluster/ci/source-test/wpt-manifest.yml
 #
@@ -69,16 +74,16 @@ echo "${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko
 # m-c jobs, so we can address this.
 #
 # Note that these end up in a tarball and we need to extract these, etc.
-echo "${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.$REVISION.source.manifest-upload/artifacts/public/manifests.tar.gz -o wpt-manifests.tar.gz || \
-      ${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.${REVISION_TREE}.latest.source.manifest-upload/artifacts/public/manifests.tar.gz -o wpt-manifests.tar.gz || true" >> downloads.lst
+echo "${CURL} ${TC_REV_PREFIX}.source.manifest-upload/artifacts/public/manifests.tar.gz -o wpt-manifests.tar.gz || \
+      ${CURL} ${TC_LATEST_PREFIX}.source.manifest-upload/artifacts/public/manifests.tar.gz -o wpt-manifests.tar.gz || true" >> downloads.lst
 
 # Coverage data currently requires that we use the exact version or not use any
 # coverage data because mozilla-central's merges will usually involve a ton of
 # patches, making stale data potentially very misleading.  See Bug 1677903 for
 # more discussion.
-echo "${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/project.relman.code-coverage.production.repo.${REVISION_TREE}.${INDEXED_HG_REV}/artifacts/public/code-coverage-report.json -o code-coverage-report.json || true" >> downloads.lst
+echo "${CURL} ${TC_TASK}/project.relman.code-coverage.production.repo.${REVISION_TREE}.${INDEXED_HG_REV}/artifacts/public/code-coverage-report.json -o code-coverage-report.json || true" >> downloads.lst
 for PLATFORM in linux64 macosx64 win64 android-armv7; do
-    TC_PREFIX="https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.${REVISION}.firefox.${PLATFORM}-searchfox-debug/artifacts/public/build"
+    TC_PREFIX="${TC_REV_PREFIX}.firefox.${PLATFORM}-searchfox-debug/artifacts/public/build"
     # First check that the searchfox job exists for the platform and revision we want. Otherwise emit a warning and skip it. This
     # file is small so it's cheap to download as a check that the analysis data for the platform exists.
     #
@@ -93,13 +98,14 @@ for PLATFORM in linux64 macosx64 win64 android-armv7; do
         continue
     fi
 
-    TC_PREFIX="https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.${REVISION}.firefox.${PLATFORM}-searchfox-debug/artifacts/public/build"
     # C++ analysis
     echo "${CURL} ${TC_PREFIX}/target.mozsearch-index.zip > ${PLATFORM}.mozsearch-index.zip" >> downloads.lst
     # Rust save-analysis files
     echo "${CURL} ${TC_PREFIX}/target.mozsearch-rust.zip > ${PLATFORM}.mozsearch-rust.zip" >> downloads.lst
     # Rust stdlib src and analysis data
     echo "${CURL} ${TC_PREFIX}/target.mozsearch-rust-stdlib.zip > ${PLATFORM}.mozsearch-rust-stdlib.zip" >> downloads.lst
+    # Rust scip files
+    echo "${CURL} ${TC_PREFIX}/target.mozsearch-scip-index.zip > ${PLATFORM}.mozsearch-scip-index.zip" >> downloads.lst
     # Generated sources tarballs
     echo "${CURL} ${TC_PREFIX}/target.generated-files.tar.gz > ${PLATFORM}.generated-files.tar.gz" >> downloads.lst
     # Manifest for dist/include entries

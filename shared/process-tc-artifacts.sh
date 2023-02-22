@@ -40,6 +40,15 @@ unzip -q $PLATFORM.mozsearch-index.zip -d analysis-$PLATFORM
 mkdir -p objdir-$PLATFORM
 unzip -q $PLATFORM.mozsearch-rust.zip -d objdir-$PLATFORM
 
+date
+
+if [ -f "$PLATFORM.mozsearch-scip-index.zip" ]; then
+  mkdir -p scip-$PLATFORM
+  unzip -q $PLATFORM.mozsearch-scip-index.zip -d scip-$PLATFORM
+fi
+
+date
+
 # Unpack generated sources tarballs into platform-specific folder
 mkdir -p generated-$PLATFORM
 tar -x -z -C generated-$PLATFORM -f $PLATFORM.generated-files.tar.gz
