@@ -16,7 +16,8 @@
       "hg_root": "https://hg.mozilla.org/releases/mozilla-esr17",
       "objdir_path": "$WORKING/mozilla-esr17/objdir",
       "codesearch_path": "$WORKING/mozilla-esr17/livegrep.idx",
-      "codesearch_port": 8081
+      "codesearch_port": 8081,
+      "scip_subtrees": {}
     },
 
     "mozilla-esr31": {
@@ -31,7 +32,8 @@
       "hg_root": "https://hg.mozilla.org/releases/mozilla-esr31",
       "objdir_path": "$WORKING/mozilla-esr31/objdir",
       "codesearch_path": "$WORKING/mozilla-esr31/livegrep.idx",
-      "codesearch_port": 8082
+      "codesearch_port": 8082,
+      "scip_subtrees": {}
     },
 
     "mozilla-esr45": {
@@ -46,7 +48,8 @@
       "hg_root": "https://hg.mozilla.org/releases/mozilla-esr45",
       "objdir_path": "$WORKING/mozilla-esr45/objdir",
       "codesearch_path": "$WORKING/mozilla-esr45/livegrep.idx",
-      "codesearch_port": 8083
+      "codesearch_port": 8083,
+      "scip_subtrees": {}
     },
 
     "mozilla-esr60": {
@@ -75,7 +78,8 @@
       "hg_root": "https://hg.mozilla.org/releases/comm-esr60",
       "objdir_path": "$WORKING/comm-esr60/objdir",
       "codesearch_path": "$WORKING/comm-esr60/livegrep.idx",
-      "codesearch_port": 8085
+      "codesearch_port": 8085,
+      "scip_subtrees": {}
     },
 
     "mozilla-esr68": {
@@ -90,7 +94,8 @@
       "hg_root": "https://hg.mozilla.org/releases/mozilla-esr68",
       "objdir_path": "$WORKING/mozilla-esr68/objdir",
       "codesearch_path": "$WORKING/mozilla-esr68/livegrep.idx",
-      "codesearch_port": 8086
+      "codesearch_port": 8086,
+      "scip_subtrees": {}
     },
 
     "comm-esr68": {
@@ -104,7 +109,8 @@
       "hg_root": "https://hg.mozilla.org/releases/comm-esr68",
       "objdir_path": "$WORKING/comm-esr68/objdir",
       "codesearch_path": "$WORKING/comm-esr68/livegrep.idx",
-      "codesearch_port": 8087
+      "codesearch_port": 8087,
+      "scip_subtrees": {}
     },
 
     "mozilla-esr78": {
@@ -118,7 +124,8 @@
       "hg_root": "https://hg.mozilla.org/releases/mozilla-esr78",
       "objdir_path": "$WORKING/mozilla-esr78/objdir",
       "codesearch_path": "$WORKING/mozilla-esr78/livegrep.idx",
-      "codesearch_port": 8088
+      "codesearch_port": 8088,
+      "scip_subtrees": {}
     },
 
     "comm-esr78": {
@@ -132,7 +139,8 @@
       "hg_root": "https://hg.mozilla.org/releases/comm-esr78",
       "objdir_path": "$WORKING/comm-esr78/objdir",
       "codesearch_path": "$WORKING/comm-esr78/livegrep.idx",
-      "codesearch_port": 8089
+      "codesearch_port": 8089,
+      "scip_subtrees": {}
     },
 
     "mozilla-esr91": {
@@ -147,7 +155,8 @@
       "hg_root": "https://hg.mozilla.org/releases/mozilla-esr91",
       "objdir_path": "$WORKING/mozilla-esr91/objdir",
       "codesearch_path": "$WORKING/mozilla-esr91/livegrep.idx",
-      "codesearch_port": 8090
+      "codesearch_port": 8090,
+      "scip_subtrees": {}
     },
 
     "comm-esr91": {
@@ -161,7 +170,8 @@
       "hg_root": "https://hg.mozilla.org/releases/comm-esr91",
       "objdir_path": "$WORKING/comm-esr91/objdir",
       "codesearch_path": "$WORKING/comm-esr91/livegrep.idx",
-      "codesearch_port": 8091
+      "codesearch_port": 8091,
+      "scip_subtrees": {}
     }
   }
 }

@@ -19,7 +19,8 @@
       "wpt_root": "testing/web-platform",
       "objdir_path": "$WORKING/mozilla-central/objdir",
       "codesearch_path": "$WORKING/mozilla-central/livegrep.idx",
-      "codesearch_port": 8082
+      "codesearch_port": 8082,
+      "scip_subtrees": {}
     }
   }
 }

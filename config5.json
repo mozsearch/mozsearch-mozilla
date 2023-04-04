@@ -16,7 +16,8 @@
         "github_repo": "https://github.com/WebKit/Webkit",
         "objdir_path": "$WORKING/wubkat/objdir",
         "codesearch_path": "$WORKING/wubkat/livegrep.idx",
-        "codesearch_port": 8081
+        "codesearch_port": 8081,
+        "scip_subtrees": {}
       }
     }
   }
