@@ -17,7 +17,8 @@
       "hg_root": "https://hg.mozilla.org/projects/nss",
       "objdir_path": "$WORKING/nss/dist",
       "codesearch_path": "$WORKING/nss/livegrep.idx",
-      "codesearch_port": 8081
+      "codesearch_port": 8081,
+      "scip_subtrees": {}
     },
 
     "mozilla-central": {
@@ -34,7 +35,8 @@
       "wpt_root": "testing/web-platform",
       "objdir_path": "$WORKING/mozilla-central/objdir",
       "codesearch_path": "$WORKING/mozilla-central/livegrep.idx",
-      "codesearch_port": 8082
+      "codesearch_port": 8082,
+      "scip_subtrees": {}
     },
 
     "comm-central": {
@@ -49,7 +51,8 @@
       "hg_root": "https://hg.mozilla.org/comm-central",
       "objdir_path": "$WORKING/comm-central/objdir",
       "codesearch_path": "$WORKING/comm-central/livegrep.idx",
-      "codesearch_port": 8083
+      "codesearch_port": 8083,
+      "scip_subtrees": {}
     },
 
     "mozilla-mobile": {
@@ -61,7 +64,8 @@
       "git_path": "$WORKING/mozilla-mobile/git",
       "objdir_path": "$WORKING/mozilla-mobile/objdir",
       "codesearch_path": "$WORKING/mozilla-mobile/livegrep.idx",
-      "codesearch_port": 8084
+      "codesearch_port": 8084,
+      "scip_subtrees": {}
     }
   }
 }
