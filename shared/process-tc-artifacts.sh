@@ -38,13 +38,18 @@ unzip -q $PLATFORM.mozsearch-index.zip -d analysis-$PLATFORM
 # run rust-indexer.rs on them without having to perform complicated path
 # filtering.
 mkdir -p objdir-$PLATFORM
-unzip -q $PLATFORM.mozsearch-rust.zip -d objdir-$PLATFORM
+
+date
+
+if [ -f "$PLATFORM.mozsearch-rust.zip" ]; then
+  unzip -q $PLATFORM.mozsearch-rust.zip -d objdir-$PLATFORM
+fi
 
 date
 
 if [ -f "$PLATFORM.mozsearch-scip-index.zip" ]; then
-  mkdir -p scip-$PLATFORM
-  unzip -q $PLATFORM.mozsearch-scip-index.zip -d scip-$PLATFORM
+  unzip -q $PLATFORM.mozsearch-scip-index.zip -d objdir-$PLATFORM
+  mv objdir-$PLATFORM/index.scip objdir-$PLATFORM/rust.scip
 fi
 
 date
