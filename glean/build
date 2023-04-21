@@ -5,6 +5,7 @@ set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
 pushd $GIT_ROOT
-# Now that nightly rust doesn't support save-analysis, there's no point trying to compile glean.
-# RUSTFLAGS="-Z save-analysis" cargo +nightly check --all --target-dir=$OBJDIR || echo "WARNING: Glean build failed, see log for details"
+rust-analyzer scip .
+mkdir -p $OBJDIR
+mv index.scip $OBJDIR/rust.scip
 popd
