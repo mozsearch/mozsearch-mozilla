@@ -99,17 +99,17 @@ for PLATFORM in linux64 macosx64 win64 android-armv7; do
     fi
 
     # C++ analysis
-    echo "${CURL} ${TC_PREFIX}/target.mozsearch-index.zip > ${PLATFORM}.mozsearch-index.zip" >> downloads.lst
+    echo "${CURL} ${TC_PREFIX}/target.mozsearch-index.zip -o ${PLATFORM}.mozsearch-index.zip" >> downloads.lst
     # Rust save-analysis files
-    echo "${CURL} ${TC_PREFIX}/target.mozsearch-rust.zip > ${PLATFORM}.mozsearch-rust.zip" >> downloads.lst
+    echo "${CURL} ${TC_PREFIX}/target.mozsearch-rust.zip -o ${PLATFORM}.mozsearch-rust.zip || true" >> downloads.lst
     # Rust stdlib src and analysis data
-    echo "${CURL} ${TC_PREFIX}/target.mozsearch-rust-stdlib.zip > ${PLATFORM}.mozsearch-rust-stdlib.zip" >> downloads.lst
+    echo "${CURL} ${TC_PREFIX}/target.mozsearch-rust-stdlib.zip -o ${PLATFORM}.mozsearch-rust-stdlib.zip || true" >> downloads.lst
     # Rust scip files
-    echo "${CURL} ${TC_PREFIX}/target.mozsearch-scip-index.zip > ${PLATFORM}.mozsearch-scip-index.zip" >> downloads.lst
+    echo "${CURL} ${TC_PREFIX}/target.mozsearch-scip-index.zip -o ${PLATFORM}.mozsearch-scip-index.zip" >> downloads.lst
     # Generated sources tarballs
-    echo "${CURL} ${TC_PREFIX}/target.generated-files.tar.gz > ${PLATFORM}.generated-files.tar.gz" >> downloads.lst
+    echo "${CURL} ${TC_PREFIX}/target.generated-files.tar.gz -o ${PLATFORM}.generated-files.tar.gz" >> downloads.lst
     # Manifest for dist/include entries
-    echo "${CURL} ${TC_PREFIX}/target.mozsearch-distinclude.map > ${PLATFORM}.distinclude.map" >> downloads.lst
+    echo "${CURL} ${TC_PREFIX}/target.mozsearch-distinclude.map -o ${PLATFORM}.distinclude.map" >> downloads.lst
 done # end PLATFORM loop
 
 # Do the downloads
