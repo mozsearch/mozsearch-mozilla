@@ -4,34 +4,19 @@
   "instance_type": "t3.2xlarge",
 
   "trees": {
-    "mozilla-esr60": {
+    "mozilla-esr17": {
       "priority": 10,
       "on_error": "continue",
       "cache": "codesearch",
-      "index_path": "$WORKING/mozilla-esr60",
-      "files_path": "$WORKING/mozilla-esr60/git",
-      "git_path": "$WORKING/mozilla-esr60/git",
-      "git_blame_path": "$WORKING/mozilla-esr60/blame",
+      "index_path": "$WORKING/mozilla-esr17",
+      "files_path": "$WORKING/mozilla-esr17/git",
+      "git_path": "$WORKING/mozilla-esr17/git",
+      "git_blame_path": "$WORKING/mozilla-esr17/blame",
       "github_repo": "https://github.com/mozilla/gecko-dev",
-      "hg_root": "https://hg.mozilla.org/releases/mozilla-esr60",
-      "objdir_path": "$WORKING/mozilla-esr60/objdir",
-      "codesearch_path": "$WORKING/mozilla-esr60/livegrep.idx",
+      "hg_root": "https://hg.mozilla.org/releases/mozilla-esr17",
+      "objdir_path": "$WORKING/mozilla-esr17/objdir",
+      "codesearch_path": "$WORKING/mozilla-esr17/livegrep.idx",
       "codesearch_port": 8081
-    },
-
-    "mozilla-esr45": {
-      "priority": 10,
-      "on_error": "continue",
-      "cache": "codesearch",
-      "index_path": "$WORKING/mozilla-esr45",
-      "files_path": "$WORKING/mozilla-esr45/git",
-      "git_path": "$WORKING/mozilla-esr45/git",
-      "git_blame_path": "$WORKING/mozilla-esr45/blame",
-      "github_repo": "https://github.com/mozilla/gecko-dev",
-      "hg_root": "https://hg.mozilla.org/releases/mozilla-esr45",
-      "objdir_path": "$WORKING/mozilla-esr45/objdir",
-      "codesearch_path": "$WORKING/mozilla-esr45/livegrep.idx",
-      "codesearch_port": 8082
     },
 
     "mozilla-esr31": {
@@ -46,21 +31,36 @@
       "hg_root": "https://hg.mozilla.org/releases/mozilla-esr31",
       "objdir_path": "$WORKING/mozilla-esr31/objdir",
       "codesearch_path": "$WORKING/mozilla-esr31/livegrep.idx",
-      "codesearch_port": 8083
+      "codesearch_port": 8082
     },
 
-    "mozilla-esr17": {
+    "mozilla-esr45": {
       "priority": 10,
       "on_error": "continue",
       "cache": "codesearch",
-      "index_path": "$WORKING/mozilla-esr17",
-      "files_path": "$WORKING/mozilla-esr17/git",
-      "git_path": "$WORKING/mozilla-esr17/git",
-      "git_blame_path": "$WORKING/mozilla-esr17/blame",
+      "index_path": "$WORKING/mozilla-esr45",
+      "files_path": "$WORKING/mozilla-esr45/git",
+      "git_path": "$WORKING/mozilla-esr45/git",
+      "git_blame_path": "$WORKING/mozilla-esr45/blame",
       "github_repo": "https://github.com/mozilla/gecko-dev",
-      "hg_root": "https://hg.mozilla.org/releases/mozilla-esr17",
-      "objdir_path": "$WORKING/mozilla-esr17/objdir",
-      "codesearch_path": "$WORKING/mozilla-esr17/livegrep.idx",
+      "hg_root": "https://hg.mozilla.org/releases/mozilla-esr45",
+      "objdir_path": "$WORKING/mozilla-esr45/objdir",
+      "codesearch_path": "$WORKING/mozilla-esr45/livegrep.idx",
+      "codesearch_port": 8083
+    },
+
+    "mozilla-esr60": {
+      "priority": 10,
+      "on_error": "continue",
+      "cache": "codesearch",
+      "index_path": "$WORKING/mozilla-esr60",
+      "files_path": "$WORKING/mozilla-esr60/git",
+      "git_path": "$WORKING/mozilla-esr60/git",
+      "git_blame_path": "$WORKING/mozilla-esr60/blame",
+      "github_repo": "https://github.com/mozilla/gecko-dev",
+      "hg_root": "https://hg.mozilla.org/releases/mozilla-esr60",
+      "objdir_path": "$WORKING/mozilla-esr60/objdir",
+      "codesearch_path": "$WORKING/mozilla-esr60/livegrep.idx",
       "codesearch_port": 8084
     },
 
