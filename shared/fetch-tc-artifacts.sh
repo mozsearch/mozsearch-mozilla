@@ -105,7 +105,12 @@ for PLATFORM in linux64 macosx64 win64 android-armv7; do
     # Rust stdlib src and analysis data
     echo "${CURL} ${TC_PREFIX}/target.mozsearch-rust-stdlib.zip -o ${PLATFORM}.mozsearch-rust-stdlib.zip || true" >> downloads.lst
     # Rust scip files
-    echo "${CURL} ${TC_PREFIX}/target.mozsearch-scip-index.zip -o ${PLATFORM}.mozsearch-scip-index.zip" >> downloads.lst
+    if [[ -n $SCIP_OPTIONAL ]]; then
+        # ESR 102 doesn't have these files, so let it be optional there.
+        echo "${CURL} ${TC_PREFIX}/target.mozsearch-scip-index.zip -o ${PLATFORM}.mozsearch-scip-index.zip || true" >> downloads.lst
+    else
+        echo "${CURL} ${TC_PREFIX}/target.mozsearch-scip-index.zip -o ${PLATFORM}.mozsearch-scip-index.zip" >> downloads.lst
+    fi
     # Generated sources tarballs
     echo "${CURL} ${TC_PREFIX}/target.generated-files.tar.gz -o ${PLATFORM}.generated-files.tar.gz" >> downloads.lst
     # Manifest for dist/include entries

@@ -19,6 +19,7 @@ $CONFIG_REPO/shared/checkout-gecko-repos.sh $REVISION_TREE "esr102" "$INDEXED_HG
 
 date
 
+export SCIP_OPTIONAL=yes
 $CONFIG_REPO/shared/fetch-tc-artifacts.sh $REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV"
 
 date
