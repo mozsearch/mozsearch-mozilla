@@ -155,20 +155,6 @@
       "codesearch_port": 8091
     },
 
-    "mozilla-pine": {
-      "priority": 200,
-      "on_error": "continue",
-      "cache": "codesearch",
-      "index_path": "$WORKING/mozilla-pine",
-      "files_path": "$WORKING/mozilla-pine/git",
-      "git_path": "$WORKING/mozilla-pine/git",
-      "git_blame_path": "$WORKING/mozilla-pine/blame",
-      "hg_root": "https://hg.mozilla.org/projects/pine",
-      "objdir_path": "$WORKING/mozilla-pine/objdir",
-      "codesearch_path": "$WORKING/mozilla-pine/livegrep.idx",
-      "codesearch_port": 8092
-    },
-
     "mozilla-vpn-client": {
       "priority": 100,
       "on_error": "continue",
@@ -180,7 +166,7 @@
       "git_blame_path": "$WORKING/mozilla-vpn-client/blame",
       "objdir_path": "$WORKING/mozilla-vpn-client/objdir",
       "codesearch_path": "$WORKING/mozilla-vpn-client/livegrep.idx",
-      "codesearch_port": 8093
+      "codesearch_port": 8092
     },
 
     "mozilla-elm": {
@@ -194,7 +180,7 @@
       "hg_root": "https://hg.mozilla.org/projects/elm",
       "objdir_path": "$WORKING/mozilla-elm/objdir",
       "codesearch_path": "$WORKING/mozilla-elm/livegrep.idx",
-      "codesearch_port": 8094
+      "codesearch_port": 8093
     }
   }
 }

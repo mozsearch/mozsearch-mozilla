@@ -9,5 +9,10 @@ set -o pipefail # Check all commands in a pipeline
 # as to minimize the amount of new work needed. The order of branches
 # in the loop is also selected to reduce unnecessary work; changing the
 # order should not affect correctness but may increase redundant work.
-BRANCHES="pine elm beta release esr115 esr102 esr91 esr78 esr68 esr60 esr45 esr31 esr17"
+
+# Note: the pine branch used to be in here, but was removed in bug 1841395.
+# If the pine branch gets reset for a new project and we want to
+# add it back in here, we might need to manually update the tarball to
+# strip the existing pine branch. I don't know if it will work otherwise.
+BRANCHES="elm beta release esr115 esr102 esr91 esr78 esr68 esr60 esr45 esr31 esr17"
 $CONFIG_REPO/shared/rebuild-blame.sh --tarball-base gecko --branches "${BRANCHES}" $*
