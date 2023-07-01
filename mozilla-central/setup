@@ -89,7 +89,7 @@ LASTBRANCH="master"
 # putting the branch at the front of the list if they forked off of m-c.  So
 # in the case of new ESR branches (which fork off of "release"), they go after
 # release and before existing ESR branches.
-for BRANCH in pine elm beta release esr102 esr91 esr78 esr68 esr60 esr45 esr31 esr17; do
+for BRANCH in pine elm beta release esr115 esr102 esr91 esr78 esr68 esr60 esr45 esr31 esr17; do
     echo "Updating gecko-dev branch $BRANCH to latest from cinnabar upstream..."
     pushd $GIT_ROOT
     git branch -f $BRANCH $BRANCH/branches/default/tip
