@@ -53,7 +53,7 @@ git config remote.esr31.url || git remote add -t branches/default/tip esr31 hg::
 git config remote.esr17.url || git remote add -t branches/default/tip esr17 hg::https://hg.mozilla.org/releases/mozilla-esr17
 git config cinnabar.graft false
 git config fetch.prune true
-git fetch --multiple central pine elm beta release esr115 esr102 esr91 esr78 esr68 esr60 esr45 esr31 esr17
+git -c cinnabar.check=traceback fetch --multiple central pine elm beta release esr115 esr102 esr91 esr78 esr68 esr60 esr45 esr31 esr17
 
 # If a try push was specified, pull it in non-graft mode so we actually pull those changes.
 if [ "$REVISION_TREE" == "try" ]; then
