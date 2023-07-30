@@ -11,3 +11,13 @@ $CONFIG_REPO/shared/process-gecko-analysis.sh
 popd
 
 date
+
+# Analyze the unified python corpus
+pushd $GIT_ROOT/python
+# Absolute paths aren't treated as absolute but instead concatenated, so we need
+# to use just a filename and then move it after.
+rtx exec nodejs@18 -- scip-python index --project-name python --output python.scip
+mv python.scip $INDEX_ROOT
+popd
+
+date
