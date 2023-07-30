@@ -204,19 +204,22 @@ find objdir-$PLATFORM -type f -name "*.json" | parallel -q --halt now,fail=1 sed
 
 date
 
-# Run the rust analysis here.
+
+## Run the SCIP analysis here.
+
 # Note that we specify "objdir" as the objdir_src for __GENERATED__ for source
 # purposes because the only source that's in objdir-$PLATFORM is the rustlib
 # source, and that's covered by the next line which does use objdir-$PLATFORM.
 # (We also copy that source into ojbdir, but that action is racey.  See the
 # comments where we perform the copying.)
 export RUST_LOG=info
-$MOZSEARCH_PATH/scripts/rust-analyze.sh \
+$MOZSEARCH_PATH/tools/target/release/scip-indexer \
   "$CONFIG_FILE" \
   "$TREE_NAME" \
-  "objdir-$PLATFORM" \
-  "generated-$PLATFORM" \
-  "$INDEX_ROOT/analysis-$PLATFORM"
+  --subtree-name "rust" \
+  --subtree-root "." \
+  --platform "$PLATFORM" \
+  "objdir-$PLATFORM/rust.scip"
 
 date
 
