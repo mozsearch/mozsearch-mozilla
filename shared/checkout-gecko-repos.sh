@@ -43,6 +43,7 @@ pushd $GIT_ROOT
 # strip the existing pine branch. I don't know if it will work otherwise.
 git config remote.central.url || git remote add -t branches/default/tip central hg::https://hg.mozilla.org/mozilla-central
 git config remote.elm.url || git remote add -t branches/default/tip elm hg::https://hg.mozilla.org/projects/elm
+git config remote.cedar.url || git remote add -t branches/default/tip cedar hg::https://hg.mozilla.org/projects/cedar
 git config remote.beta.url || git remote add -t branches/default/tip beta hg::https://hg.mozilla.org/releases/mozilla-beta
 git config remote.release.url || git remote add -t branches/default/tip release hg::https://hg.mozilla.org/releases/mozilla-release
 git config remote.esr115.url || git remote add -t branches/default/tip esr115 hg::https://hg.mozilla.org/releases/mozilla-esr115
@@ -56,7 +57,7 @@ git config remote.esr31.url || git remote add -t branches/default/tip esr31 hg::
 git config remote.esr17.url || git remote add -t branches/default/tip esr17 hg::https://hg.mozilla.org/releases/mozilla-esr17
 git config cinnabar.graft false
 git config fetch.prune true
-git -c cinnabar.check=traceback fetch --multiple central elm beta release esr115 esr102 esr91 esr78 esr68 esr60 esr45 esr31 esr17
+git -c cinnabar.check=traceback fetch --multiple central elm cedar beta release esr115 esr102 esr91 esr78 esr68 esr60 esr45 esr31 esr17
 
 # If a try push was specified, pull it in non-graft mode so we actually pull those changes.
 if [ "$REVISION_TREE" == "try" ]; then
