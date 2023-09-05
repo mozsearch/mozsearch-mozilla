@@ -8,7 +8,7 @@ set -o pipefail # Check all commands in a pipeline
 # and $MOZSEARCH_PATH defined in the environment.
 
 # Process the downloads for each platform in parallel
-echo "linux64 macosx64 win64 android-armv7" | tr " " "\n" |
+echo "linux64 macosx64 win64 android-armv7 ios" | tr " " "\n" |
 parallel --halt now,fail=1 "$CONFIG_REPO/shared/process-tc-artifacts.sh {}"
 
 # the script above ran the rust analysis, so drop this hacky file to tell

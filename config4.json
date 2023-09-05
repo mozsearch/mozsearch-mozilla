@@ -181,6 +181,20 @@
       "objdir_path": "$WORKING/mozilla-elm/objdir",
       "codesearch_path": "$WORKING/mozilla-elm/livegrep.idx",
       "codesearch_port": 8093
+    },
+
+    "mozilla-cedar": {
+      "priority": 195,
+      "on_error": "continue",
+      "cache": "codesearch",
+      "index_path": "$WORKING/mozilla-cedar",
+      "files_path": "$WORKING/mozilla-cedar/git",
+      "git_path": "$WORKING/mozilla-cedar/git",
+      "git_blame_path": "$WORKING/mozilla-cedar/blame",
+      "hg_root": "https://hg.mozilla.org/projects/cedar",
+      "objdir_path": "$WORKING/mozilla-cedar/objdir",
+      "codesearch_path": "$WORKING/mozilla-cedar/livegrep.idx",
+      "codesearch_port": 8094
     }
   }
 }
