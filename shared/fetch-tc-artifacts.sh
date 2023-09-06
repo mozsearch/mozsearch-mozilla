@@ -82,7 +82,11 @@ echo "${CURL} ${TC_REV_PREFIX}.source.manifest-upload/artifacts/public/manifests
 # patches, making stale data potentially very misleading.  See Bug 1677903 for
 # more discussion.
 echo "${CURL} ${TC_TASK}/project.relman.code-coverage.production.repo.${REVISION_TREE}.${INDEXED_HG_REV}/artifacts/public/code-coverage-report.json -o code-coverage-report.json || true" >> downloads.lst
-for PLATFORM in linux64 macosx64 win64 android-armv7 ios; do
+IOS=
+if [ ${REVISION_TREE} = cedar ]; then
+    IOS=ios
+fi
+for PLATFORM in linux64 macosx64 win64 android-armv7 ${IOS}; do
     TC_PREFIX="${TC_REV_PREFIX}.firefox.${PLATFORM}-searchfox-debug/artifacts/public/build"
     # First check that the searchfox job exists for the platform and revision we want. Otherwise emit a warning and skip it. This
     # file is small so it's cheap to download as a check that the analysis data for the platform exists.
