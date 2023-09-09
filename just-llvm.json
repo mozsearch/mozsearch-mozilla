@@ -1,0 +1,23 @@
+{
+    "mozsearch_path": "$MOZSEARCH_PATH",
+    "config_repo": "$CONFIG_REPO",
+    "default_tree": "llvm",
+    "instance_type": "t3.xlarge",
+
+    "trees": {
+      "llvm": {
+        "priority": 3,
+        "on_error": "continue",
+        "cache": "codesearch",
+        "index_path": "$WORKING/llvm",
+        "files_path": "$WORKING/llvm/git",
+        "git_path": "$WORKING/llvm/git",
+        "git_blame_path": "$WORKING/llvm/blame",
+        "github_repo": "https://github.com/llvm/llvm-project",
+        "objdir_path": "$WORKING/llvm/objdir",
+        "codesearch_path": "$WORKING/llvm/livegrep.idx",
+        "codesearch_port": 8082,
+        "scip_subtrees": {}
+      }
+    }
+  }
