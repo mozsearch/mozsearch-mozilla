@@ -12,9 +12,9 @@ $MOZSEARCH_PATH/scripts/indexer-setup.py > $INDEX_ROOT/config
 
 mkdir -p $OBJDIR
 
-cd $FILES_ROOT
-cmake -S llvm -B build -G Ninja -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;lld" -DCMAKE_BUILD_TYPE=Release -DLLVM_USE_LINKER=lld
-ninja -C build
+cd $OBJDIR
+cmake -S $FILES_ROOT/llvm -B $OBJDIR -G Ninja -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;lld" -DCMAKE_BUILD_TYPE=Release -DLLVM_USE_LINKER=lld
+cmake --build .
 
 cd -
 
