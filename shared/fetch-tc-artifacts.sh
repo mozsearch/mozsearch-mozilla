@@ -39,7 +39,7 @@ if [[ -n $PREEXISTING_HG_REV && $PREEXISTING_HG_REV != $INDEXED_HG_REV ]]; then
     rm -f *.mozsearch-index.zip
     rm -f *.mozsearch-rust.zip
     rm -f *.mozsearch-rust-stdlib.zip
-    rm -r *.mozsearch-scip-index.zip
+    rm -f *.mozsearch-scip-index.zip
     rm -f *.generated-files.tar.gz
     rm -f *.distinclude.map
 fi
