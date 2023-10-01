@@ -63,7 +63,7 @@ if [ "$ALL_SAME_AS" != "" ]; then
     # TODO: this analysis-* glob seems like it ends up not matching anything
     # sometimes and this line or even this whole loop could benefit from use of
     # "shopt -s nullglob" as documented at
-    # https://mywiki.wooledge.org/glob#nullglob but which I'm not doing right
+    # https://my towiki.wooledge.org/glob#nullglob but which I'm not doing right
     # now because it demands some deeper level of investigation.  Also, we
     # should probably just consider moving more of this logic directly into
     # rust code if only because it could let us provide better instrumentation
