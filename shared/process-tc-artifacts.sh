@@ -54,6 +54,14 @@ fi
 
 date
 
+if [ -f "$PLATFORM.mozsearch-java-index.zip" ]; then
+  mkdir -p objdir-$PLATFORM/java_index
+  unzip -q $PLATFORM.mozsearch-java-index.zip -d objdir-$PLATFORM/java_index
+  scip-java index-semanticdb --no-emit-inverse-relationships --output=objdir-$PLATFORM/java.scip objdir-$PLATFORM/java_index
+fi
+
+date
+
 # Unpack generated sources tarballs into platform-specific folder
 mkdir -p generated-$PLATFORM
 tar -x -z -C generated-$PLATFORM -f $PLATFORM.generated-files.tar.gz
@@ -222,6 +230,19 @@ $MOZSEARCH_PATH/tools/target/release/scip-indexer \
   "objdir-$PLATFORM/rust.scip"
 
 date
+
+# Only android builds will have a java.scip
+if [ -f "objdir-$PLATFORM/java.scip" ]; then
+  $MOZSEARCH_PATH/tools/target/release/scip-indexer \
+    "$CONFIG_FILE" \
+    "$TREE_NAME" \
+    --subtree-name "java" \
+    --subtree-root "." \
+    --platform "$PLATFORM" \
+    "objdir-$PLATFORM/java.scip"
+
+  date
+fi
 
 # Process the dist/include manifest and normalize away the taskcluster paths
 dos2unix --quiet --force $PLATFORM.distinclude.map  # need --force because of \x1f column separator chars in the file
