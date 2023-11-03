@@ -40,6 +40,7 @@ if [[ -n $PREEXISTING_HG_REV && $PREEXISTING_HG_REV != $INDEXED_HG_REV ]]; then
     rm -f *.mozsearch-rust.zip
     rm -f *.mozsearch-rust-stdlib.zip
     rm -f *.mozsearch-scip-index.zip
+    rm -f *.mozsearch-java-index.zip
     rm -f *.generated-files.tar.gz
     rm -f *.distinclude.map
 fi
@@ -115,6 +116,8 @@ for PLATFORM in linux64 macosx64 win64 android-armv7 ${IOS}; do
     else
         echo "${CURL} ${TC_PREFIX}/target.mozsearch-scip-index.zip -o ${PLATFORM}.mozsearch-scip-index.zip" >> downloads.lst
     fi
+    # Java scip files, only android builds will have one, so make it optional
+    echo "${CURL} ${TC_PREFIX}/target.mozsearch-java-index.zip -o ${PLATFORM}.mozsearch-java-index.zip || true" >> downloads.lst
     # Generated sources tarballs
     echo "${CURL} ${TC_PREFIX}/target.generated-files.tar.gz -o ${PLATFORM}.generated-files.tar.gz" >> downloads.lst
     # Manifest for dist/include entries
