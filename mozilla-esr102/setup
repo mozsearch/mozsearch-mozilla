@@ -6,20 +6,6 @@ set -o pipefail # Check all commands in a pipeline
 
 # See ../mozilla-central/setup for documentation
 
-REVISION_TREE=mozilla-esr102
-REVISION_ID=latest
-
-date
-
-source $CONFIG_REPO/shared/resolve-gecko-revs.sh $REVISION_TREE $REVISION_ID
-
-date
-
-$CONFIG_REPO/shared/checkout-gecko-repos.sh $REVISION_TREE "esr102" "$INDEXED_HG_REV"
-
-date
-
-export SCIP_OPTIONAL=yes
-$CONFIG_REPO/shared/fetch-tc-artifacts.sh $REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV"
-
-date
+# ESR102 isn't getting any new commits, so we can hard-code the last revision
+# for simplicity in checkout-gecko-repos.sh.
+$CONFIG_REPO/shared/checkout-gecko-repos.sh "mozilla-esr102" "esr102" "9df9599ab93f731765afd98cb450c8ffdd3eafdf"
