@@ -224,7 +224,6 @@ export RUST_LOG=info
 $MOZSEARCH_PATH/tools/target/release/scip-indexer \
   "$CONFIG_FILE" \
   "$TREE_NAME" \
-  --subtree-name "rust" \
   --subtree-root "." \
   --platform "$PLATFORM" \
   "objdir-$PLATFORM/rust.scip"
@@ -236,7 +235,6 @@ if [ -f "objdir-$PLATFORM/java.scip" ]; then
   $MOZSEARCH_PATH/tools/target/release/scip-indexer \
     "$CONFIG_FILE" \
     "$TREE_NAME" \
-    --subtree-name "java" \
     --subtree-root "." \
     --platform "$PLATFORM" \
     "objdir-$PLATFORM/java.scip"
