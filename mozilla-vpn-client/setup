@@ -36,7 +36,8 @@ date
 
 echo Updating git
 pushd $GIT_ROOT
-git pull
+# Only pull the branch we're going to use
+git pull origin main
 popd
 
 echo Generating blame information
