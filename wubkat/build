@@ -61,3 +61,13 @@ make -j$(nproc)
 cd -
 
 date
+
+# Webkit does something weird where it ends up with duplicate copies of some
+# header files in OBJDIR/WebCore/PrivateHeaders/.  It seems like they're
+# installed there and both the original and the private headers end up with
+# equivalent analysis records.  Based on extremely cursory investigation, only
+# the source-tree file has actual include usages.  But since only the source
+# tree has blame history and is permalink-able, it seems reasonable to nuke the
+# private headers' analysis data to avoid them breaking "go to definition" and
+# "go to declaration".
+rm -rf $INDEX_ROOT/analysis/WebCore/PrivateHeaders
