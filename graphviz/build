@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+date
+
+# Add the special clang flags.
+$MOZSEARCH_PATH/scripts/indexer-setup.py > $INDEX_ROOT/config
+. $INDEX_ROOT/config
+# Trying to make libtool happy since automake is having us use our CC and all
+# its flags and if we use the default of "ld" we end up with it complaining
+# about "-load" because it doesn't understand the "-Xclang" syntax that precedes
+# it.
+export LD=lld
+
+rm -rf $OBJDIR
+mkdir -p $OBJDIR
+
+cd $FILES_ROOT
+# For git checkouts we need to run autogen.
+./autogen.sh
+
+date
+
+cd $OBJDIR
+# As per https://www.gnu.org/software/automake/manual/html_node/VPATH-Builds.html
+# we want to run configure from the objdir to set up the build tree here.
+$FILES_ROOT/configure
+
+date
+
+# And then we can run make here.
+make
+
+cd -
+
+date
