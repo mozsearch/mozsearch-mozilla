@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+date
+
+echo Downloading graphviz repo
+pushd $INDEX_ROOT
+if [ -d "git" ]
+then
+    echo "Found pre-existing folder; skipping re-download."
+else
+    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/graphviz.tar.lz4
+    lz4 -dc graphviz.tar.lz4 | tar -x
+    rm graphviz.tar.lz4
+fi
+popd
+
+date
+
+echo Downloading graphviz blame.
+pushd $INDEX_ROOT
+if [ -d "blame" ]
+then
+    echo "Found pre-existing blame folder; skipping re-download."
+else
+    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/graphviz-blame.tar.lz4
+    lz4 -dc graphviz-blame.tar.lz4 | tar -x
+    rm graphviz-blame.tar.lz4
+fi
+popd
+
+date
+
+echo Updating git
+pushd $GIT_ROOT
+git pull origin main
+# graphviz uses submodules
+git submodule update --init --recursive
+
+popd
+
+echo Generating blame information
+$MOZSEARCH_PATH/tools/target/release/build-blame $GIT_ROOT $BLAME_ROOT
+
+date
+
+## Since graphviz is going in config5 and we already do wacky package
+## installation at runtime, there's no real harm in doing more of it, and this
+## avoids us needing to provision autoconf and automake normally.
+
+# Update the apt index
+sudo apt-get update
+
+sudo apt-get install -y libtool libltdl-dev automake autoconf bison flex

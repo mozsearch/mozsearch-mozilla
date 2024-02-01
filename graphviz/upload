@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+date
+
+echo Uploading llvm
+pushd $INDEX_ROOT
+$CONFIG_REPO/shared/git-maintenance.sh ./git
+tar cf - git | lz4 - graphviz.tar.lz4
+$AWS_ROOT/upload.py $INDEX_ROOT/graphviz.tar.lz4 searchfox.repositories graphviz.tar.lz4
+rm graphviz.tar.lz4
+popd
+
+date
+
+echo Uploading llvm blame
+pushd $INDEX_ROOT
+$CONFIG_REPO/shared/git-maintenance.sh ./blame
+tar cf - blame | lz4 - graphviz-blame.tar.lz4
+$AWS_ROOT/upload.py $INDEX_ROOT/graphviz-blame.tar.lz4 searchfox.repositories graphviz-blame.tar.lz4
+rm graphviz-blame.tar.lz4
+popd
+
+date
