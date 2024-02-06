@@ -20,6 +20,21 @@
       "scip_subtrees": {}
     },
 
+    "comm-beta": {
+      "priority": 20,
+      "on_error": "continue",
+      "cache": "codesearch",
+      "index_path": "$WORKING/comm-beta",
+      "files_path": "$WORKING/comm-beta/git",
+      "git_path": "$WORKING/comm-beta/git",
+      "git_blame_path": "$WORKING/comm-beta/blame",
+      "hg_root": "https://hg.mozilla.org/releases/comm-beta",
+      "objdir_path": "$WORKING/comm-beta/objdir",
+      "codesearch_path": "$WORKING/comm-beta/livegrep.idx",
+      "codesearch_port": 8082,
+      "scip_subtrees": {}
+    },
+
     "mozilla-release": {
       "priority": 110,
       "on_error": "continue",
@@ -33,6 +48,21 @@
       "objdir_path": "$WORKING/mozilla-release/objdir",
       "codesearch_path": "$WORKING/mozilla-release/livegrep.idx",
       "codesearch_port": 8083,
+      "scip_subtrees": {}
+    },
+
+    "comm-release": {
+      "priority": 15,
+      "on_error": "continue",
+      "cache": "codesearch",
+      "index_path": "$WORKING/comm-release",
+      "files_path": "$WORKING/comm-release/git",
+      "git_path": "$WORKING/comm-release/git",
+      "git_blame_path": "$WORKING/comm-release/blame",
+      "hg_root": "https://hg.mozilla.org/releases/comm-release",
+      "objdir_path": "$WORKING/comm-release/objdir",
+      "codesearch_path": "$WORKING/comm-release/livegrep.idx",
+      "codesearch_port": 8084,
       "scip_subtrees": {}
     },
 
