@@ -16,7 +16,11 @@ date
 pushd $GIT_ROOT/python
 # Absolute paths aren't treated as absolute but instead concatenated, so we need
 # to use just a filename and then move it after.
-rtx exec nodejs@18 -- scip-python index --project-name python --output python.scip
+mise exec nodejs@18 -- scip-python index --project-name python --output python.scip
+# XXX note that we currently don't consume this output; there needs to be an entry
+# in the config.json for this to work, but unfortunately because of
+# https://github.com/sourcegraph/scip-python/issues/148
+# the SCIP output is currently not usable.
 mv python.scip $INDEX_ROOT
 popd
 
