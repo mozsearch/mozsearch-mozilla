@@ -36,7 +36,12 @@
       "objdir_path": "$WORKING/mozilla-central/objdir",
       "codesearch_path": "$WORKING/mozilla-central/livegrep.idx",
       "codesearch_port": 8082,
-      "scip_subtrees": {}
+      "scip_subtrees": {
+        "python": {
+          "scip_index_path": "$WORKING/mozilla-central/python.scip",
+          "subtree_root": ""
+        }
+      }
     },
 
     "comm-central": {

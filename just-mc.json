@@ -23,7 +23,7 @@
       "scip_subtrees": {
         "python": {
           "scip_index_path": "$WORKING/mozilla-central/python.scip",
-          "subtree_root": "python"
+          "subtree_root": ""
         }
       }
     }

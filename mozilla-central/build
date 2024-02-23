@@ -12,11 +12,53 @@ popd
 
 date
 
-# Analyze the unified python corpus
-pushd $GIT_ROOT/python
+## Analyze the unified python corpus
+pushd $GIT_ROOT
+
+# Build a pyrightconfig.json config (config docs are at
+# https://microsoft.github.io/pyright/#/configuration).
+#
+# In general it seems like we can get a list of all of the python path entries
+# possible from processing the files in
+# https://searchfox.org/mozilla-central/source/python/sites and where the
+# ingestion logic that consumes those files seems to be
+# https://searchfox.org/mozilla-central/rev/da49863c3d6f34038d00f5ba701b9a2ad9cbadba/python/mach/mach/requirements.py#88-149
+# and the relevant comment about its ingestion is
+# https://searchfox.org/mozilla-central/rev/da49863c3d6f34038d00f5ba701b9a2ad9cbadba/python/mach/mach/requirements.py#31-54
+# and so we use ripgrep below to extract out the "pth" and "vendored" directives
+# that give us paths in trees.  We do not process "packages.txt" which is fine
+# because it also doesn't seem to be used and it is arguably unlikely that it
+# could ever contain paths relative to the root of m-c as we need.
+#
+# Because pyright seems to (quite fairly) get overwhelmed if we point it at a
+# ton of things, we also filter out everything with "third_party" in the actual
+# path.  We can't do this based on the basis of "vendored" because there are
+# things like wptrunner that are vendored but which we deeply want indexed.
+#
+# We also filter out roots that potentially entrain a whole bunch of files,
+# in particular "testing/web-platform" adds like 2000 python test files that
+# seems to be what sets searchfox on fire.
+#
+# Specific settings:
+# - verboseOutput: when true, this will print a lot of output about module
+#   resolution failures and the paths it tried.  Unfortunately this does not
+#   really help with understanding what is going on when the indexing process
+#   just sits there and gobbles up CPU.
+# - includes: We include every path we figure out from the sites .txt files.
+# - extraPaths: We include them again here for path resolution purposes since
+#   it seemed like the path resolution logic didn't consider what we provided to
+#   "includes" for this purpose.
+#
+#
+jo verboseOutput=false \
+  include=$(rg '^(?:pth|vendored):(.+)$' --no-filename --no-heading -Nor '$1' python/sites/*.txt | grep -v third_party | egrep -v '^(build|tools|testing|testing/web-platform)$' | sort | uniq | jo -a) \
+  extraPaths=$(rg '^(?:pth|vendored):(.+)$' --no-filename --no-heading -Nor '$1' python/sites/*.txt | grep -v third_party | egrep -v '^(build|tools|testing|testing/web-platform)$' | sort | uniq | jo -a) \
+  > pyrightconfig.json
+
 # Absolute paths aren't treated as absolute but instead concatenated, so we need
 # to use just a filename and then move it after.
-mise exec nodejs@18 -- scip-python index --project-name python --output python.scip
+mise exec nodejs@18 -- scip-python index --show-progress-rate-limit 0 --project-name python --output python.scip
+
 # XXX note that we currently don't consume this output; there needs to be an entry
 # in the config.json for this to work, but unfortunately because of
 # https://github.com/sourcegraph/scip-python/issues/148
