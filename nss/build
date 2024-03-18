@@ -4,17 +4,6 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
-
-# Add the special clang flags.
-$MOZSEARCH_PATH/scripts/indexer-setup.py > $INDEX_ROOT/config
-. $INDEX_ROOT/config
-export CCC=$CXX
-
-mkdir -p $OBJDIR
-
-cd $FILES_ROOT
-USE_64=1 make nss_build_all
-cd -
-
-date
+# We no longer build NSS for semantic purposes.  The tentative plan would be for
+# NSS to run the clang indexer on its taskcluster instance and generate
+# artifacts like we do for m-c trees.

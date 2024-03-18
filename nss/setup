@@ -57,9 +57,12 @@ date
 echo Updating NSS git
 pushd $GIT_ROOT
 git pull
-git config remote.cinnabar.url || git remote add cinnabar hg::https://hg.mozilla.org/projects/nss
-git config cinnabar.graft true
-git remote update cinnabar
+# Since updating to NSS 0.5.9, cinnabar seems upset about the state of the NSS
+# repo.  Since running these next steps is not necessary for searchfox to update
+# (we pulled from github above), this is being disabled.
+#git config remote.cinnabar.url || git remote add cinnabar hg::https://hg.mozilla.org/projects/nss
+#git config cinnabar.graft true
+#git remote update cinnabar
 popd
 
 date
