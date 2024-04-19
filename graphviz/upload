@@ -6,7 +6,7 @@ set -o pipefail # Check all commands in a pipeline
 
 date
 
-echo Uploading llvm
+echo Uploading graphviz
 pushd $INDEX_ROOT
 $CONFIG_REPO/shared/git-maintenance.sh ./git
 tar cf - git | lz4 - graphviz.tar.lz4
@@ -16,7 +16,7 @@ popd
 
 date
 
-echo Uploading llvm blame
+echo Uploading graphviz blame
 pushd $INDEX_ROOT
 $CONFIG_REPO/shared/git-maintenance.sh ./blame
 tar cf - blame | lz4 - graphviz-blame.tar.lz4
