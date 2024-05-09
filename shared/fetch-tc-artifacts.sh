@@ -122,7 +122,7 @@ for PLATFORM in linux64 macosx64 win64 android-armv7 ios; do
 done # end PLATFORM loop
 
 CHROME_MAP_URL="${TC_REV_PREFIX}.firefox.linux64-ccov-opt/artifacts/public/build/chrome-map.json"
-echo "${CURL} ${CHROME_MAP_URL} -o chrome-map.json" >> downloads.lst
+echo "${CURL} ${CHROME_MAP_URL} -o chrome-map.json || true" >> downloads.lst
 
 # Do the downloads
 parallel --halt now,fail=1 < downloads.lst
