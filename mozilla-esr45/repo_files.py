@@ -8,6 +8,11 @@ def filter_js(path):
         return False
     return True
 
+def filter_html(path):
+    if 'testing/web-platform/' in path:
+        return False
+    return True
+
 def filter_idl(path):
     # ESR45's XPIDL parser is python2 only
     return False
