@@ -43,7 +43,7 @@ if [[ -n $PREEXISTING_HG_REV && $PREEXISTING_HG_REV != $INDEXED_HG_REV ]]; then
     rm -f *.mozsearch-java-index.zip
     rm -f *.generated-files.tar.gz
     rm -f *.distinclude.map
-    rm -f chrome-map.json
+    rm -f *.chrome-map.json
 fi
 
 # Download the bugzilla components file and the artifacts from each platform that
@@ -119,10 +119,9 @@ for PLATFORM in linux64 macosx64 win64 android-armv7 ios; do
     echo "${CURL} ${TC_PREFIX}/target.generated-files.tar.gz -o ${PLATFORM}.generated-files.tar.gz" >> downloads.lst
     # Manifest for dist/include entries
     echo "${CURL} ${TC_PREFIX}/target.mozsearch-distinclude.map -o ${PLATFORM}.distinclude.map" >> downloads.lst
+    # Mapping from chrome:// and resource:// URLs.
+    echo "${CURL} ${TC_PREFIX}/chrome-map.json -o ${PLATFORM}.chrome-map.json || true" >> downloads.lst
 done # end PLATFORM loop
-
-CHROME_MAP_URL="${TC_REV_PREFIX}.firefox.linux64-ccov-opt/artifacts/public/build/chrome-map.json"
-echo "${CURL} ${CHROME_MAP_URL} -o chrome-map.json || true" >> downloads.lst
 
 # Do the downloads
 parallel --halt now,fail=1 < downloads.lst
