@@ -74,10 +74,11 @@ fi
 
 # The generated file was not the same across all platforms, so
 # put the different versions in __$PLATFORM__ subfolders.
-for PLATFORM in linux64 macosx64 win64 android-armv7 ios; do
+for PLATFORM in linux64 macosx64 macosx64-aarch64 win64 android-armv7 ios; do
     if [ ! -f "generated-$PLATFORM/$GENERATED_FILE" ]; then
 	# The ios platform is only available on the cedar branch. Don't stop if it's not there.
-        if [ $PLATFORM = ios ]; then
+        # The macosx64-aarch64 platform may not available in old branch.
+        if [ $PLATFORM = ios -o $PLATFORM = macosx64-aarch64 ]; then
             continue
         fi
         exit 0
