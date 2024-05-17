@@ -104,7 +104,7 @@ that lives in the `shared/` folder in this repository.
      where $REVISION is "mozilla-central.latest".  We extract the specific revision from that.
    - Then https://github.com/mozsearch/mozsearch-mozilla/blob/master/shared/fetch-tc-artifacts.sh
      is invoked and it tries to fetch the result of the taskcluster searchfox jobs
-     for all of our supported platforms (linux64 macosx64 win64 android-armv7)
+     for all of our supported platforms (linux64 macosx64 macosx64-aarch64 win64 android-armv7)
      using that revision.  This is frequently where we error out if the windows job
      hasn't completed yet.
 
