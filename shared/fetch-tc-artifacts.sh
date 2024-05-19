@@ -91,7 +91,11 @@ for PLATFORM in linux64 macosx64 macosx64-aarch64 win64 android-armv7 ios; do
     #
     # Also check for moz_source_stamp, to handle tasks that exists but failed. We rely on this field for resolve-gecko-revs.sh already.
     if ! (${CURL} "${TC_PREFIX}/target.json" | grep moz_source_stamp); then
-        echo "WARNING: Unable to find analysis for $PLATFORM for hg rev $INDEXED_HG_REV; skipping analysis merge step for this platform."
+        LOG_LEVEL="WARNING"
+        if [ ${PLATFORM} = "macosx64-aarch64" ]; then
+            LOG_LEVEL="INFO"
+        fi
+        echo "${LOG_LEVEL}: Unable to find analysis for $PLATFORM for hg rev $INDEXED_HG_REV; skipping analysis merge step for this platform."
         continue
     fi
 
