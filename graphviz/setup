@@ -18,6 +18,10 @@ else
 fi
 popd
 
+# Temporary fix for the git url.
+# This can be deleted once this fix is reflected to the uploaded tarball.
+sed -i -e 's|https://gitlab.com/graphviz/graphviz$|https://gitlab.com/graphviz/graphviz.git|' $GIT_ROOT/.git/config
+
 date
 
 echo Downloading graphviz blame.

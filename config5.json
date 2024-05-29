@@ -30,7 +30,7 @@
         "files_path": "$WORKING/graphviz/git",
         "git_path": "$WORKING/graphviz/git",
         "git_blame_path": "$WORKING/graphviz/blame",
-        "github_repo": "https://gitlab.com/graphviz/graphviz/-",
+        "github_repo": "https://gitlab.com/graphviz/graphviz.git",
         "objdir_path": "$WORKING/graphviz/objdir",
         "ignore_missing_path_prefixes": [
           "$WORKING/graphviz/objdir/conftest",
