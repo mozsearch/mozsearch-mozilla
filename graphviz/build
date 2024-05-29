@@ -7,13 +7,10 @@ set -o pipefail # Check all commands in a pipeline
 date
 
 # Add the special clang flags.
-$MOZSEARCH_PATH/scripts/indexer-setup.py > $INDEX_ROOT/config
+# See $MOZSEARCH_PATH/scripts/ld-wrapper for WRAPPED_LD and --use-ld-wrapper.
+export WRAPPED_LD=ld
+$MOZSEARCH_PATH/scripts/indexer-setup.py --use-ld-wrapper > $INDEX_ROOT/config
 . $INDEX_ROOT/config
-# Trying to make libtool happy since automake is having us use our CC and all
-# its flags and if we use the default of "ld" we end up with it complaining
-# about "-load" because it doesn't understand the "-Xclang" syntax that precedes
-# it.
-export LD=lld
 
 rm -rf $OBJDIR
 mkdir -p $OBJDIR
