@@ -69,7 +69,7 @@
     },
 
     "comm-esr60": {
-      "priority": 10,
+      "priority": 3,
       "on_error": "continue",
       "cache": "codesearch",
       "index_path": "$WORKING/comm-esr60",
@@ -100,7 +100,7 @@
     },
 
     "comm-esr68": {
-      "priority": 10,
+      "priority": 3,
       "on_error": "continue",
       "cache": "codesearch",
       "index_path": "$WORKING/comm-esr68",
@@ -130,7 +130,7 @@
     },
 
     "comm-esr78": {
-      "priority": 10,
+      "priority": 3,
       "on_error": "continue",
       "cache": "codesearch",
       "index_path": "$WORKING/comm-esr78",
@@ -161,7 +161,7 @@
     },
 
     "comm-esr91": {
-      "priority": 4,
+      "priority": 3,
       "on_error": "continue",
       "cache": "codesearch",
       "index_path": "$WORKING/comm-esr91",
@@ -172,6 +172,37 @@
       "objdir_path": "$WORKING/comm-esr91/objdir",
       "codesearch_path": "$WORKING/comm-esr91/livegrep.idx",
       "codesearch_port": 8091,
+      "scip_subtrees": {}
+    },
+
+    "mozilla-esr102": {
+      "priority": 10,
+      "on_error": "continue",
+      "cache": "codesearch",
+      "index_path": "$WORKING/mozilla-esr102",
+      "files_path": "$WORKING/mozilla-esr102/git",
+      "git_path": "$WORKING/mozilla-esr102/git",
+      "git_blame_path": "$WORKING/mozilla-esr102/blame",
+      "github_repo": "https://github.com/mozilla/gecko-dev",
+      "hg_root": "https://hg.mozilla.org/releases/mozilla-esr102",
+      "objdir_path": "$WORKING/mozilla-esr102/objdir",
+      "codesearch_path": "$WORKING/mozilla-esr102/livegrep.idx",
+      "codesearch_port": 8092,
+      "scip_subtrees": {}
+    },
+
+    "comm-esr102": {
+      "priority": 3,
+      "on_error": "continue",
+      "cache": "codesearch",
+      "index_path": "$WORKING/comm-esr102",
+      "files_path": "$WORKING/comm-esr102/git",
+      "git_path": "$WORKING/comm-esr102/git",
+      "git_blame_path": "$WORKING/comm-esr102/blame",
+      "hg_root": "https://hg.mozilla.org/releases/comm-esr102",
+      "objdir_path": "$WORKING/comm-esr102/objdir",
+      "codesearch_path": "$WORKING/comm-esr102/livegrep.idx",
+      "codesearch_port": 8093,
       "scip_subtrees": {}
     }
   }
