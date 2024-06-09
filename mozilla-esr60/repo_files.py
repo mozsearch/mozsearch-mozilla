@@ -3,6 +3,9 @@ def filter_ipdl(path):
         return False
     return True
 
+def filter_webidl(path):
+    return False
+
 def filter_js(path):
     if 'js/src/tests' in path or 'jit-test' in path:
         return False
