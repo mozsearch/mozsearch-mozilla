@@ -2,6 +2,10 @@ def filter_ipdl(path):
     # webkit does not have IPDL!
     return False
 
+def filter_webidl(path):
+    # webkit does not have WebIDL!
+    return False
+
 def filter_idl(path):
     # webkit does not have XPIDL!
     return False

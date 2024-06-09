@@ -3,6 +3,15 @@ def filter_ipdl(path):
         return False
     return True
 
+def filter_webidl(path):
+    if 'dom/bindings/mozwebidlcodegen/test' in path:
+        return False
+    if 'dom/bindings/test' in path:
+        return False
+    if 'dom/webidl/MozApplicationEvent.webidl' in path:
+        return False
+    return True
+
 def filter_js(path):
     if 'js/src/tests' in path or 'jit-test' in path:
         return False
