@@ -36,37 +36,6 @@
       "scip_subtrees": {}
     },
 
-    "mozilla-esr102": {
-      "priority": 20,
-      "on_error": "continue",
-      "cache": "codesearch",
-      "index_path": "$WORKING/mozilla-esr102",
-      "files_path": "$WORKING/mozilla-esr102/git",
-      "git_path": "$WORKING/mozilla-esr102/git",
-      "git_blame_path": "$WORKING/mozilla-esr102/blame",
-      "github_repo": "https://github.com/mozilla/gecko-dev",
-      "hg_root": "https://hg.mozilla.org/releases/mozilla-esr102",
-      "objdir_path": "$WORKING/mozilla-esr102/objdir",
-      "codesearch_path": "$WORKING/mozilla-esr102/livegrep.idx",
-      "codesearch_port": 8083,
-      "scip_subtrees": {}
-    },
-
-    "comm-esr102": {
-      "priority": 5,
-      "on_error": "continue",
-      "cache": "codesearch",
-      "index_path": "$WORKING/comm-esr102",
-      "files_path": "$WORKING/comm-esr102/git",
-      "git_path": "$WORKING/comm-esr102/git",
-      "git_blame_path": "$WORKING/comm-esr102/blame",
-      "hg_root": "https://hg.mozilla.org/releases/comm-esr102",
-      "objdir_path": "$WORKING/comm-esr102/objdir",
-      "codesearch_path": "$WORKING/comm-esr102/livegrep.idx",
-      "codesearch_port": 8084,
-      "scip_subtrees": {}
-    },
-
     "mozilla-esr115": {
       "priority": 20,
       "on_error": "continue",
@@ -79,7 +48,7 @@
       "hg_root": "https://hg.mozilla.org/releases/mozilla-esr115",
       "objdir_path": "$WORKING/mozilla-esr115/objdir",
       "codesearch_path": "$WORKING/mozilla-esr115/livegrep.idx",
-      "codesearch_port": 8085,
+      "codesearch_port": 8083,
       "scip_subtrees": {}
     },
 
@@ -94,7 +63,7 @@
       "hg_root": "https://hg.mozilla.org/releases/comm-esr115",
       "objdir_path": "$WORKING/comm-esr115/objdir",
       "codesearch_path": "$WORKING/comm-esr115/livegrep.idx",
-      "codesearch_port": 8086,
+      "codesearch_port": 8084,
       "scip_subtrees": {}
     }
   }
