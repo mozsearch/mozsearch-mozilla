@@ -65,6 +65,37 @@
       "codesearch_path": "$WORKING/comm-esr115/livegrep.idx",
       "codesearch_port": 8084,
       "scip_subtrees": {}
+    },
+
+    "mozilla-esr128": {
+      "priority": 20,
+      "on_error": "continue",
+      "cache": "codesearch",
+      "index_path": "$WORKING/mozilla-esr128",
+      "files_path": "$WORKING/mozilla-esr128/git",
+      "git_path": "$WORKING/mozilla-esr128/git",
+      "git_blame_path": "$WORKING/mozilla-esr128/blame",
+      "github_repo": "https://github.com/mozilla/gecko-dev",
+      "hg_root": "https://hg.mozilla.org/releases/mozilla-esr128",
+      "objdir_path": "$WORKING/mozilla-esr128/objdir",
+      "codesearch_path": "$WORKING/mozilla-esr128/livegrep.idx",
+      "codesearch_port": 8085,
+      "scip_subtrees": {}
+    },
+
+    "comm-esr128": {
+      "priority": 5,
+      "on_error": "continue",
+      "cache": "codesearch",
+      "index_path": "$WORKING/comm-esr128",
+      "files_path": "$WORKING/comm-esr128/git",
+      "git_path": "$WORKING/comm-esr128/git",
+      "git_blame_path": "$WORKING/comm-esr128/blame",
+      "hg_root": "https://hg.mozilla.org/releases/comm-esr128",
+      "objdir_path": "$WORKING/comm-esr128/objdir",
+      "codesearch_path": "$WORKING/comm-esr128/livegrep.idx",
+      "codesearch_port": 8086,
+      "scip_subtrees": {}
     }
   }
 }
