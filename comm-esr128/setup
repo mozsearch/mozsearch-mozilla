@@ -12,9 +12,9 @@ if [ -d "git" ]
 then
     echo "Found pre-existing folder; skipping re-download."
 else
-    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/comm-esr128.tar
-    tar xf comm-esr128.tar
-    rm comm-esr128.tar
+    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/comm-esr128.tar.lz4
+    lz4 -dc comm-esr128.tar.lz4 | tar -x
+    rm comm-esr128.tar.lz4
 fi
 popd
 
@@ -26,9 +26,9 @@ if [ -d "blame" ]
 then
     echo "Found pre-existing blame folder; skipping re-download."
 else
-    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/comm-esr128-blame.tar
-    tar xf comm-esr128-blame.tar
-    rm comm-esr128-blame.tar
+    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/comm-esr128-blame.tar.lz4
+    lz4 -dc comm-esr128-blame.tar.lz4 | tar -x
+    rm comm-esr128-blame.tar.lz4
 fi
 popd
 
