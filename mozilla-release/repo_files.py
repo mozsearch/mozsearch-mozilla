@@ -10,6 +10,8 @@ def filter_webidl(path):
         return False
     if 'dom/webidl/MozApplicationEvent.webidl' in path:
         return False
+    if 'tools/ts/' in path:
+        return False
     return True
 
 def modify_file_list(lines, config):
