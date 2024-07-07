@@ -58,11 +58,6 @@ jo verboseOutput=false \
 # Absolute paths aren't treated as absolute but instead concatenated, so we need
 # to use just a filename and then move it after.
 mise exec nodejs@18 -- scip-python index --show-progress-rate-limit 0 --project-name python --output python.scip
-
-# XXX note that we currently don't consume this output; there needs to be an entry
-# in the config.json for this to work, but unfortunately because of
-# https://github.com/sourcegraph/scip-python/issues/148
-# the SCIP output is currently not usable.
 mv python.scip $INDEX_ROOT
 popd
 
