@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+date
+
+## Index the clang-plugin
+
+# Add the special clang flags.
+$MOZSEARCH_PATH/scripts/indexer-setup.py > $INDEX_ROOT/config
+. $INDEX_ROOT/config
+
+date
+
+rm -rf $OBJDIR
+mkdir -p $OBJDIR
+
+date
+
+mkdir -p $OBJDIR/clang-plugin
+cd $OBJDIR/clang-plugin
+
+CLANG_PLUGIN_DIR=$FILES_ROOT/clang-plugin
+# Passing a VPATH will let make find the source files despite us using an objdir.
+# Explicitly passing CC and CXX propagates the special clang flags.
+make -f $CLANG_PLUGIN_DIR/Makefile VPATH=$CLANG_PLUGIN_DIR CC="$CC" CXX="$CXX"
+
+date
+
+## Python Indexing
+
+cd $FILES_ROOT
+mise exec nodejs@18 -- scip-python index --show-progress-rate-limit 0 --project-name python --output python.scip
+mv python.scip $INDEX_ROOT
+
+date
+
+## Rust Indexing
+
+cd $FILES_ROOT
+rust-analyzer scip tools
+mv index.scip $INDEX_ROOT/rust.scip
+
+date

@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+date
+
+echo Uploading mozsearch
+pushd $INDEX_ROOT
+$CONFIG_REPO/shared/git-maintenance.sh ./git
+tar cf - git | lz4 - mozsearch.tar.lz4
+$AWS_ROOT/upload.py $INDEX_ROOT/mozsearch.tar.lz4 searchfox.repositories mozsearch.tar.lz4
+rm mozsearch.tar.lz4
+popd
+
+date
+
+echo Uploading mozsearch blame
+pushd $INDEX_ROOT
+$CONFIG_REPO/shared/git-maintenance.sh ./blame
+tar cf - blame | lz4 - mozsearch-blame.tar.lz4
+$AWS_ROOT/upload.py $INDEX_ROOT/mozsearch-blame.tar.lz4 searchfox.repositories mozsearch-blame.tar.lz4
+rm mozsearch-blame.tar.lz4
+popd
+
+date
