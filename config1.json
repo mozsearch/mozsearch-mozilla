@@ -74,7 +74,7 @@
     },
 
     "mozsearch": {
-      "priority": 500,
+      "priority": 600,
       "on_error": "continue",
       "cache": "codesearch",
       "index_path": "$WORKING/mozsearch",
@@ -109,6 +109,19 @@
       "objdir_path": "$WORKING/mozsearch-mozilla/objdir",
       "codesearch_path": "$WORKING/mozsearch-mozilla/livegrep.idx",
       "codesearch_port": 8086,
+      "scip_subtrees": {}
+    },
+
+    "mozsearch-tests": {
+      "priority": 550,
+      "on_error": "halt",
+      "cache": "everything",
+      "index_path": "$WORKING/mozsearch-tests",
+      "files_path": "$WORKING/mozsearch-tests/files",
+      "objdir_path": "$WORKING/mozsearch-tests/objdir",
+      "wpt_root": "testing/web-platform",
+      "codesearch_path": "$WORKING/mozsearch-tests/livegrep.idx",
+      "codesearch_port": 8087,
       "scip_subtrees": {}
     }
   }
