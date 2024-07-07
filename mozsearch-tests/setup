@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+date
+
+# We reuse the mozsearch tarball; we don't reuse its blame or do anything with
+# blame.  We could filter the mozsearch repo down for that, but we want to
+# imitate what happens in `make build-test-repo`.
+
+echo Downloading mozsearch repo
+pushd $INDEX_ROOT
+if [ -d "git" ]
+then
+    echo "Found pre-existing folder; skipping re-download."
+else
+    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/mozsearch.tar.lz4
+    lz4 -dc mozsearch.tar.lz4 | tar -x
+    rm mozsearch.tar.lz4
+fi
+popd
+
+date
+
+# Note that GIT_ROOT is not defined for this tree, but we do need to do an
+# update unless we steal the update done by our sibling "mozsearch-mozilla"
+# tree.  We only expect to be a few commits behind, so we just update manually.
+echo Updating git
+pushd $INDEX_ROOT/git
+git pull origin master
+# mozsearch uses submodules
+git submodule update --init --recursive
+
+popd
+
+date
+
+## Invoke the mozsearch tests repo "setup" script for its symlink side-effects
+
+# The tests config.json file is here:
+TESTS_ROOT=$INDEX_ROOT/git/tests
+# The "setup" script is in the "tests" dir under that:
+TESTS_CONFIG_DIR=$TESTS_ROOT/tests
+
+# Tell it the config repo is in its tree rather than the real CONFIG_REPO
+# because it uses that as the base dir for symlinking.
+CONFIG_REPO=$TESTS_ROOT
+
+# now transfer control into the setup
+exec $TESTS_CONFIG_DIR/setup

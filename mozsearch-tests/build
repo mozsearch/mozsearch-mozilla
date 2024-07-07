@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+date
+
+## Attempt to just reuse the `make build-test-repo` target
+#
+# Our high level goal is to produce output that looks identical to what happens
+# when someone does `cd /vagrant; make build-test-repo` in a docker VM.  And we
+# want to do this without forking the relevant build script.
+
+# The tests config.json file is here:
+TESTS_ROOT=$INDEX_ROOT/git/tests
+# The "build" script is in the "tests" dir under that:
+TESTS_CONFIG_DIR=$TESTS_ROOT/tests
+
+# just transfer control into the build script
+exec $TESTS_CONFIG_DIR/build
