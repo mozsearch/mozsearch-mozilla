@@ -84,7 +84,7 @@ echo "${CURL} ${TC_REV_PREFIX}.source.manifest-upload/artifacts/public/manifests
 # patches, making stale data potentially very misleading.  See Bug 1677903 for
 # more discussion.
 echo "${CURL} ${TC_TASK}/project.relman.code-coverage.production.repo.${REVISION_TREE}.${INDEXED_HG_REV}/artifacts/public/code-coverage-report.json -o code-coverage-report.json || true" >> downloads.lst
-for PLATFORM in linux64 macosx64 macosx64-aarch64 win64 android-armv7 ios; do
+for PLATFORM in linux64 macosx64 macosx64-aarch64 win64 android-armv7 android-aarch64 ios; do
     TC_PREFIX="${TC_REV_PREFIX}.firefox.${PLATFORM}-searchfox-debug/artifacts/public/build"
     # First check that the searchfox job exists for the platform and revision we want. Otherwise emit a warning and skip it. This
     # file is small so it's cheap to download as a check that the analysis data for the platform exists.
@@ -92,7 +92,7 @@ for PLATFORM in linux64 macosx64 macosx64-aarch64 win64 android-armv7 ios; do
     # Also check for moz_source_stamp, to handle tasks that exists but failed. We rely on this field for resolve-gecko-revs.sh already.
     if ! (${CURL} "${TC_PREFIX}/target.json" | grep moz_source_stamp); then
         LOG_LEVEL="WARNING"
-        if [ ${PLATFORM} = "ios" -o ${PLATFORM} = "macosx64-aarch64" ]; then
+        if [ ${PLATFORM} = "ios" -o ${PLATFORM} = "macosx64-aarch64" -o ${PLATFORM} = "android-armv7" -o ${PLATFORM} = "android-aarch64" ]; then
             LOG_LEVEL="INFO"
         fi
         echo "${LOG_LEVEL}: Unable to find analysis for $PLATFORM for hg rev $INDEXED_HG_REV; skipping analysis merge step for this platform."
