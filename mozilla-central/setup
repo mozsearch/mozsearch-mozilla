@@ -45,10 +45,20 @@ else
     COV_TASK_INFO=$(curl -ssL "${TC_QUEUE_API_URL}/${COV_TASKID}")
     # The revision to index is passed specifically to the job
     COV_HG_REV=$(jq -Mr '.payload.env.REVISION' <<< $COV_TASK_INFO)
+
     # How many whole days have passed since the coverage aggregation task was
     # started and now?  If it's been less than a day (therefore "0"), the data
     # is good enough for our purposes.
-    COV_RECENCY_DAYS=$(jq -Mr '.created | sub("\\.[0-9]+Z$"; "Z") | (now - fromdate) / (24 * 60 * 60) | floor' <<< $COV_TASK_INFO)
+    if [[ $COV_HG_REV = "null" ]]; then
+        # In the failure mode we're seeing in Bug 1909053, COV_TASK_INFO is a
+        # 404 JSON blob and we will have extracted null from it.  Let's just
+        # pick a very obvious non-zero value so that we can just use the latest
+        # indexed revision.
+        echo "No sign of coverage data; pretending the data is stale."
+        COV_RECENCY_DAYS=999
+    else
+        COV_RECENCY_DAYS=$(jq -Mr '.created | sub("\\.[0-9]+Z$"; "Z") | (now - fromdate) / (24 * 60 * 60) | floor' <<< $COV_TASK_INFO)
+    fi
 
     if [[ $COV_RECENCY_DAYS = "0" ]]; then
         # We also need to check that the revision is itself recent enough, see
