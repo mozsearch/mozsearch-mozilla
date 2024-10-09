@@ -42,19 +42,6 @@ CXX=${CXX:0:7}
 
 date
 
-# Rationales:
-# - `-DDEVELOPER_MODE=ON`: evolution of `-DENABLE_GPU_PROCESS=OFF` for the
-#   purposes of avoiding the linker issue in
-#   https://bugs.webkit.org/show_bug.cgi?id=275110 but which also aligns us more
-#   closely with how the upstream webkit ubuntu builders we depend on for
-#   detecting good revisions actually build.  They actually use
-#   https://searchfox.org/wubkat/source/Tools/Scripts/build-webkit which gets
-#   the arg pushed by default in `webkitdirs.pm`.
-#   - https://github.com/mozsearch/mozsearch-mozilla/pull/262 holds discussion
-# - `-DENABLE_DOCUMENTATION=OFF -DENABLE_INTROSPECTION=OFF`: Disables gi-docgen
-#   which fails intermittently for some reason.
-#   - https://github.com/mozsearch/mozsearch-mozilla/pull/262 holds discussion
-
 cmake $FILES_ROOT \
     -DCMAKE_C_COMPILER="$CC" \
     -DCMAKE_CXX_COMPILER="$CXX" \
@@ -68,10 +55,8 @@ cmake $FILES_ROOT \
     -DCMAKE_BUILD_TYPE=Debug \
     -DPORT=$PORT \
     -DUSE_SYSTEM_SYSPROF_CAPTURE=OFF \
-    -DDEVELOPER_MODE=ON \
-    -DENABLE_SPEECH_SYNTHESIS=OFF \
-    -DENABLE_DOCUMENTATION=OFF \
-    -DENABLE_INTROSPECTION=OFF
+    -DENABLE_GPU_PROCESS=OFF \
+    -DENABLE_SPEECH_SYNTHESIS=OFF
 
 date
 
