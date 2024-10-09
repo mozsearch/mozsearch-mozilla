@@ -16,7 +16,7 @@
         "github_repo": "https://github.com/WebKit/Webkit",
         "objdir_path": "$WORKING/wubkat/objdir",
         "ignore_missing_path_prefixes": [
-          "$WORKING/wubkat/objdir/CMakeFiles/CMakeTmp/"
+          "$WORKING/wubkat/objdir/CMakeFiles/CMakeScratch/"
         ],
         "codesearch_path": "$WORKING/wubkat/livegrep.idx",
         "codesearch_port": 8081,
