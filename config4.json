@@ -28,7 +28,7 @@
       "github_repo": "https://github.com/llvm/llvm-project",
       "objdir_path": "$WORKING/llvm/objdir",
       "ignore_missing_path_prefixes": [
-        "$WORKING/llvm/objdir/CMakeFiles/CMakeTmp/"
+        "$WORKING/llvm/objdir/CMakeFiles/CMakeScratch/"
       ],
       "codesearch_path": "$WORKING/llvm/livegrep.idx",
       "codesearch_port": 8082,
