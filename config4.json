@@ -213,21 +213,6 @@
       "codesearch_path": "$WORKING/mozilla-cedar/livegrep.idx",
       "codesearch_port": 8094,
       "scip_subtrees": {}
-    },
-
-    "mozilla-cypress": {
-      "priority": 200,
-      "on_error": "continue",
-      "cache": "codesearch",
-      "index_path": "$WORKING/mozilla-cypress",
-      "files_path": "$WORKING/mozilla-cypress/git",
-      "git_path": "$WORKING/mozilla-cypress/git",
-      "git_blame_path": "$WORKING/mozilla-cypress/blame",
-      "hg_root": "https://hg.mozilla.org/projects/cypress",
-      "objdir_path": "$WORKING/mozilla-cypress/objdir",
-      "codesearch_path": "$WORKING/mozilla-cypress/livegrep.idx",
-      "codesearch_port": 8095,
-      "scip_subtrees": {}
     }
   }
 }
