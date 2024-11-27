@@ -7,7 +7,7 @@
 # Debugging this?  Uncomment the following to see the commands as they run!
 #set -x
 
-BUILDER_NAME=${1:-GTK-Linux-64-bit-Release-Ubuntu-LTS-Build}
+BUILDER_NAME=${1:-GTK-Linux-64-bit-Release-Ubuntu-2204-Build}
 BUILD_INFO=$(curl "https://build.webkit.org/api/v2/builders/$BUILDER_NAME/builds?order=-number&limit=1&complete=true&state_string=build%20successful" 2>/dev/null)
 NUMBER=$(jq -Mr '.builds[0].number' <<< "$BUILD_INFO")
 BUILDER_ID=$(jq -Mr '.builds[0].builderid' <<< "$BUILD_INFO")
