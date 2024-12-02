@@ -11,6 +11,8 @@
       "index_path": "$WORKING/l10n",
       "files_path": "$WORKING/l10n/git",
       "git_path": "$WORKING/l10n/git",
+      "git_blame_path": "$WORKING/l10n/blame",
+      "github_repo": "https://github.com/mozilla-l10n/firefox-l10n",
       "objdir_path": "$WORKING/l10n/objdir",
       "codesearch_path": "$WORKING/l10n/livegrep.idx",
       "codesearch_port": 8081,
