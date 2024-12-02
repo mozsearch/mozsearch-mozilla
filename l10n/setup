@@ -12,31 +12,33 @@ if [ -d "git" ]
 then
     echo "Found pre-existing l10n git folder; skipping re-download."
 else
-    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/l10n.tar
-    tar xf l10n.tar
-    rm l10n.tar
+    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/firefox-l10n.tar.lz4
+    lz4 -dc firefox-l10n.tar.lz4 | tar -x
+    rm firefox-l10n.tar.lz4
 fi
 popd
 
 date
 
+echo Downloading l10n blame.
+pushd $INDEX_ROOT
+if [ -d "blame" ]
+then
+    echo "Found pre-existing l10n blame folder; skipping re-download."
+else
+    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/firefox-l10n-blame.tar.lz4
+    lz4 -dc firefox-l10n-blame.tar.lz4 | tar -x
+    rm firefox-l10n-blame.tar.lz4
+fi
+popd
+
 echo Updating git
 pushd $GIT_ROOT
-# pull latest subrepos. We can't just do a `git submodule update --remote`
-# because the submodules are cinnabar clones, and git doesn't like that. We
-# can't even do `git submodule foreach 'git pull'` so we have to resort to
-# looping manually like cavepeople or something.
-git config fetch.prune true
-for submod in *; do
-    pushd $submod
-    git pull || echo "WARNING: The ${submod} subrepo inside l10n-central seems to be missing!"
-    popd
-done
-# The previous step will update the submodules of this top-level synthetic superproject,
-# and now we want to commit those changes, so that the top-level superproject points
-# to the latest version of each submodule.
-git add *
-git commit --allow-empty -am "Submodule update at $(date)" --author "Searchfox Indexer <searchfox-aws@mozilla.com>"
+git pull origin main
+
 popd
+
+echo Generating blame information
+$MOZSEARCH_PATH/tools/target/release/build-blame $GIT_ROOT $BLAME_ROOT
 
 date
