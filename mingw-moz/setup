@@ -43,7 +43,7 @@ git reset --hard ${MOZ_REV}
 popd
 
 echo Generating blame information
-$MOZSEARCH_PATH/tools/target/release/build-blame $GIT_ROOT $BLAME_ROOT
+build-blame $GIT_ROOT $BLAME_ROOT
 
 # Check out the blame rev corresponding to MOZ_REV, since the blame
 # repo may be ahead of it.
