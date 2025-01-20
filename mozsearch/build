@@ -32,7 +32,7 @@ date
 ## Python Indexing
 
 cd $FILES_ROOT
-mise exec nodejs@18 -- scip-python index --show-progress-rate-limit 0 --project-name python --output python.scip
+scip-python index --show-progress-rate-limit 0 --project-name python --output python.scip
 mv python.scip $INDEX_ROOT
 
 date
