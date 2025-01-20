@@ -98,7 +98,7 @@ git init .
 popd
 
 # Build blame for HEAD, i.e. master branch
-"${MOZSEARCH_PATH}/tools/target/release/build-blame" "${GIT_REPO_DIR}" "${BLAME_REPO_DIR}"
+build-blame "${GIT_REPO_DIR}" "${BLAME_REPO_DIR}"
 
 LASTBRANCH="HEAD"
 for BRANCH in $BRANCHES; do
@@ -110,7 +110,7 @@ for BRANCH in $BRANCHES; do
     popd
 
     echo "Generating blame information for ${BRANCH}..."
-    BLAME_REF="refs/heads/${BRANCH}" "${MOZSEARCH_PATH}/tools/target/release/build-blame" "${GIT_REPO_DIR}" "${BLAME_REPO_DIR}"
+    BLAME_REF="refs/heads/${BRANCH}" build-blame "${GIT_REPO_DIR}" "${BLAME_REPO_DIR}"
 
     LASTBRANCH="${BRANCH}"
 done

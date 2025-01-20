@@ -89,7 +89,7 @@ echo "Generating blame information..."
 pushd $BLAME_ROOT
 git reset --soft "$BRANCH"
 popd
-$MOZSEARCH_PATH/tools/target/release/build-blame $GIT_ROOT $BLAME_ROOT
+build-blame $GIT_ROOT $BLAME_ROOT
 
 date
 
