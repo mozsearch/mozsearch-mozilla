@@ -223,7 +223,7 @@ date
 # (We also copy that source into ojbdir, but that action is racey.  See the
 # comments where we perform the copying.)
 export RUST_LOG=info
-$MOZSEARCH_PATH/tools/target/release/scip-indexer \
+scip-indexer \
   "$CONFIG_FILE" \
   "$TREE_NAME" \
   --subtree-root "." \
@@ -234,7 +234,7 @@ date
 
 # Only android builds will have a java.scip
 if [ -f "objdir-$PLATFORM/java.scip" ]; then
-  $MOZSEARCH_PATH/tools/target/release/scip-indexer \
+  scip-indexer \
     "$CONFIG_FILE" \
     "$TREE_NAME" \
     --subtree-root "." \

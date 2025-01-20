@@ -39,6 +39,6 @@ git pull origin main
 popd
 
 echo Generating blame information
-$MOZSEARCH_PATH/tools/target/release/build-blame $GIT_ROOT $BLAME_ROOT
+build-blame $GIT_ROOT $BLAME_ROOT
 
 date
