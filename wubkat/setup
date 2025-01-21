@@ -61,24 +61,3 @@ echo Generating blame information
 build-blame $GIT_ROOT $BLAME_ROOT
 
 date
-
-echo Installing/updating system build dependencies
-
-# Update the apt index
-sudo apt-get update
-
-# gtk/install-dependencies below will install a bunch of stuff, but it seems like
-# it maybe missed these things I've added after flatpak, but they may also be
-# transitive deps of some of the below.  (And now with the return to
-# install-dependencies with explicit 22.04 these may not be needed at all, but
-# we'll see.)
-sudo apt-get install -y libcairo-dev libharfbuzz-dev gi-docgen
-
-date
-
-# Support for 22.04 seems to have been officially added in
-# https://searchfox.org/wubkat/commit/aa960b1a0c7b980efdbc66718239a449b5966a0c
-# so we're now using it directly again.
-sudo $FILES_ROOT/Tools/gtk/install-dependencies
-
-date
