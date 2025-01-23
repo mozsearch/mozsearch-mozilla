@@ -1,0 +1,22 @@
+{
+  "mozsearch_path": "$MOZSEARCH_PATH",
+  "config_repo": "$CONFIG_REPO",
+  "instance_type": "t3.2xlarge",
+
+  "trees": {
+    "glean": {
+      "priority": 70,
+      "on_error": "continue",
+      "cache": "codesearch",
+      "index_path": "$WORKING/glean",
+      "files_path": "$WORKING/glean/git",
+      "git_path": "$WORKING/glean/git",
+      "git_blame_path": "$WORKING/glean/blame",
+      "github_repo": "https://github.com/mozilla/glean",
+      "objdir_path": "$WORKING/glean/objdir",
+      "codesearch_path": "$WORKING/glean/livegrep.idx",
+      "codesearch_port": 8088,
+      "scip_subtrees": {}
+    }
+  }
+}
