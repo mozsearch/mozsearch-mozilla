@@ -57,7 +57,7 @@ jo verboseOutput=false \
 
 # Absolute paths aren't treated as absolute but instead concatenated, so we need
 # to use just a filename and then move it after.
-mise exec nodejs@18 -- scip-python index --show-progress-rate-limit 0 --project-name python --output python.scip
+scip-python index --show-progress-rate-limit 0 --project-name python --output python.scip
 mv python.scip $INDEX_ROOT
 popd
 
