@@ -6,6 +6,7 @@ var TREE_LIST = [
         { value: "mozilla-central" },
         { value: "mozilla-beta" },
         { value: "mozilla-release" },
+        { value: "mozilla-esr140" },
         { value: "mozilla-esr128" },
         { value: "mozilla-esr115" },
         { value: "mozilla-esr102" },
