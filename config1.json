@@ -114,7 +114,7 @@
 
     "mozsearch-tests": {
       "priority": 550,
-      "on_error": "halt",
+      "on_error": "continue",
       "cache": "everything",
       "index_path": "$WORKING/mozsearch-tests",
       "files_path": "$WORKING/mozsearch-tests/files",
