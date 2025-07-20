@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# This is the pre-https://github.com/mozilla-firefox/firefox support
-
 set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
@@ -114,7 +112,7 @@ for BRANCH in elm cedar cypress beta release esr140 esr128 esr115 esr102 esr91 e
     # Check if there's a branch in the blame repo yet, and if there isn't, fork
     # it from the previous branch in the list, with a base case of "master".
     git -C $BLAME_ROOT show-ref --verify --quiet "refs/heads/${BRANCH}" || git -C $BLAME_ROOT branch "${BRANCH}" "${LASTBRANCH}"
-    BLAME_REF="refs/heads/$BRANCH" build-blame $GIT_ROOT $BLAME_ROOT
+    BLAME_REF="refs/heads/$BRANCH" $MOZSEARCH_PATH/tools/target/release/build-blame $GIT_ROOT $BLAME_ROOT
     LASTBRANCH="${BRANCH}"
 done
 
