@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# This is the pre-https://github.com/mozilla-firefox/firefox support
-
 set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
@@ -91,7 +89,7 @@ echo "Generating blame information..."
 pushd $BLAME_ROOT
 git reset --soft "$BRANCH"
 popd
-build-blame $GIT_ROOT $BLAME_ROOT
+$MOZSEARCH_PATH/tools/target/release/build-blame $GIT_ROOT $BLAME_ROOT
 
 date
 
