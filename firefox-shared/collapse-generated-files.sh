@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# This is the pre-https://github.com/mozilla-firefox/firefox support
-
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
@@ -70,7 +68,7 @@ if [ "$ALL_SAME_AS" != "" ]; then
     # should probably just consider moving more of this logic directly into
     # rust code if only because it could let us provide better instrumentation
     # of the path of every file and avoid piles of dos2unix, sed, bash, etc.
-    RUST_LOG=info merge-analyses analysis-*/__GENERATED__/$GENERATED_FILE > $MERGED_ANALYSIS
+    RUST_LOG=info $MOZSEARCH_PATH/tools/target/release/merge-analyses analysis-*/__GENERATED__/$GENERATED_FILE > $MERGED_ANALYSIS
     exit 0
 fi
 

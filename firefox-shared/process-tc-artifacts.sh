@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# This is the pre-https://github.com/mozilla-firefox/firefox support
-
 set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
@@ -225,7 +223,7 @@ date
 # (We also copy that source into ojbdir, but that action is racey.  See the
 # comments where we perform the copying.)
 export RUST_LOG=info
-scip-indexer \
+$MOZSEARCH_PATH/tools/target/release/scip-indexer \
   "$CONFIG_FILE" \
   "$TREE_NAME" \
   --subtree-root "." \
@@ -236,7 +234,7 @@ date
 
 # Only android builds will have a java.scip
 if [ -f "objdir-$PLATFORM/java.scip" ]; then
-  scip-indexer \
+  $MOZSEARCH_PATH/tools/target/release/scip-indexer \
     "$CONFIG_FILE" \
     "$TREE_NAME" \
     --subtree-root "." \

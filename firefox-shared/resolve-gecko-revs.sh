@@ -2,8 +2,6 @@
 # into a pre-existing shell. MOZSEARCH_PATH and INDEX_ROOT should be defined prior
 # to sourcing.
 
-# This is the pre-https://github.com/mozilla-firefox/firefox support
-
 if [ -z $MOZSEARCH_PATH ]
 then
     echo "Error: resolve-gecko-revs.sh is being sourced without MOZSEARCH_PATH defined"

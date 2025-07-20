@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# This is the pre-https://github.com/mozilla-firefox/firefox support
-
 set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
@@ -38,7 +36,7 @@ date
 # are going to be listed in the analysis-files.list, possibly duplicated across
 # platforms, so we deduplicate the filenames and merge each filename across platforms.
 sort analysis-dirs.list | uniq | parallel --halt now,fail=1 'mkdir -p analysis/{}'
-sort analysis-files.list | uniq | parallel --halt now,fail=1 "RUST_LOG=info merge-analyses analysis-*/{} > analysis/{}"
+sort analysis-files.list | uniq | parallel --halt now,fail=1 "RUST_LOG=info $MOZSEARCH_PATH/tools/target/release/merge-analyses analysis-*/{} > analysis/{}"
 
 date
 
