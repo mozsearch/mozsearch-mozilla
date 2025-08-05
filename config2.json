@@ -112,6 +112,21 @@
       "codesearch_path": "$WORKING/mozilla-esr140/livegrep.idx",
       "codesearch_port": 8087,
       "scip_subtrees": {}
+    },
+    
+    "comm-esr140": {
+      "priority": 5,
+      "on_error": "continue",
+      "cache": "codesearch",
+      "index_path": "$WORKING/comm-esr140",
+      "files_path": "$WORKING/comm-esr140/git",
+      "git_path": "$WORKING/comm-esr140/git",
+      "git_blame_path": "$WORKING/comm-esr140/blame",
+      "hg_root": "https://hg.mozilla.org/releases/comm-esr140",
+      "objdir_path": "$WORKING/comm-esr140/objdir",
+      "codesearch_path": "$WORKING/comm-esr140/livegrep.idx",
+      "codesearch_port": 8086,
+      "scip_subtrees": {}
     }
   }
 }

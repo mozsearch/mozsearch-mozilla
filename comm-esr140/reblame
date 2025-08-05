@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+$CONFIG_REPO/shared/rebuild-blame.sh --tarball-base comm-esr140 $*
