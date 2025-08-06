@@ -125,7 +125,7 @@
       "hg_root": "https://hg.mozilla.org/releases/comm-esr140",
       "objdir_path": "$WORKING/comm-esr140/objdir",
       "codesearch_path": "$WORKING/comm-esr140/livegrep.idx",
-      "codesearch_port": 8086,
+      "codesearch_port": 8088,
       "scip_subtrees": {}
     }
   }
