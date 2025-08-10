@@ -10,7 +10,7 @@ date
 echo Uploading webkit
 pushd $INDEX_ROOT
 $CONFIG_REPO/shared/git-maintenance.sh ./git
-tar cf - git | lz4 - wubkat.tar.lz4
+tar cf - git | lz4 -f - wubkat.tar.lz4
 $AWS_ROOT/upload.py $INDEX_ROOT/wubkat.tar.lz4 searchfox.repositories wubkat.tar.lz4
 rm wubkat.tar.lz4
 popd
@@ -20,7 +20,7 @@ date
 echo Uploading webkit blame
 pushd $INDEX_ROOT
 $CONFIG_REPO/shared/git-maintenance.sh ./blame
-tar cf - blame | lz4 - wubkat-blame.tar.lz4
+tar cf - blame | lz4 -f - wubkat-blame.tar.lz4
 $AWS_ROOT/upload.py $INDEX_ROOT/wubkat-blame.tar.lz4 searchfox.repositories wubkat-blame.tar.lz4
 rm wubkat-blame.tar.lz4
 popd

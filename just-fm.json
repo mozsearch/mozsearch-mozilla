@@ -1,0 +1,36 @@
+{
+  "mozsearch_path": "$MOZSEARCH_PATH",
+  "config_repo": "$CONFIG_REPO",
+  "default_tree": "firefox-main",
+  "instance_type": "t3.xlarge",
+
+  "trees": {
+    "firefox-main": {
+      "priority": 1000,
+      "on_error": "halt",
+      "cache": "everything",
+      "shared_path": "$WORKING/firefox-shared",
+      "index_path": "$WORKING/firefox-main",
+      "files_path": "$WORKING/firefox-main/git",
+      "git_path": "$WORKING/firefox-main/git",
+      "git_branch": "main",
+      "oldtree_name": "mozilla-central",
+      "oldgit_path": "$WORKING/firefox-shared/oldgit",
+      "git_blame_path": "$WORKING/firefox-shared/blame",
+      "github_repo": "https://github.com/mozilla-firefox/firefox",
+      "oldgithub_repo": "https://github.com/mozilla/gecko-dev",
+      "hg_root": "https://hg.mozilla.org/mozilla-central",
+      "ccov_root": "https://coverage.moz.tools/",
+      "wpt_root": "testing/web-platform",
+      "objdir_path": "$WORKING/firefox-main/objdir",
+      "codesearch_path": "$WORKING/firefox-main/livegrep.idx",
+      "codesearch_port": 8081,
+      "scip_subtrees": {
+        "python": {
+          "scip_index_path": "$WORKING/firefox-main/python.scip",
+          "subtree_root": ""
+        }
+      }
+    }
+  }
+}

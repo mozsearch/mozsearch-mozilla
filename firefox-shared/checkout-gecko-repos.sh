@@ -14,22 +14,109 @@ REVISION_TREE=$1
 BRANCH=$2
 INDEXED_HG_REV=$3
 
-echo Downloading Gecko
-pushd $INDEX_ROOT
-$CONFIG_REPO/shared/fetch-gecko-tarball.sh gecko $PWD
-popd
-
+# --- Ensure shared resources are downloaded
+#
+# We now use the "aws" command to perform the download for performance reasons
+# since it knows how to parallelize and otherwise leverage when it is running on
+# an EC2 node.
+#
+# We use `--no-sign-request` to force an anonymous request so this works everywhere
+# (because we mark the resources public).
+mkdir -p $SHARED_ROOT
+pushd $SHARED_ROOT
 date
 
-echo Downloading Gecko blame
-pushd $INDEX_ROOT
-$CONFIG_REPO/shared/fetch-gecko-tarball.sh gecko-blame $PWD
-popd
-
+if [ ! -d git ]; then
+    # firefox-shared/git comes from firefox-shared-git.tar.lz4
+    if [[ ! -f "firefox-shared-git.tar.lz4" ]]; then
+        aws s3 cp s3://searchfox.repositories/firefox-shared-git.tar.lz4 . --no-sign-request
+    fi
+    lz4 -dc firefox-shared-git.tar.lz4 | tar -x
+    rm firefox-shared-git.tar.lz4
+    # Since this is the first time we have extracted this repo, it's possible
+    # someone may have tarballed the git tree with worktrees present from their
+    # local system.  These will now be stale, so let's prune those.
+    git -C ./git worktree prune
+fi
 date
 
-echo Updating git
-pushd $GIT_ROOT
+if [ ! -d blame ]; then
+    # firefox-shared/blame comes from firefox-shared-blame.tar.lz4
+    if [[ ! -f "firefox-shared-blame.tar.lz4" ]]; then
+        aws s3 cp s3://searchfox.repositories/firefox-shared-blame.tar.lz4 . --no-sign-request
+    fi
+    lz4 -dc firefox-shared-blame.tar.lz4 | tar -x
+    rm firefox-shared-blame.tar.lz4
+    # Since this is the first time we have extracted this repo, it's possible
+    # someone may have tarballed the git tree with worktrees present from their
+    # local system.  These will now be stale, so let's prune those.
+    git -C ./blame worktree prune
+fi
+date
+
+if [ ! -d oldgit ]; then
+    # firefox-shared/oldgit comes from firefox-shared-oldgit.tar.lz4
+    if [[ ! -f "firefox-shared-oldgit.tar.lz4" ]]; then
+        aws s3 cp s3://searchfox.repositories/firefox-shared-oldgit.tar.lz4 . --no-sign-request
+    fi
+    lz4 -dc firefox-shared-oldgit.tar.lz4 | tar -x
+    rm firefox-shared-oldgit.tar.lz4
+    # Since this is the first time we have extracted this repo, it's possible
+    # someone may have tarballed the git tree with worktrees present from their
+    # local system.  These will now be stale, so let's prune those.
+    git -C ./oldgit worktree prune
+fi
+date
+
+popd
+
+# --- Update git and oldgit
+# Note that only $SHARED_BARE_GIT_ROOT diverges from the worktree $GIT_ROOT.
+# We use these paths for clarity/consistency that we're working in bare-repo space.
+SHARED_BARE_GIT_ROOT=$SHARED_ROOT/git
+SHARED_BARE_OLDGIT_ROOT=$SHARED_ROOT/oldgit
+SHARED_BARE_BLAME_ROOT=$SHARED_ROOT/blame
+
+echo "Updating new shared bare git"
+date
+pushd $SHARED_BARE_GIT_ROOT
+# Note that this fetch is only updating remotes/origin/*, not our local tracking
+# branches (ex: refs/heads/main).
+git fetch
+# So we update the references here; note that because "main" is the name for
+# "central", we manually do that outside the loop.  We do this:
+# - For idiomatic / convenience reasons.
+# - Because our blame ingestion wants to use the same ref scheme for every
+#   git repository (for simplicity).
+git update-ref refs/heads/main refs/remotes/origin/bookmarks/central
+# We don't use BRANCH as a var here because we would clobber the script arg.
+for REFBRANCH in beta release esr140 esr128 esr115; do
+    git update-ref "refs/heads/$REFBRANCH" "refs/remotes/origin/bookmarks/$REFBRANCH"
+done
+
+# If a try push was specified, pull it in non-graft mode so we actually pull those changes.
+if [ "$REVISION_TREE" == "try" ]; then
+    git config cinnabar.graft false
+    git cinnabar fetch hg::https://hg.mozilla.org/try $INDEXED_HG_REV
+fi
+
+INDEXED_GIT_REV=$(git cinnabar hg2git $INDEXED_HG_REV)
+
+# If INDEXED_GIT_REV gets set to 40*"0", that means the gecko-dev repo is lagging
+# lagging behind the canonical hg repo, and we don't have the source corresponding
+# to the indexing run on taskcluster. In that case we error out and abort.
+
+if [ "$INDEXED_GIT_REV" == "0000000000000000000000000000000000000000" ]; then
+    echo "ERROR: Unable to find git equivalent for hg rev $INDEXED_HG_REV; please fix cinnabar and retry."
+    exit 1
+fi
+
+popd
+date
+
+echo "Updating old shared bare git"
+date
+pushd $SHARED_BARE_OLDGIT_ROOT
 # Fetch the m-c repos that we care about with non-grafted cinnabar, so it will have all the necessary hg metadata.
 # This could be simplified by using mozilla-unified, but currently mozilla-unified is updated with some amount
 # of latency and that can still leave us with stale data. It's better to pull from the individual source-of-truth
@@ -61,45 +148,61 @@ git config remote.esr17.url || git remote add -t branches/default/tip esr17 hg::
 git config cinnabar.graft false
 git config fetch.prune true
 git -c cinnabar.check=traceback fetch --multiple central elm cedar cypress beta release esr140 esr128 esr115 esr102 esr91 esr78 esr68 esr60 esr45 esr31 esr17
-
-# If a try push was specified, pull it in non-graft mode so we actually pull those changes.
-if [ "$REVISION_TREE" == "try" ]; then
-    git cinnabar fetch hg::https://hg.mozilla.org/try $INDEXED_HG_REV
-fi
-
-INDEXED_GIT_REV=$(git cinnabar hg2git $INDEXED_HG_REV)
-
-# If INDEXED_GIT_REV gets set to 40*"0", that means the gecko-dev repo is lagging
-# lagging behind the canonical hg repo, and we don't have the source corresponding
-# to the indexing run on taskcluster. In that case we error out and abort.
-
-if [ "$INDEXED_GIT_REV" == "0000000000000000000000000000000000000000" ]; then
-    echo "ERROR: Unable to find git equivalent for hg rev $INDEXED_HG_REV; please fix cinnabar and retry."
-    exit 1
-fi
-
-git checkout -B "$BRANCH" $INDEXED_GIT_REV
 popd
+date
+
+# --- Perform the checkout using a worktree
+# Currently we do need/want a full checkout for "files_path", so we need to
+# create a worktree for that (and "git_path" can't just be the bare git repo),
+# but note that for "oldgit" and "blame" we can and do just use the shared bare
+# repositories.
+
+echo "Checking out the revision in new git as a worktree"
+date
+pushd $SHARED_BARE_GIT_ROOT
+# If we are being run by a dev locally, it's possible the worktree may already
+# exist and be valid, so forcibly clean up the old work tree and start fresh.
+# (Although we run "git worktree prune" on download, we won't be doing a fresh
+# download in this case and the worktree's path would be valid, so prune would
+# not prune it.)
+if [ -d "$GIT_ROOT" ]; then
+    git worktree remove --force "$GIT_ROOT"
+fi
+# We use a detached HEAD for our checkout because we inevitably are going to be
+# on an older commit than the current tip of the branch[1] and this lets us leave
+# the branch reflecting reality.  If we used `-B "$BRANCH"`, then the ref would
+# be moved to this revision and our "build-blame" invocation would be limited to
+# this commit, thereby limiting what our /rev/ endpoint can serve.
+#
+# 1: This is because for firefox-main we pick our revision based on the most
+# recent coverage data we have, which unfortunately can time-warp, and for other
+# firefox-* branches we're similarly dependent on the most recent searchfox
+# indexer runs.
+git worktree add --detach "$GIT_ROOT" "$INDEXED_GIT_REV"
+popd
+date
+
+# --- Ensure we have up-to-date blame for this branch
+# Note that the firefox-main "setup" script will also try and generate blame for
+# all supported branches because only the firefox-main tree has an "upload"
+# script that uploads things.  But because this script is invoked by firefox-main's
+# setup script before it does that, this logic will run before that logic (and
+# so that logic should end up as a no-op when it runs for the "main" branch).
+echo "Generating blame information for $BRANCH..."
+date
+
+build-blame "$SHARED_BARE_GIT_ROOT" "$SHARED_BARE_BLAME_ROOT" --blame-ref "refs/heads/$BRANCH" --old-cinnabar-repo-path "$SHARED_BARE_OLDGIT_ROOT"
 
 date
 
-# Generate the blame information after checking out the GIT_ROOT to appropriate
-# revision above, so that the blame repo's head matches the git repo's head.
-echo "Generating blame information..."
-pushd $BLAME_ROOT
-git reset --soft "$BRANCH"
-popd
-$MOZSEARCH_PATH/tools/target/release/build-blame $GIT_ROOT $BLAME_ROOT
-
-date
-
-# Point the blame repo's HEAD to the commit matching what we have in in the src repo. Note
-# that we use `git reset --soft` because we don't need anything in the repo's working dir.
-pushd $BLAME_ROOT
-BLAME_REV=$(git log -1 --grep=$INDEXED_GIT_REV --pretty=format:%H)
-if [ -z "$BLAME_REV" ]; then
-    echo "Unable to find blame rev for $INDEXED_GIT_REV"
-    exit 1;
-fi
-git reset --soft $BLAME_REV
-popd
+# We used to reset the blame branch so that its HEAD matches up with the indexed
+# revision, but now that we use a single shared blame repo for multiple searchfox
+# trees, we can't depend on HEAD for any of them.
+#
+# The only benefit to having lined up the revisions was that `index_blame`
+# wouldn't load information about revisions more recent than the indexed
+# revision, but this:
+# - Isn't much of a memory savings.
+# - Is counterproductive; it's nice to be able to use searchfox for more recent
+#   revisions.  We might want to explicitly ingest new firefox-main revisions
+#   as they land even though we won't have the semantic data for them.
