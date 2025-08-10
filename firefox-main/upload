@@ -6,22 +6,44 @@ set -o pipefail # Check all commands in a pipeline
 
 date
 
-echo Uploading Gecko
-pushd $INDEX_ROOT
-$CONFIG_REPO/shared/git-maintenance.sh ./git
-tar cf gecko.tar git
-$AWS_ROOT/upload.py $INDEX_ROOT/gecko.tar searchfox.repositories gecko.tar
-rm gecko.tar
+# NB: To further increase parallelism we could run all of the aws s3 commands in
+# parallel, but these files are generally large enough on their own that they
+# will take a while and it probably makes sense to mess with the aws command
+# parallelism settings first.
+
+
+echo 'Uploading "git" archive: firefox-shared-git.tar.lz4'
+pushd $SHARED_ROOT
+$CONFIG_REPO/firefox-shared/git-bare-maintenance.sh ./git
+tar cf - git | lz4 -f - firefox-shared-git.tar.lz4
+# Note that we're using the "aws" command instead of $AWS_ROOT/upload.py for
+# parallelism reasons.
+aws s3 cp firefox-shared-git.tar.lz4 s3://searchfox.repositories/firefox-shared-git.tar.lz4 --acl public-read
+rm firefox-shared-git.tar.lz4
 popd
 
 date
 
-echo Uploading Gecko blame
-pushd $INDEX_ROOT
-$CONFIG_REPO/shared/git-maintenance.sh ./blame
-tar cf gecko-blame.tar blame
-$AWS_ROOT/upload.py $INDEX_ROOT/gecko-blame.tar searchfox.repositories gecko-blame.tar
-rm gecko-blame.tar
+echo 'Uploading "oldgit" archive: firefox-shared-oldgit.tar.lz4'
+pushd $SHARED_ROOT
+$CONFIG_REPO/firefox-shared/git-bare-maintenance.sh ./oldgit
+tar cf - oldgit | lz4 -f - firefox-shared-oldgit.tar.lz4
+# Note that we're using the "aws" command instead of $AWS_ROOT/upload.py for
+# parallelism reasons.
+aws s3 cp firefox-shared-oldgit.tar.lz4 s3://searchfox.repositories/firefox-shared-oldgit.tar.lz4 --acl public-read
+rm firefox-shared-oldgit.tar.lz4
+popd
+
+date
+
+echo 'Uploading "blame" archive: firefox-shared-blame.tar.lz4'
+pushd $SHARED_ROOT
+$CONFIG_REPO/firefox-shared/git-bare-maintenance.sh ./blame
+tar cf - blame | lz4 -f - firefox-shared-blame.tar.lz4
+# Note that we're using the "aws" command instead of $AWS_ROOT/upload.py for
+# parallelism reasons.
+aws s3 cp firefox-shared-blame.tar.lz4 s3://searchfox.repositories/firefox-shared-blame.tar.lz4 --acl public-read
+rm firefox-shared-blame.tar.lz4
 popd
 
 date

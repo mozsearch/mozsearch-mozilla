@@ -1,36 +1,47 @@
 {
   "mozsearch_path": "$MOZSEARCH_PATH",
   "config_repo": "$CONFIG_REPO",
-  "default_tree": "firefox-main",
+  "default_tree": "mozilla-central",
   "instance_type": "t3.2xlarge",
 
   "trees": {
-    "firefox-main": {
-      "priority": 1000,
+    "mozilla-central": {
+      "priority": 500,
       "on_error": "halt",
       "cache": "everything",
-      "shared_path": "$WORKING/firefox-shared",
-      "index_path": "$WORKING/firefox-main",
-      "files_path": "$WORKING/firefox-main/git",
-      "git_path": "$WORKING/firefox-main/git",
-      "git_branch": "main",
-      "oldtree_name": "mozilla-central",
-      "oldgit_path": "$WORKING/firefox-shared/oldgit",
-      "git_blame_path": "$WORKING/firefox-shared/blame",
-      "github_repo": "https://github.com/mozilla-firefox/firefox",
-      "oldgithub_repo": "https://github.com/mozilla/gecko-dev",
+      "index_path": "$WORKING/mozilla-central",
+      "files_path": "$WORKING/mozilla-central/git",
+      "git_path": "$WORKING/mozilla-central/git",
+      "git_blame_path": "$WORKING/mozilla-central/blame",
+      "github_repo": "https://github.com/mozilla/gecko-dev",
       "hg_root": "https://hg.mozilla.org/mozilla-central",
       "ccov_root": "https://coverage.moz.tools/",
       "wpt_root": "testing/web-platform",
-      "objdir_path": "$WORKING/firefox-main/objdir",
-      "codesearch_path": "$WORKING/firefox-main/livegrep.idx",
-      "codesearch_port": 8081,
+      "objdir_path": "$WORKING/mozilla-central/objdir",
+      "codesearch_path": "$WORKING/mozilla-central/livegrep.idx",
+      "codesearch_port": 8082,
       "scip_subtrees": {
         "python": {
-          "scip_index_path": "$WORKING/firefox-main/python.scip",
+          "scip_index_path": "$WORKING/mozilla-central/python.scip",
           "subtree_root": ""
         }
       }
+    },
+
+    "comm-central": {
+      "priority": 5,
+      "on_error": "continue",
+      "cache": "codesearch",
+      "index_path": "$WORKING/comm-central",
+      "files_path": "$WORKING/comm-central/git",
+      "git_path": "$WORKING/comm-central/git",
+      "git_blame_path": "$WORKING/comm-central/blame",
+      "github_repo": "https://github.com/mozilla/releases-comm-central",
+      "hg_root": "https://hg.mozilla.org/comm-central",
+      "objdir_path": "$WORKING/comm-central/objdir",
+      "codesearch_path": "$WORKING/comm-central/livegrep.idx",
+      "codesearch_port": 8083,
+      "scip_subtrees": {}
     },
 
     "mozilla-mobile": {
@@ -42,7 +53,7 @@
       "git_path": "$WORKING/mozilla-mobile/git",
       "objdir_path": "$WORKING/mozilla-mobile/objdir",
       "codesearch_path": "$WORKING/mozilla-mobile/livegrep.idx",
-      "codesearch_port": 8082,
+      "codesearch_port": 8084,
       "scip_subtrees": {}
     },
 
@@ -57,7 +68,7 @@
       "github_repo": "https://github.com/mozsearch/mozsearch",
       "objdir_path": "$WORKING/mozsearch/objdir",
       "codesearch_path": "$WORKING/mozsearch/livegrep.idx",
-      "codesearch_port": 8083,
+      "codesearch_port": 8085,
       "scip_subtrees": {
         "python": {
           "scip_index_path": "$WORKING/mozsearch/python.scip",
@@ -81,7 +92,7 @@
       "github_repo": "https://github.com/mozsearch/mozsearch-mozilla",
       "objdir_path": "$WORKING/mozsearch-mozilla/objdir",
       "codesearch_path": "$WORKING/mozsearch-mozilla/livegrep.idx",
-      "codesearch_port": 8084,
+      "codesearch_port": 8086,
       "scip_subtrees": {}
     },
 
@@ -94,7 +105,7 @@
       "objdir_path": "$WORKING/mozsearch-tests/objdir",
       "wpt_root": "testing/web-platform",
       "codesearch_path": "$WORKING/mozsearch-tests/livegrep.idx",
-      "codesearch_port": 8085,
+      "codesearch_port": 8087,
       "scip_subtrees": {}
     },
 
@@ -110,7 +121,7 @@
       "hg_root": "https://hg.mozilla.org/projects/nss",
       "objdir_path": "$WORKING/nss/dist",
       "codesearch_path": "$WORKING/nss/livegrep.idx",
-      "codesearch_port": 8086,
+      "codesearch_port": 8088,
       "scip_subtrees": {}
     }
   }

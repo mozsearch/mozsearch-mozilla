@@ -8,7 +8,7 @@ date
 
 # NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
 #
-# >>> mozilla-central is special because we like code coverage data! <<<
+# >>> firefox-main is special because we like code coverage data! <<<
 #     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #
 # Unless a `TRYPUSH_REV` is specified below, we are going to use the
@@ -20,13 +20,14 @@ date
 # actually need to hit 2 URLs here and so the moving parts theory favors not
 # provisioning `taskcluster` yet, but it would probably be a reasonable step.
 
-# This defaults to the most recent searchfox indexing run for mozilla-central.
-REVISION_TREE=mozilla-central
-REVISION_ID=latest
+# This defaults to the most recent searchfox indexing run for mozilla-central
+# which is still the name of the firefox-main tree for build purposes.
+BUILD_REVISION_TREE=mozilla-central
+BUILD_REVISION_ID=latest
 
 TC_ROOT_URL=https://firefox-ci-tc.services.mozilla.com
 TC_INDEX_API_URL=${TC_ROOT_URL}/api/index/v1/task
-COVERAGE_ROUTE=project.relman.code-coverage.production.repo.${REVISION_TREE}.latest
+COVERAGE_ROUTE=project.relman.code-coverage.production.repo.${BUILD_REVISION_TREE}.latest
 TC_QUEUE_API_URL=${TC_ROOT_URL}/api/queue/v1/task
 
 # Set TRYPUSH_REV in the environment to e.g. ee64db93dcc149da9313460317257b8c42eec5b2
@@ -34,9 +35,9 @@ TC_QUEUE_API_URL=${TC_ROOT_URL}/api/queue/v1/task
 # find the artifacts in taskcluster.
 TRYPUSH_REV=${TRYPUSH_REV:-}
 if [ -n "$TRYPUSH_REV" ]; then
-    REVISION_TREE=try
-    REVISION_ID="revision.${TRYPUSH_REV}"
-    echo "TRYPUSH_REV was used, ignoring coverage-based revision choice. Using: ${REVISION_ID}"
+    BUILD_REVISION_TREE=try
+    BUILD_REVISION_ID="revision.${TRYPUSH_REV}"
+    echo "TRYPUSH_REV was used, ignoring coverage-based revision choice. Using: ${BUILD_REVISION_ID}"
 else
     # find the taskId that the "latest" code coverage for our tree
     COV_TASKID=$(curl -ssL "${TC_INDEX_API_URL}/${COVERAGE_ROUTE}" | jq -Mr '.taskId')
@@ -63,56 +64,70 @@ else
     if [[ $COV_RECENCY_DAYS = "0" ]]; then
         # We also need to check that the revision is itself recent enough, see
         # bug 1818083.
-        COV_HG_REV_TARGET_INFO=$(curl -SsfL --compressed "${TC_INDEX_API_URL}/gecko.v2.${REVISION_TREE}.revision.${COV_HG_REV}.firefox.linux64-searchfox-debug/artifacts/public/build/target.json")
+        COV_HG_REV_TARGET_INFO=$(curl -SsfL --compressed "${TC_INDEX_API_URL}/gecko.v2.${BUILD_REVISION_TREE}.revision.${COV_HG_REV}.firefox.linux64-searchfox-debug/artifacts/public/build/target.json")
         COV_BUILDID=$(jq -Mr .buildid <<< $COV_HG_REV_TARGET_INFO)
         COV_BUILDID_IS_RECENT=$(jq -Mr --arg today $(date +%Y%m%d) --arg yesterday $(date --date yesterday +%Y%m%d) '.buildid | startswith($today) or startswith($yesterday)' <<< $COV_HG_REV_TARGET_INFO)
         if [ $COV_BUILDID_IS_RECENT = "true" ]; then
-            REVISION_ID="revision.${COV_HG_REV}"
-            echo "Coverage data is recent enough, using explicit revision: ${REVISION_ID}"
+            BUILD_REVISION_ID="revision.${COV_HG_REV}"
+            echo "Coverage data is recent enough, using explicit revision: ${BUILD_REVISION_ID}"
         else
-            echo "Coverage data is recent, but it's for an old revision (${COV_HG_REV}, ${COV_BUILDID}), sticking with: ${REVISION_ID}"
+            echo "Coverage data is recent, but it's for an old revision (${COV_HG_REV}, ${COV_BUILDID}), sticking with: ${BUILD_REVISION_ID}"
         fi
     else
-        echo "Coverage data is ${COV_RECENCY_DAYS} old, sticking with: ${REVISION_ID}"
+        echo "Coverage data is ${COV_RECENCY_DAYS} old, sticking with: ${BUILD_REVISION_ID}"
     fi
 fi
 
 # The next line populates the INDEXED_HG_REV and PREEXISTING_HG_REV env vars.
 # Note that PREEXISTING_HG_REV will generally be empty in production.
-source $CONFIG_REPO/shared/resolve-gecko-revs.sh $REVISION_TREE $REVISION_ID
+source $CONFIG_REPO/firefox-shared/resolve-gecko-revs.sh $BUILD_REVISION_TREE $BUILD_REVISION_ID
 
-$CONFIG_REPO/shared/checkout-gecko-repos.sh $REVISION_TREE "master" "$INDEXED_HG_REV"
+$CONFIG_REPO/firefox-shared/checkout-gecko-repos.sh $BUILD_REVISION_TREE "main" "$INDEXED_HG_REV"
 
-$CONFIG_REPO/shared/fetch-tc-artifacts.sh $REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV"
+$CONFIG_REPO/firefox-shared/fetch-tc-artifacts.sh $BUILD_REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV"
 
 date
 
-# Also generate blame for some other branches, because the gecko-blame repo is
-# shared by those branches. We do this here instead of in e.g. ../mozilla-beta/setup
+# Note that only $SHARED_BARE_GIT_ROOT diverges from the worktree $GIT_ROOT.
+# We use these paths for clarity/consistency that we're working in bare-repo space.
+SHARED_BARE_GIT_ROOT=$SHARED_ROOT/git
+SHARED_BARE_OLDGIT_ROOT=$SHARED_ROOT/oldgit
+SHARED_BARE_BLAME_ROOT=$SHARED_ROOT/blame
+
+# Also generate blame for some other branches, because the blame repo is
+# shared by those branches. We do this here instead of in e.g. ../firefox-beta/setup
 # because it's best to have only one indexer instance responsible for updating and
-# pushing the tarball to S3, to avoid accidental clobbers. It's not a great situation
-# architecturally, but it's better for performance.
+# pushing the tarball to S3, to avoid accidental clobbers.
 #
-# Base case for dynamic branch creation, see below.
-LASTBRANCH="master"
-# If you are adding branches, add them after the branch they forked off of,
-# putting the branch at the front of the list if they forked off of m-c.  So
-# in the case of new ESR branches (which fork off of "release"), they go after
-# release and before existing ESR branches.
-# Note: the pine branch used to be in here, but was removed in bug 1841395.
-# If the pine branch gets reset for a new project and we want to
-# add it back in here, we might need to manually update the tarball to
-# strip the existing pine branch. I don't know if it will work otherwise.
-for BRANCH in elm cedar cypress beta release esr140 esr128 esr115 esr102 esr91 esr78 esr68 esr60 esr45 esr31 esr17; do
-    echo "Updating gecko-dev branch $BRANCH to latest from cinnabar upstream..."
-    pushd $GIT_ROOT
-    git branch -f $BRANCH $BRANCH/branches/default/tip
-    popd
+
+# --- Generate Branches with old searchfox permalink support
+# DO NOT ADD NEW BRANCHES HERE AS-IS, Either create a forked version of this logic
+# without use of `--old-cinnabar-repo-path` or remove that use here.  Specifically,
+# we need to have fully moved off of the old mozilla-* branches for the below
+# branches.
+for BRANCH in main beta release esr140 esr128 esr115; do
     echo "Generating blame information for $BRANCH..."
-    # Check if there's a branch in the blame repo yet, and if there isn't, fork
-    # it from the previous branch in the list, with a base case of "master".
-    git -C $BLAME_ROOT show-ref --verify --quiet "refs/heads/${BRANCH}" || git -C $BLAME_ROOT branch "${BRANCH}" "${LASTBRANCH}"
-    BLAME_REF="refs/heads/$BRANCH" $MOZSEARCH_PATH/tools/target/release/build-blame $GIT_ROOT $BLAME_ROOT
+    # Try and start from an existing blame branch if this is a new branch.  New
+    # esr branches should look most like the release branch, and we expect other
+    # branches in the future will probably be feature branches based off of
+    # main.
+    #
+    # Some interesting historical notes for the initial firefox-* conversions:
+    # - Building blame for "beta" off of "main" required ingesting blame for
+    #   66,408 revisions.
+    # - Building blame for "release" off of "beta" required ingesting blame for
+    #   5,415 revisions.
+    # - Building blame for "esr140" off of "release" required ingesting blame for
+    #   227 revisions.
+    # - Building blame for "esr128" off of "release" required ingesting blame for
+    #   965 revisions.
+    if [[ "$BRANCH" == esr* ]]; then
+        BASEBRANCH="release"
+    else
+        BASEBRANCH="main"
+    fi
+    git -C "$SHARED_BARE_BLAME_ROOT" show-ref --verify --quiet "refs/heads/${BRANCH}" || git -C "$SHARED_BARE_BLAME_ROOT" branch "${BRANCH}" "${BASEBRANCH}"
+    build-blame "$SHARED_BARE_GIT_ROOT" "$SHARED_BARE_BLAME_ROOT" --blame-ref="refs/heads/$BRANCH" --old-cinnabar-repo-path "$SHARED_BARE_OLDGIT_ROOT"
     LASTBRANCH="${BRANCH}"
 done
 
