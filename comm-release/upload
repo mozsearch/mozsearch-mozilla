@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+date
+
+echo Uploading comm-release
+pushd $INDEX_ROOT
+$CONFIG_REPO/shared/git-maintenance.sh ./git
+tar cf - git | lz4 - comm-release.tar.lz4
+$AWS_ROOT/upload.py $INDEX_ROOT/comm-release.tar.lz4 searchfox.repositories comm-release.tar.lz4
+rm comm-release.tar.lz4
+popd
+
+date
+
+echo Uploading comm-release blame
+pushd $INDEX_ROOT
+$CONFIG_REPO/shared/git-maintenance.sh ./blame
+tar cf - blame | lz4 - comm-release-blame.tar.lz4
+$AWS_ROOT/upload.py $INDEX_ROOT/comm-release-blame.tar.lz4 searchfox.repositories comm-release-blame.tar.lz4
+rm comm-release-blame.tar.lz4
+popd
+
+date

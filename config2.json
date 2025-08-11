@@ -50,6 +50,21 @@
       "codesearch_port": 8082,
       "scip_subtrees": {}
     },
+    
+    "comm-release": {
+      "priority": 5,
+      "on_error": "continue",
+      "cache": "codesearch",
+      "index_path": "$WORKING/comm-release",
+      "files_path": "$WORKING/comm-release/git",
+      "git_path": "$WORKING/comm-release/git",
+      "git_blame_path": "$WORKING/comm-release/blame",
+      "hg_root": "https://hg.mozilla.org/releases/comm-release",
+      "objdir_path": "$WORKING/comm-release/objdir",
+      "codesearch_path": "$WORKING/comm-release/livegrep.idx",
+      "codesearch_port": 8090,
+      "scip_subtrees": {}
+    },
 
     "mozilla-esr115": {
       "priority": 20,
