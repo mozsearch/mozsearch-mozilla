@@ -96,22 +96,6 @@
       "codesearch_path": "$WORKING/mozsearch-tests/livegrep.idx",
       "codesearch_port": 8085,
       "scip_subtrees": {}
-    },
-
-    "nss": {
-      "priority": 10,
-      "on_error": "continue",
-      "cache": "codesearch",
-      "index_path": "$WORKING/nss",
-      "files_path": "$WORKING/nss/git",
-      "git_path": "$WORKING/nss/git",
-      "git_blame_path": "$WORKING/nss/blame",
-      "github_repo": "https://github.com/nss-dev/nss",
-      "hg_root": "https://hg.mozilla.org/projects/nss",
-      "objdir_path": "$WORKING/nss/dist",
-      "codesearch_path": "$WORKING/nss/livegrep.idx",
-      "codesearch_port": 8086,
-      "scip_subtrees": {}
     }
   }
 }
