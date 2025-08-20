@@ -110,7 +110,7 @@
       "wpt_root": "testing/web-platform",
       "objdir_path": "$WORKING/firefox-esr115/objdir",
       "codesearch_path": "$WORKING/firefox-esr115/livegrep.idx",
-      "codesearch_port": 8083,
+      "codesearch_port": 8085,
       "scip_subtrees": {}
     }
   }
