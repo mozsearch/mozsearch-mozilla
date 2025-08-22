@@ -56,7 +56,13 @@ date
 
 echo Updating NSS git
 pushd $GIT_ROOT
-git pull
+# The nss repo occasionally experiences situations where someone pushes something
+# to github thinking it is canonical, but that push then gets clobbered out of
+# existence by the repository syncing mechanism force-pushing the current state
+# of hg to the github repo.  So just fetch and then reset to the state of the
+# origin.
+git fetch origin
+git reset --hard origin/master
 # Since updating to NSS 0.5.9, cinnabar seems upset about the state of the NSS
 # repo.  Since running these next steps is not necessary for searchfox to update
 # (we pulled from github above), this is being disabled.
