@@ -202,17 +202,18 @@
       "scip_subtrees": {}
     },
 
-    "mozilla-cypress": {
-      "priority": 200,
+    "nss": {
+      "priority": 10,
       "on_error": "continue",
       "cache": "codesearch",
-      "index_path": "$WORKING/mozilla-cypress",
-      "files_path": "$WORKING/mozilla-cypress/git",
-      "git_path": "$WORKING/mozilla-cypress/git",
-      "git_blame_path": "$WORKING/mozilla-cypress/blame",
-      "hg_root": "https://hg.mozilla.org/projects/cypress",
-      "objdir_path": "$WORKING/mozilla-cypress/objdir",
-      "codesearch_path": "$WORKING/mozilla-cypress/livegrep.idx",
+      "index_path": "$WORKING/nss",
+      "files_path": "$WORKING/nss/git",
+      "git_path": "$WORKING/nss/git",
+      "git_blame_path": "$WORKING/nss/blame",
+      "github_repo": "https://github.com/nss-dev/nss",
+      "hg_root": "https://hg.mozilla.org/projects/nss",
+      "objdir_path": "$WORKING/nss/dist",
+      "codesearch_path": "$WORKING/nss/livegrep.idx",
       "codesearch_port": 8094,
       "scip_subtrees": {}
     }
