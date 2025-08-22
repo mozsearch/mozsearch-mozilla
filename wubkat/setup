@@ -76,9 +76,11 @@ sudo apt-get install -y libcairo-dev libharfbuzz-dev gi-docgen
 
 date
 
-# Support for 22.04 seems to have been officially added in
-# https://searchfox.org/wubkat/commit/aa960b1a0c7b980efdbc66718239a449b5966a0c
-# so we're now using it directly again.
-sudo $FILES_ROOT/Tools/gtk/install-dependencies
+if [ -z "${DONT_INSTALL_DEPS+x}" ]; then
+    # Support for 22.04 seems to have been officially added in
+    # https://searchfox.org/wubkat/commit/aa960b1a0c7b980efdbc66718239a449b5966a0c
+    # so we're now using it directly again.
+    sudo $FILES_ROOT/Tools/gtk/install-dependencies
 
-date
+    date
+fi
