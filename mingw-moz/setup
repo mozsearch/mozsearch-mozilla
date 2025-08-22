@@ -34,7 +34,7 @@ popd
 
 date
 
-MOZ_REV=$(curl -SsfL "https://hg.mozilla.org/mozilla-central/raw-file/tip/taskcluster/kinds/fetch/toolchains.yml" | yq -r '.["mingw-w64"].fetch.revision')
+MOZ_REV=$(curl -SsfL "https://raw.githubusercontent.com/mozilla-firefox/firefox/refs/heads/main/taskcluster/kinds/fetch/toolchains.yml" | yq -r '.["mingw-w64"].fetch.revision')
 
 echo Updating git
 pushd $GIT_ROOT
