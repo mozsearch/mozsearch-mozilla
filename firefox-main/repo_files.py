@@ -16,6 +16,7 @@ def filter_webidl(path):
 
 def modify_file_list(lines, config):
     lines.append(b'__GENERATED__/dom/bindings/CSS2Properties.webidl')
+    lines.append(b'__GENERATED__/dom/bindings/CSSStyleProperties.webidl')
     return lines
 
 def filter_js(path):
