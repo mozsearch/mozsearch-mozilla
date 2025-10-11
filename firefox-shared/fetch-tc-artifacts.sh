@@ -44,6 +44,10 @@ if [[ -n $PREEXISTING_HG_REV && $PREEXISTING_HG_REV != $INDEXED_HG_REV ]]; then
     rm -f *.generated-files.tar.gz
     rm -f *.distinclude.map
     rm -f *.chrome-map.json
+    rm -f gcFunctions.txt
+    rm -f gcFunctions.txt.gz
+    rm -f allFunctions.txt
+    rm -f allFunctions.txt.gz
 fi
 
 # Download the bugzilla components file and the artifacts from each platform that
@@ -87,6 +91,10 @@ echo "${CURL} ${TC_TASK}/project.relman.code-coverage.production.repo.${REVISION
 
 # Firefox Source Docs trees.
 echo "${CURL} ${TC_LATEST_PREFIX}.source.doc-generate/artifacts/public/trees.json -o doc-trees.json || true" >> downloads.lst
+
+# Hazard analysis.
+echo "${CURL} ${TC_REV_PREFIX}.firefox.browser-haz-debug/artifacts/public/build/gcFunctions.txt.gz -o gcFunctions.txt.gz || true" >> downloads.lst
+echo "${CURL} ${TC_REV_PREFIX}.firefox.browser-haz-debug/artifacts/public/build/allFunctions.txt.gz -o allFunctions.txt.gz || true" >> downloads.lst
 
 for PLATFORM in linux64 macosx64 macosx64-aarch64 win64 android-armv7 android-aarch64 ios; do
     TC_PREFIX="${TC_REV_PREFIX}.firefox.${PLATFORM}-searchfox-debug/artifacts/public/build"
@@ -147,6 +155,14 @@ if [[ -f wpt-manifests.tar.gz ]]; then
     mv mozilla/meta/MANIFEST.json ../wpt-mozilla-manifest.json || true
     popd
     rm -rf manifest-extract
+fi
+
+# Extract hazard analysis.
+if [[ -f gcFunctions.txt.gz ]]; then
+    gunzip gcFunctions.txt.gz
+fi
+if [[ -f allFunctions.txt.gz ]]; then
+    gunzip allFunctions.txt.gz
 fi
 
 popd
