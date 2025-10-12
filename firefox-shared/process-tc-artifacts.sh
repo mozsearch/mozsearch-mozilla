@@ -88,6 +88,7 @@ pushd generated-$PLATFORM
 
 declare -A RUST_PLAT_DIRS
 RUST_PLAT_DIRS["linux64"]="x86_64-unknown-linux-gnu"
+RUST_PLAT_DIRS["linux64-opt"]="x86_64-unknown-linux-gnu"
 RUST_PLAT_DIRS["macosx64"]="x86_64-apple-darwin"
 RUST_PLAT_DIRS["macosx64-aarch64"]="aarch64-apple-darwin"
 RUST_PLAT_DIRS["win64"]="x86_64-pc-windows-msvc"
