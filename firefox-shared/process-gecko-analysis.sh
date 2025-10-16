@@ -8,7 +8,7 @@ set -o pipefail # Check all commands in a pipeline
 # and $MOZSEARCH_PATH defined in the environment.
 
 # Process the downloads for each platform in parallel
-echo "linux64 linux64-opt macosx64 macosx64-aarch64 win64 android-armv7 android-aarch64 ios" | tr " " "\n" |
+echo "linux64 linux64-opt macosx64 macosx64-aarch64 macosx64-aarch64-opt win64 android-armv7 android-aarch64 ios" | tr " " "\n" |
 parallel --halt now,fail=1 "$CONFIG_REPO/shared/process-tc-artifacts.sh {}"
 
 # Combine the per-platform list files
@@ -20,7 +20,7 @@ date
 
 # Special case: xptdata.cpp is a giant file and is different for each platform, but
 # the differences are not particularly relevant so let's just keep the Linux one.
-for PLATFORM in linux64-opt macosx64 macosx64-aarch64 win64 android-armv7 android-aarch64; do
+for PLATFORM in linux64-opt macosx64 macosx64-aarch64 macosx64-aarch64-opt win64 android-armv7 android-aarch64; do
     rm -f generated-${PLATFORM}/xpcom/reflect/xptinfo/xptdata.cpp
     rm -f analysis-${PLATFORM}/__GENERATED__/xpcom/reflect/xptinfo/xptdata.cpp
 done

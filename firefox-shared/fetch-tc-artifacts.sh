@@ -96,10 +96,10 @@ echo "${CURL} ${TC_LATEST_PREFIX}.source.doc-generate/artifacts/public/trees.jso
 echo "${CURL} ${TC_REV_PREFIX}.firefox.browser-haz-debug/artifacts/public/build/gcFunctions.txt.gz -o gcFunctions.txt.gz || true" >> downloads.lst
 echo "${CURL} ${TC_REV_PREFIX}.firefox.browser-haz-debug/artifacts/public/build/allFunctions.txt.gz -o allFunctions.txt.gz || true" >> downloads.lst
 
-for PLATFORM in linux64 linux64-opt macosx64 macosx64-aarch64 win64 android-armv7 android-aarch64 ios; do
+for PLATFORM in linux64 linux64-opt macosx64 macosx64-aarch64 macosx64-aarch64-opt win64 android-armv7 android-aarch64 ios; do
     case "${PLATFORM}" in
         *-opt)
-            TC_PLATFORM=$(echo $PLATFORM|cut -d - -f 1)
+            TC_PLATFORM=$(echo $PLATFORM | sed -e 's/-opt$//')
             VARIANT=opt
             ;;
         *)
@@ -115,7 +115,7 @@ for PLATFORM in linux64 linux64-opt macosx64 macosx64-aarch64 win64 android-armv
     # Also check for moz_source_stamp, to handle tasks that exists but failed. We rely on this field for resolve-gecko-revs.sh already.
     if ! (${CURL} "${TC_PREFIX}/target.json" | grep moz_source_stamp); then
         LOG_LEVEL="WARNING"
-        if [ ${PLATFORM} = "linux64-opt" -o ${PLATFORM} = "ios" -o ${PLATFORM} = "macosx64-aarch64" -o ${PLATFORM} = "android-armv7" -o ${PLATFORM} = "android-aarch64" ]; then
+        if [ ${PLATFORM} = "linux64-opt" -o ${PLATFORM} = "ios" -o ${PLATFORM} = "macosx64-aarch64" -o ${PLATFORM} = "macosx64-aarch64-opt" -o ${PLATFORM} = "android-armv7" -o ${PLATFORM} = "android-aarch64" ]; then
             LOG_LEVEL="INFO"
         fi
         echo "${LOG_LEVEL}: Unable to find analysis for $PLATFORM for hg rev $INDEXED_HG_REV; skipping analysis merge step for this platform."
