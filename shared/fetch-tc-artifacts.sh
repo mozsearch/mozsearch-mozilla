@@ -91,7 +91,18 @@ echo "${CURL} ${TC_TASK}/project.relman.code-coverage.production.repo.${REVISION
 echo "${CURL} ${TC_LATEST_PREFIX}.source.doc-generate/artifacts/public/trees.json -o doc-trees.json || true" >> downloads.lst
 
 for PLATFORM in linux64 linux64-opt macosx64 macosx64-aarch64 macosx64-aarch64-opt win64 win64-opt android-armv7 android-aarch64 ios; do
-    TC_PREFIX="${TC_REV_PREFIX}.firefox.${PLATFORM}-searchfox-debug/artifacts/public/build"
+    case "${PLATFORM}" in
+        *-opt)
+            TC_PLATFORM=$(echo $PLATFORM | sed -e 's/-opt$//')
+            VARIANT=opt
+            ;;
+        *)
+            TC_PLATFORM=${PLATFORM}
+            VARIANT=debug
+            ;;
+    esac
+
+    TC_PREFIX="${TC_REV_PREFIX}.firefox.${TC_PLATFORM}-searchfox-${VARIANT}/artifacts/public/build"
     # First check that the searchfox job exists for the platform and revision we want. Otherwise emit a warning and skip it. This
     # file is small so it's cheap to download as a check that the analysis data for the platform exists.
     #
