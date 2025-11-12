@@ -36,7 +36,8 @@ date
 
 echo Updating git
 pushd $GIT_ROOT
-git pull origin master
+git fetch origin main
+git checkout origin/main
 popd
 
 echo Generating blame information
