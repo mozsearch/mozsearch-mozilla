@@ -28,6 +28,7 @@
       "scip_subtrees": {
         "python": {
           "scip_index_path": "$WORKING/firefox-main/python.scip",
+          "scip_index_path2": "$WORKING/firefox-main/python2.scip",
           "subtree_root": ""
         }
       }

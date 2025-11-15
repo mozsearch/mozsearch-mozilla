@@ -18,47 +18,62 @@ pushd $GIT_ROOT
 # Build a pyrightconfig.json config (config docs are at
 # https://microsoft.github.io/pyright/#/configuration).
 #
-# In general it seems like we can get a list of all of the python path entries
-# possible from processing the files in
-# https://searchfox.org/mozilla-central/source/python/sites and where the
-# ingestion logic that consumes those files seems to be
-# https://searchfox.org/mozilla-central/rev/da49863c3d6f34038d00f5ba701b9a2ad9cbadba/python/mach/mach/requirements.py#88-149
-# and the relevant comment about its ingestion is
-# https://searchfox.org/mozilla-central/rev/da49863c3d6f34038d00f5ba701b9a2ad9cbadba/python/mach/mach/requirements.py#31-54
-# and so we use ripgrep below to extract out the "pth" and "vendored" directives
-# that give us paths in trees.  We do not process "packages.txt" which is fine
-# because it also doesn't seem to be used and it is arguably unlikely that it
-# could ever contain paths relative to the root of m-c as we need.
-#
-# Because pyright seems to (quite fairly) get overwhelmed if we point it at a
-# ton of things, we also filter out everything with "third_party" in the actual
-# path.  We can't do this based on the basis of "vendored" because there are
-# things like wptrunner that are vendored but which we deeply want indexed.
-#
-# We also filter out roots that potentially entrain a whole bunch of files,
-# in particular "testing/web-platform" adds like 2000 python test files that
-# seems to be what sets searchfox on fire.
+# In order to reduce the memory pressure, we split the files in to two chunks.
+# First one is the top-level directory, excluding the web platform test and some
+# third party internal things.
+# Second one is the web platform test.
 #
 # Specific settings:
 # - verboseOutput: when true, this will print a lot of output about module
 #   resolution failures and the paths it tried.  Unfortunately this does not
 #   really help with understanding what is going on when the indexing process
 #   just sits there and gobbles up CPU.
-# - includes: We include every path we figure out from the sites .txt files.
-# - extraPaths: We include them again here for path resolution purposes since
-#   it seemed like the path resolution logic didn't consider what we provided to
-#   "includes" for this purpose.
+# - include: Just specify the target directory
+# - extraPaths: We include all directories for path resolution purposes
+# - exclude: For the top-level directory, exclude some heavy/unrelated things
 #
-#
+# For the top-level directory, there are ~7000 files.  Processing all of them
+# consumes a lot of memory, thus we specify --max-old-space-size to increase
+# the memory limit.
+# At the point of this commit, this takes 7.9GB.
+
+cat <<EOF > __pyright_exclude_paths.txt
+testing/web-platform
+third_party/chromium/build
+third_party/libwebrtc
+third_party/python/aiohttp/examples
+third_party/python/cbor2
+third_party/python/dlmanager/examples
+third_party/python/gyp/test
+third_party/python/pip/pip/_internal
+third_party/python/pip/pip/_vendor
+third_party/python/ply/example
+third_party/python/python-hglib/examples
+third_party/python/pyyaml/examples
+third_party/python/setuptools/setuptools/_vendor
+third_party/python/setuptools/setuptools/_distutils/tests
+third_party/rust
+EOF
+
 jo verboseOutput=false \
-  include=$(rg '^(?:pth|vendored):(.+)$' --no-filename --no-heading -Nor '$1' python/sites/*.txt | grep -v third_party | egrep -v '^(build|tools|testing|testing/web-platform)$' | sort | uniq | jo -a) \
-  extraPaths=$(rg '^(?:pth|vendored):(.+)$' --no-filename --no-heading -Nor '$1' python/sites/*.txt | grep -v third_party | egrep -v '^(build|tools|testing|testing/web-platform)$' | sort | uniq | jo -a) \
+  include=$(echo "." | jo -a) \
+  extraPaths=$(git ls-files '*.py' | xargs -n1 dirname | sort | uniq | grep -vf __pyright_exclude_paths.txt | jo -a) \
+  exclude=$(cat __pyright_exclude_paths.txt | jo -a) \
   > pyrightconfig.json
 
 # Absolute paths aren't treated as absolute but instead concatenated, so we need
 # to use just a filename and then move it after.
-scip-python index --show-progress-rate-limit 0 --project-name python --output python.scip
+NODE_OPTIONS="--max-old-space-size=10240" scip-python index --show-progress-rate-limit 0 --project-name python --output python.scip
 mv python.scip $INDEX_ROOT
+
+jo verboseOutput=false \
+  include=$(echo testing/web-platform | jo -a) \
+  extraPaths=$(echo testing/web-platform | jo -a) \
+  > pyrightconfig.json
+
+NODE_OPTIONS="--max-old-space-size=10240" scip-python index --show-progress-rate-limit 0 --project-name python --output python2.scip
+mv python2.scip $INDEX_ROOT
+
 popd
 
 date
