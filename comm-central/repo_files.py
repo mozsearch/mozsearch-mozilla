@@ -9,9 +9,7 @@ def modify_file_list(files, config=None, **kwargs):
     return files + sub_files
 
 def filter_ipdl(path):
-    if 'ipc/ipdl/test' in path:
-        return False
-    return True
+    return False
 
 def filter_webidl(path):
     if 'dom/bindings/mozwebidlcodegen/test' in path:
