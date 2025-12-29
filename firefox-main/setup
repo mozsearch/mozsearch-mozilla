@@ -88,6 +88,16 @@ $CONFIG_REPO/firefox-shared/fetch-tc-artifacts.sh $BUILD_REVISION_TREE $INDEXED_
 
 date
 
+CODE_COVERAGE_REPORT="$INDEX_ROOT/code-coverage-report.json"
+if [ -f "$CODE_COVERAGE_REPORT" ]; then
+    mkdir -p "$COVERAGE_ROOT"
+    HEAD_OID="$(git -C "$GIT_ROOT" rev-parse HEAD)"
+    HEAD_DATE="$(git -C "$GIT_ROOT" show --no-patch --format=%cI HEAD)"
+    codecov2git --report "$CODE_COVERAGE_REPORT" --output-repo "$COVERAGE_ROOT" --commit "$HEAD_OID" --date "$HEAD_DATE"
+fi
+
+date
+
 # Note that only $SHARED_BARE_GIT_ROOT diverges from the worktree $GIT_ROOT.
 # We use these paths for clarity/consistency that we're working in bare-repo space.
 SHARED_BARE_GIT_ROOT=$SHARED_ROOT/git
