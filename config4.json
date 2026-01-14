@@ -216,6 +216,20 @@
       "codesearch_path": "$WORKING/nss/livegrep.idx",
       "codesearch_port": 8094,
       "scip_subtrees": {}
+    },
+
+    "enterprise-firefox": {
+      "priority": 200,
+      "on_error": "continue",
+      "cache": "codesearch",
+      "index_path": "$WORKING/enterprise-firefox",
+      "files_path": "$WORKING/enterprise-firefox/git",
+      "git_path": "$WORKING/enterprise-firefox/git",
+      "git_blame_path": "$WORKING/enterprise-firefox/blame",
+      "objdir_path": "$WORKING/enterprise-firefox/objdir",
+      "codesearch_path": "$WORKING/enterprise-firefox/livegrep.idx",
+      "codesearch_port": 8095,
+      "scip_subtrees": {}
     }
   }
 }
