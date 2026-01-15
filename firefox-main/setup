@@ -37,6 +37,7 @@ TRYPUSH_REV=${TRYPUSH_REV:-}
 if [ -n "$TRYPUSH_REV" ]; then
     BUILD_REVISION_TREE=try
     BUILD_REVISION_ID="revision.${TRYPUSH_REV}"
+    COV_HG_REV="$TRYPUSH_REV"
     echo "TRYPUSH_REV was used, ignoring coverage-based revision choice. Using: ${BUILD_REVISION_ID}"
 else
     # find the taskId that the "latest" code coverage for our tree
@@ -84,16 +85,16 @@ source $CONFIG_REPO/firefox-shared/resolve-gecko-revs.sh $BUILD_REVISION_TREE $B
 
 $CONFIG_REPO/firefox-shared/checkout-gecko-repos.sh $BUILD_REVISION_TREE "main" "$INDEXED_HG_REV"
 
-$CONFIG_REPO/firefox-shared/fetch-tc-artifacts.sh $BUILD_REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV"
+$CONFIG_REPO/firefox-shared/fetch-tc-artifacts.sh $BUILD_REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV" "$COV_HG_REV"
 
 date
 
 CODE_COVERAGE_REPORT="$INDEX_ROOT/code-coverage-report.json"
 if [ -f "$CODE_COVERAGE_REPORT" ]; then
     mkdir -p "$COVERAGE_ROOT"
-    HEAD_OID="$(git -C "$GIT_ROOT" rev-parse HEAD)"
-    HEAD_DATE="$(git -C "$GIT_ROOT" show --no-patch --format=%cI HEAD)"
-    codecov2git --report "$CODE_COVERAGE_REPORT" --output-repo "$COVERAGE_ROOT" --commit "$HEAD_OID" --date "$HEAD_DATE"
+    COV_GIT_REV="$(git -C "$GIT_ROOT" cinnabar hg2git "$COV_HG_REV")"
+    COV_DATE="$(git -C "$GIT_ROOT" show --no-patch --format=%cI "$COV_GIT_REV")"
+    codecov2git --report "$CODE_COVERAGE_REPORT" --output-repo "$COVERAGE_ROOT" --commit "$COV_GIT_REV" --date "$COV_DATE"
 fi
 
 date

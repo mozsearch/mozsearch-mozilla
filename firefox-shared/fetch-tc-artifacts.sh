@@ -4,15 +4,17 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-if [ $# -ne 3 ]; then
-    echo "Usage: $0 <revision-tree> <hg-rev> <pre-existing-hg-rev>"
+if [ $# -lt 3 -o $# -gt 4 ]; then
+    echo "Usage: $0 <revision-tree> <hg-rev> <pre-existing-hg-rev> [coverage-hg-rev]"
     echo " e.g.: $0 mozilla-central 588208caeaf863f2207792eeb1bd97e6c8fceed4 ''"
+    echo " e.g.: coverage-hg-rev defaults to hg-rev"
     exit 1
 fi
 
 REVISION_TREE=$1
 INDEXED_HG_REV=$2
 PREEXISTING_HG_REV=$3
+COVERAGE_HG_REV=${4:-$2}
 
 # Allow caller to override what we use to download, but
 # have a sane default:
@@ -87,7 +89,7 @@ echo "${CURL} ${TC_REV_PREFIX}.source.manifest-upload/artifacts/public/manifests
 # coverage data because mozilla-central's merges will usually involve a ton of
 # patches, making stale data potentially very misleading.  See Bug 1677903 for
 # more discussion.
-echo "${CURL} ${TC_TASK}/project.relman.code-coverage.production.repo.${REVISION_TREE}.${INDEXED_HG_REV}/artifacts/public/code-coverage-report.json -o code-coverage-report.json || true" >> downloads.lst
+echo "${CURL} ${TC_TASK}/project.relman.code-coverage.production.repo.${REVISION_TREE}.${COVERAGE_HG_REV}/artifacts/public/code-coverage-report.json -o code-coverage-report.json || true" >> downloads.lst
 
 # Firefox Source Docs trees.
 echo "${CURL} ${TC_LATEST_PREFIX}.source.doc-generate/artifacts/public/trees.json -o doc-trees.json || true" >> downloads.lst
