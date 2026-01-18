@@ -6,19 +6,10 @@
 
     "trees": {
       "graphviz": {
-        "priority": 3,
-        "on_error": "continue",
-        "cache": "codesearch",
-        "index_path": "$WORKING/graphviz",
-        "files_path": "$WORKING/graphviz/git",
-        "git_path": "$WORKING/graphviz/git",
-        "git_blame_path": "$WORKING/graphviz/blame",
-        "github_repo": "https://gitlab.com/graphviz/graphviz/-",
-        "walk_submodules": false,
-        "objdir_path": "$WORKING/graphviz/objdir",
-        "codesearch_path": "$WORKING/graphviz/livegrep.idx",
-        "codesearch_port": 8082,
-        "scip_subtrees": {}
+        "IMPORT": {
+          "file": "$CONFIG_REPO/config5.json",
+          "tree": "graphviz"
+        }
       }
     }
   }

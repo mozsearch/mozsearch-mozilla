@@ -6,26 +6,11 @@
 
   "trees": {
     "mozilla-central": {
+      "IMPORT": {
+        "file": "$CONFIG_REPO/config1old.json",
+        "tree": "mozilla-central"
+      },
       "priority": 1000,
-      "on_error": "halt",
-      "cache": "everything",
-      "index_path": "$WORKING/mozilla-central",
-      "files_path": "$WORKING/mozilla-central/git",
-      "git_path": "$WORKING/mozilla-central/git",
-      "git_blame_path": "$WORKING/mozilla-central/blame",
-      "github_repo": "https://github.com/mozilla/gecko-dev",
-      "hg_root": "https://hg.mozilla.org/mozilla-central",
-      "ccov_root": "https://coverage.moz.tools/",
-      "wpt_root": "testing/web-platform",
-      "objdir_path": "$WORKING/mozilla-central/objdir",
-      "codesearch_path": "$WORKING/mozilla-central/livegrep.idx",
-      "codesearch_port": 8082,
-      "scip_subtrees": {
-        "python": {
-          "scip_index_path": "$WORKING/mozilla-central/python.scip",
-          "subtree_root": ""
-        }
-      }
     }
   }
 }

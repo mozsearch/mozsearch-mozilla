@@ -6,57 +6,24 @@
 
   "trees": {
     "mozsearch": {
-      "priority": 600,
-      "on_error": "continue",
-      "cache": "codesearch",
-      "index_path": "$WORKING/mozsearch",
-      "files_path": "$WORKING/mozsearch/git",
-      "git_path": "$WORKING/mozsearch/git",
-      "git_blame_path": "$WORKING/mozsearch/blame",
-      "github_repo": "https://github.com/mozsearch/mozsearch",
-      "objdir_path": "$WORKING/mozsearch/objdir",
-      "codesearch_path": "$WORKING/mozsearch/livegrep.idx",
-      "codesearch_port": 8085,
-      "scip_subtrees": {
-        "python": {
-          "scip_index_path": "$WORKING/mozsearch/python.scip",
-          "subtree_root": ""
-        },
-        "rust": {
-          "scip_index_path": "$WORKING/mozsearch/rust.scip",
-          "subtree_root": "tools"
-        }
+      "IMPORT": {
+        "file": "$CONFIG_REPO/config1.json",
+        "tree": "mozsearch"
       }
     },
 
     "mozsearch-mozilla": {
-      "priority": 500,
-      "on_error": "continue",
-      "cache": "codesearch",
-      "index_path": "$WORKING/mozsearch-mozilla",
-      "files_path": "$WORKING/mozsearch-mozilla/git",
-      "git_path": "$WORKING/mozsearch-mozilla/git",
-      "git_blame_path": "$WORKING/mozsearch-mozilla/blame",
-      "github_repo": "https://github.com/mozsearch/mozsearch-mozilla",
-      "objdir_path": "$WORKING/mozsearch-mozilla/objdir",
-      "codesearch_path": "$WORKING/mozsearch-mozilla/livegrep.idx",
-      "codesearch_port": 8086,
-      "scip_subtrees": {}
+      "IMPORT": {
+        "file": "$CONFIG_REPO/config1.json",
+        "tree": "mozsearch-mozilla"
+      }
     },
 
     "mozsearch-tests": {
-      "priority": 550,
-      "on_error": "continue",
-      "cache": "everything",
-      "index_path": "$WORKING/mozsearch-tests",
-      "files_path": "$WORKING/mozsearch-tests/files",
-      "git_path": "$WORKING/mozsearch-tests/fakegit",
-      "git_blame_path": "$WORKING/mozsearch-tests/blame",
-      "objdir_path": "$WORKING/mozsearch-tests/objdir",
-      "wpt_root": "testing/web-platform",
-      "codesearch_path": "$WORKING/mozsearch-tests/livegrep.idx",
-      "codesearch_port": 8087,
-      "scip_subtrees": {}
+      "IMPORT": {
+        "file": "$CONFIG_REPO/config1.json",
+        "tree": "mozsearch-tests"
+      }
     }
   }
 }
