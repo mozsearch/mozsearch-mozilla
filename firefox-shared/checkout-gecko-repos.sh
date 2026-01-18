@@ -4,15 +4,21 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-if [ $# -ne 3 ]; then
-    echo "Usage: $0 <tree> <branch> <hg-rev>"
+if [ $# -ne 3 -a $# -ne 4 ]; then
+    echo "Usage: $0 <tree> <branch> <hg-rev> [<git-rev>]"
     echo " e.g.: $0 mozilla-central master 26bd1e060c5bf1f2f3f3c7f34fae152380cda29c"
+    echo "For the following, pass <hg-rev> only."
+    echo "  * hg-based repository"
+    echo "  * git-based which has the corresponding hg repository"
+    echo "For the following, pass <git-rev>, with passing '-' to <hg-rev>"
+    echo "  * pure git-based repository"
     exit 1
 fi
 
 REVISION_TREE=$1
 BRANCH=$2
 INDEXED_HG_REV=$3
+INDEXED_GIT_REV=${4:-}
 
 # --- Ensure shared resources are downloaded
 #
@@ -94,13 +100,30 @@ for REFBRANCH in beta release esr140 esr128 esr115; do
     git update-ref "refs/heads/$REFBRANCH" "refs/remotes/origin/bookmarks/$REFBRANCH"
 done
 
+# Put enterprise-firefox repository to the shared tarball, and also pull the specified
+# revision when indexing the enterprise-firefox repository.
+if [[ "$REVISION_TREE" == "mozilla-central" -o "$REVISION_TREE" == "enterprise-firefox" ]]; then
+    git config remote.enterprise.url \
+        || git remote add -t enterprise-main enterprise https://github.com/mozilla/enterprise-firefox.git
+
+    if [[ "$REVISION_TREE" == "mozilla-central" ]]; then
+        git fetch enterprise enterprise-main
+        git update-ref "refs/heads/enterprise-firefox" "refs/remotes/enterprise/enterprise-main"
+    else
+        git fetch enterprise $INDEXED_GIT_REV
+        git update-ref "refs/heads/enterprise-firefox" $INDEXED_GIT_REV
+    fi
+fi
+
 # If a try push was specified, pull it in non-graft mode so we actually pull those changes.
 if [ "$REVISION_TREE" == "try" ]; then
     git config cinnabar.graft false
     git cinnabar fetch hg::https://hg.mozilla.org/try $INDEXED_HG_REV
 fi
 
-INDEXED_GIT_REV=$(git cinnabar hg2git $INDEXED_HG_REV)
+if [[ "$INDEXED_GIT_REV" == "-" ]]; then
+    INDEXED_GIT_REV=$(git cinnabar hg2git $INDEXED_HG_REV)
+fi
 
 # If INDEXED_GIT_REV gets set to 40*"0", that means the gecko-dev repo is lagging
 # lagging behind the canonical hg repo, and we don't have the source corresponding
