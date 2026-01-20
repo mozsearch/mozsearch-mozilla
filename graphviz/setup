@@ -49,11 +49,13 @@ build-blame $GIT_ROOT $BLAME_ROOT
 
 date
 
-## Since graphviz is going in config5 and we already do wacky package
-## installation at runtime, there's no real harm in doing more of it, and this
-## avoids us needing to provision autoconf and automake normally.
+if [ -z "${DONT_INSTALL_DEPS+x}" ]; then
+    ## Since graphviz is going in config5 and we already do wacky package
+    ## installation at runtime, there's no real harm in doing more of it, and this
+    ## avoids us needing to provision autoconf and automake normally.
 
-# Update the apt index
-sudo apt-get update
+    # Update the apt index
+    sudo apt-get update
 
-sudo apt-get install -y libtool libltdl-dev automake autoconf bison flex
+    sudo apt-get install -y libtool libltdl-dev automake autoconf bison flex
+fi

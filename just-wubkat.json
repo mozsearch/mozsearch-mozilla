@@ -1,0 +1,26 @@
+{
+    "mozsearch_path": "$MOZSEARCH_PATH",
+    "config_repo": "$CONFIG_REPO",
+    "default_tree": "wubkat",
+    "instance_type": "t3.xlarge",
+
+    "trees": {
+      "wubkat": {
+        "priority": 100,
+        "on_error": "halt",
+        "cache": "codesearch",
+        "index_path": "$WORKING/wubkat",
+        "files_path": "$WORKING/wubkat/git",
+        "git_path": "$WORKING/wubkat/git",
+        "git_blame_path": "$WORKING/wubkat/blame",
+        "github_repo": "https://github.com/WebKit/Webkit",
+        "objdir_path": "$WORKING/wubkat/objdir",
+        "ignore_missing_path_prefixes": [
+          "$WORKING/wubkat/objdir/CMakeFiles/CMakeScratch/"
+        ],
+        "codesearch_path": "$WORKING/wubkat/livegrep.idx",
+        "codesearch_port": 8081,
+        "scip_subtrees": {}
+      }
+    }
+  }
