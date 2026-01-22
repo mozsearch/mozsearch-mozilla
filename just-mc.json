@@ -8,7 +8,7 @@
     "mozilla-central": {
       "IMPORT": {
         "file": "$CONFIG_REPO/config1old.json",
-        "tree": "mozilla-central"
+        "tree_name": "mozilla-central"
       },
       "priority": 1000,
     }

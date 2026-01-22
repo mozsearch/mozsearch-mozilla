@@ -8,7 +8,7 @@
       "graphviz": {
         "IMPORT": {
           "file": "$CONFIG_REPO/config5.json",
-          "tree": "graphviz"
+          "tree_name": "graphviz"
         }
       }
     }

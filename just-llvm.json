@@ -8,7 +8,7 @@
       "llvm": {
         "IMPORT": {
           "file": "$CONFIG_REPO/config4.json",
-          "tree": "llvm"
+          "tree_name": "llvm"
         }
       }
     }

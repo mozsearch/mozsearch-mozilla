@@ -8,7 +8,7 @@
     "firefox-main": {
       "IMPORT": {
         "file": "$CONFIG_REPO/config1.json",
-        "tree": "firefox-main"
+        "tree_name": "firefox-main"
       }
     }
   }
