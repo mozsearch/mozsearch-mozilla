@@ -8,21 +8,21 @@
     "mozsearch": {
       "IMPORT": {
         "file": "$CONFIG_REPO/config1.json",
-        "tree": "mozsearch"
+        "tree_name": "mozsearch"
       }
     },
 
     "mozsearch-mozilla": {
       "IMPORT": {
         "file": "$CONFIG_REPO/config1.json",
-        "tree": "mozsearch-mozilla"
+        "tree_name": "mozsearch-mozilla"
       }
     },
 
     "mozsearch-tests": {
       "IMPORT": {
         "file": "$CONFIG_REPO/config1.json",
-        "tree": "mozsearch-tests"
+        "tree_name": "mozsearch-tests"
       }
     }
   }
