@@ -94,9 +94,14 @@ that lives in the `shared/` folder in this repository.
      - 04:00 UTC for the 22:00 UTC nightly, allowing time for coverage jobs to run
    - `config2.json`:
      - 13:00 UTC for the 10:00 UTC triggered indexing jobs, allowing time for the taskcluster jobs to complete
-   - `config3.json`: This is only ever run manually because it contains very rarely updated repositories.
+   - `config3.json`:
+     - 18:00 UTC Saturday
    - `config4.json`:
      - 12:00 UTC for the 10:00 UTC triggered indexing jobs, allowing time for the taskcluster jobs to complete
+   - `config5.json`:
+     - 9:00 UTC
+   - `config6.json`:
+     - 13:00 UTC
 3. The indexer jobs run, for the specific example of mozilla-central:
    - The indexer invokes https://github.com/mozsearch/mozsearch-mozilla/blob/master/mozilla-central/setup
    - That script invokes https://github.com/mozsearch/mozsearch-mozilla/blob/master/shared/resolve-gecko-revs.sh which fetches
