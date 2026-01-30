@@ -100,6 +100,25 @@ for REFBRANCH in beta release esr140 esr128 esr115; do
     git update-ref "refs/heads/$REFBRANCH" "refs/remotes/origin/bookmarks/$REFBRANCH"
 done
 
+# Put enterprise-firefox repository to the shared tarball, and also pull the
+# specified revision when indexing the enterprise-firefox repository.
+#
+# TODO: Update the enterprise-firefox for REVISION_TREE comparison to
+#       enterprise-main once the taskcluster is updated.
+if [[ "$REVISION_TREE" == "mozilla-central" || \
+      "$REVISION_TREE" == "enterprise-firefox" ]]; then
+    git config remote.enterprise-firefox.url \
+        || git remote add -t enterprise-main enterprise-firefox https://github.com/mozilla/enterprise-firefox.git
+
+    if [[ "$REVISION_TREE" == "mozilla-central" ]]; then
+        git fetch enterprise-firefox enterprise-main
+        git update-ref "refs/heads/enterprise-main" "refs/remotes/enterprise-firefox/enterprise-main"
+    else
+        git fetch enterprise-firefox $INDEXED_GIT_REV
+        git update-ref "refs/heads/enterprise-main" $INDEXED_GIT_REV
+    fi
+fi
+
 # If a try push was specified, pull it in non-graft mode so we actually pull those changes.
 if [ "$REVISION_TREE" == "try" ]; then
     git config cinnabar.graft false
