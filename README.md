@@ -102,6 +102,8 @@ that lives in the `shared/` folder in this repository.
      - 9:00 UTC
    - `config6.json`:
      - 13:00 UTC
+   - `config7.json`:
+     - 14:00 UTC
 3. The indexer jobs run, for the specific example of mozilla-central:
    - The indexer invokes https://github.com/mozsearch/mozsearch-mozilla/blob/master/mozilla-central/setup
    - That script invokes https://github.com/mozsearch/mozsearch-mozilla/blob/master/shared/resolve-gecko-revs.sh which fetches

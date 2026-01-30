@@ -28,6 +28,7 @@ var TREE_LIST = [
         { value: "mozilla-elm" },
         { value: "mozilla-cedar" },
         { value: "mozilla-cypress" },
+        { value: "enterprise-main" },
       ],
     },
     {
