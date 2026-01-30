@@ -69,7 +69,7 @@ TC_LATEST_PREFIX="${TC_TASK}/gecko.v2.${REVISION_TREE}.latest"
 # have the data for the exact revision.  This means some files may have stale or
 # missing "File a bug..." UI in the navigation panel, but this is acceptable.
 echo "${CURL} ${TC_REV_PREFIX}.source.source-bugzilla-info/artifacts/public/components-normalized.json -o bugzilla-components.json \
-   || ${CURL} ${TC_LATEST_PREFIX}.source.source-bugzilla-info/artifacts/public/components-normalized.json -o bugzilla-components.json" > downloads.lst
+   || ${CURL} ${TC_LATEST_PREFIX}.source.source-bugzilla-info/artifacts/public/components-normalized.json -o bugzilla-components.json || true" > downloads.lst
 echo "${CURL} ${TC_REV_PREFIX}.source.test-info-all/artifacts/public/test-info-all-tests.json -o test-info-all-tests.json || true" >> downloads.lst
 # Right now the WPT metadata job explicitly only runs when files it is interested
 # in have changed.  So if we can't find the specific revision of interest, let's
