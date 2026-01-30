@@ -139,7 +139,15 @@ for BRANCH in main beta release esr140 esr128 esr115; do
     fi
     git -C "$SHARED_BARE_BLAME_ROOT" show-ref --verify --quiet "refs/heads/${BRANCH}" || git -C "$SHARED_BARE_BLAME_ROOT" branch "${BRANCH}" "${BASEBRANCH}"
     build-blame "$SHARED_BARE_GIT_ROOT" "$SHARED_BARE_BLAME_ROOT" --blame-ref="refs/heads/$BRANCH" --old-cinnabar-repo-path "$SHARED_BARE_OLDGIT_ROOT"
-    LASTBRANCH="${BRANCH}"
+done
+
+for BRANCH in enterprise-main; do
+    echo "Generating blame information for $BRANCH..."
+
+    BASEBRANCH="main"
+
+    git -C "$SHARED_BARE_BLAME_ROOT" show-ref --verify --quiet "refs/heads/${BRANCH}" || git -C "$SHARED_BARE_BLAME_ROOT" branch "${BRANCH}" "${BASEBRANCH}"
+    build-blame "$SHARED_BARE_GIT_ROOT" "$SHARED_BARE_BLAME_ROOT" --blame-ref="refs/heads/$BRANCH"
 done
 
 date
