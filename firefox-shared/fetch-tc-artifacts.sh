@@ -12,6 +12,9 @@ if [ $# -lt 3 -o $# -gt 4 ]; then
 fi
 
 REVISION_TREE=$1
+# NOTE: This script doesn't distinguish between git vs hg revisions.
+#       The commit hash is used only as a part of URL, and the semantics
+#       depends on the automation configuration of each tree.
 INDEXED_HG_REV=$2
 PREEXISTING_HG_REV=$3
 COVERAGE_HG_REV=${4:-$2}
