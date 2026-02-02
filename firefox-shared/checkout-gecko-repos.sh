@@ -4,15 +4,21 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-if [ $# -ne 3 ]; then
-    echo "Usage: $0 <tree> <branch> <hg-rev>"
+if [ $# -ne 3 -a $# -ne 4 ]; then
+    echo "Usage: $0 <tree> <branch> <hg-rev> [<git-rev>]"
     echo " e.g.: $0 mozilla-central master 26bd1e060c5bf1f2f3f3c7f34fae152380cda29c"
+    echo "For the following, pass <hg-rev> only."
+    echo "  * hg-based repository"
+    echo "  * git-based which has the corresponding hg repository"
+    echo "For the following, pass <git-rev>, with passing '-' to <hg-rev>"
+    echo "  * pure git-based repository"
     exit 1
 fi
 
 REVISION_TREE=$1
 BRANCH=$2
 INDEXED_HG_REV=$3
+INDEXED_GIT_REV=${4:-}
 
 # --- Ensure shared resources are downloaded
 #
@@ -100,7 +106,9 @@ if [ "$REVISION_TREE" == "try" ]; then
     git cinnabar fetch hg::https://hg.mozilla.org/try $INDEXED_HG_REV
 fi
 
-INDEXED_GIT_REV=$(git cinnabar hg2git $INDEXED_HG_REV)
+if [[ "$INDEXED_GIT_REV" == "" ]]; then
+    INDEXED_GIT_REV=$(git cinnabar hg2git $INDEXED_HG_REV)
+fi
 
 # If INDEXED_GIT_REV gets set to 40*"0", that means the gecko-dev repo is lagging
 # lagging behind the canonical hg repo, and we don't have the source corresponding
