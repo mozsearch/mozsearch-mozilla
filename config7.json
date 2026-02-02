@@ -1,0 +1,26 @@
+{
+  "mozsearch_path": "$MOZSEARCH_PATH",
+  "config_repo": "$CONFIG_REPO",
+  "default_tree": "enterprise-main",
+  "instance_type": "t3.2xlarge",
+
+  "trees": {
+    "enterprise-main": {
+      "priority": 1000,
+      "on_error": "halt",
+      "cache": "everything",
+      "shared_path": "$WORKING/firefox-shared",
+      "index_path": "$WORKING/enterprise-main",
+      "files_path": "$WORKING/enterprise-main/git",
+      "git_path": "$WORKING/enterprise-main/git",
+      "git_branch": "enterprise-main",
+      "git_blame_path": "$WORKING/firefox-shared/blame",
+      "github_repo": "https://github.com/mozilla/enterprise-firefox",
+      "wpt_root": "testing/web-platform",
+      "objdir_path": "$WORKING/enterprise-main/objdir",
+      "codesearch_path": "$WORKING/enterprise-main/livegrep.idx",
+      "codesearch_port": 8081,
+      "scip_subtrees": {}
+    }
+  }
+}
