@@ -20,6 +20,11 @@ date
 REVISION="${REVISION_TREE}.${REVISION_ID}"
 CURL="curl -SsfL --compressed"
 
+INDEX_NAME="gecko"
+if echo $REVISION_TREE | grep enterprise > /dev/null; then
+    INDEX_NAME="enterprise"
+fi
+
 pushd $INDEX_ROOT
 
 PREEXISTING_HG_REV=
@@ -28,7 +33,7 @@ if [ -f "target.json" ]; then
     echo "Found pre-existing target.json with hg revision ${PREEXISTING_HG_REV}."
 fi
 
-${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.v2.$REVISION.firefox.linux64-searchfox-debug/artifacts/public/build/target.json > target.json
+${CURL} https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/$INDEX_NAME.v2.$REVISION.firefox.linux64-searchfox-debug/artifacts/public/build/target.json > target.json
 INDEXED_HG_REV=$(jq -r ".moz_source_stamp" target.json)
 
 popd

@@ -19,6 +19,11 @@ INDEXED_HG_REV=$2
 PREEXISTING_HG_REV=$3
 COVERAGE_HG_REV=${4:-$2}
 
+INDEX_NAME="gecko"
+if echo $REVISION_TREE | grep enterprise > /dev/null; then
+    INDEX_NAME="enterprise"
+fi
+
 # Allow caller to override what we use to download, but
 # have a sane default:
 # -s AKA --silent: No progress or error messages unless...
@@ -60,8 +65,8 @@ fi
 # a file and then feeding it to GNU parallel.
 
 TC_TASK="https://firefox-ci-tc.services.mozilla.com/api/index/v1/task"
-TC_REV_PREFIX="${TC_TASK}/gecko.v2.${REVISION}"
-TC_LATEST_PREFIX="${TC_TASK}/gecko.v2.${REVISION_TREE}.latest"
+TC_REV_PREFIX="${TC_TASK}/${INDEX_NAME}.v2.${REVISION}"
+TC_LATEST_PREFIX="${TC_TASK}/${INDEX_NAME}.v2.${REVISION_TREE}.latest"
 
 # The components job periodically fails when someone adds a new file to the tree
 # without ensuring there's a moz.build file that covers it, so we fail over to
