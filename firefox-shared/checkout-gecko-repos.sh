@@ -103,6 +103,9 @@ done
 # Put enterprise-firefox repository to the shared tarball, and also pull the
 # specified revision when indexing the enterprise-firefox repository.
 #
+# This is necessary also for "mozilla-central" because firefox-main/setup script
+# refers the branch.
+#
 # TODO: Update the enterprise-firefox for REVISION_TREE comparison to
 #       enterprise-main once the taskcluster is updated.
 if [[ "$REVISION_TREE" == "mozilla-central" || \
