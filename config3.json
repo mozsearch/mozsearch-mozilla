@@ -17,7 +17,10 @@
       "objdir_path": "$WORKING/mozilla-esr17/objdir",
       "codesearch_path": "$WORKING/mozilla-esr17/livegrep.idx",
       "codesearch_port": 8081,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Firefox",
+      "group_order": 39,
+      "help_indexed_langs": ["js"]
     },
 
     "mozilla-esr31": {
@@ -33,7 +36,10 @@
       "objdir_path": "$WORKING/mozilla-esr31/objdir",
       "codesearch_path": "$WORKING/mozilla-esr31/livegrep.idx",
       "codesearch_port": 8082,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Firefox",
+      "group_order": 38,
+      "help_indexed_langs": ["js"]
     },
 
     "mozilla-esr45": {
@@ -49,7 +55,10 @@
       "objdir_path": "$WORKING/mozilla-esr45/objdir",
       "codesearch_path": "$WORKING/mozilla-esr45/livegrep.idx",
       "codesearch_port": 8083,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Firefox",
+      "group_order": 37,
+      "help_indexed_langs": ["js"]
     },
 
     "mozilla-esr60": {
@@ -65,7 +74,10 @@
       "objdir_path": "$WORKING/mozilla-esr60/objdir",
       "codesearch_path": "$WORKING/mozilla-esr60/livegrep.idx",
       "codesearch_port": 8084,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Firefox",
+      "group_order": 36,
+      "help_indexed_langs": ["js"]
     },
 
     "comm-esr60": {
@@ -80,7 +92,10 @@
       "objdir_path": "$WORKING/comm-esr60/objdir",
       "codesearch_path": "$WORKING/comm-esr60/livegrep.idx",
       "codesearch_port": 8085,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Thunderbird",
+      "group_order": 36,
+      "help_indexed_langs": ["js"]
     },
 
     "mozilla-esr68": {
@@ -96,7 +111,10 @@
       "objdir_path": "$WORKING/mozilla-esr68/objdir",
       "codesearch_path": "$WORKING/mozilla-esr68/livegrep.idx",
       "codesearch_port": 8086,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Firefox",
+      "group_order": 35,
+      "help_indexed_langs": ["js"]
     },
 
     "comm-esr68": {
@@ -111,7 +129,10 @@
       "objdir_path": "$WORKING/comm-esr68/objdir",
       "codesearch_path": "$WORKING/comm-esr68/livegrep.idx",
       "codesearch_port": 8087,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Thunderbird",
+      "group_order": 35,
+      "help_indexed_langs": ["js"]
     },
 
     "mozilla-esr78": {
@@ -126,7 +147,10 @@
       "objdir_path": "$WORKING/mozilla-esr78/objdir",
       "codesearch_path": "$WORKING/mozilla-esr78/livegrep.idx",
       "codesearch_port": 8088,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Firefox",
+      "group_order": 34,
+      "help_indexed_langs": ["js"]
     },
 
     "comm-esr78": {
@@ -141,7 +165,10 @@
       "objdir_path": "$WORKING/comm-esr78/objdir",
       "codesearch_path": "$WORKING/comm-esr78/livegrep.idx",
       "codesearch_port": 8089,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Thunderbird",
+      "group_order": 34,
+      "help_indexed_langs": ["js"]
     },
 
     "mozilla-esr91": {
@@ -157,7 +184,10 @@
       "objdir_path": "$WORKING/mozilla-esr91/objdir",
       "codesearch_path": "$WORKING/mozilla-esr91/livegrep.idx",
       "codesearch_port": 8090,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Firefox",
+      "group_order": 33,
+      "help_indexed_langs": ["js"]
     },
 
     "comm-esr91": {
@@ -172,7 +202,10 @@
       "objdir_path": "$WORKING/comm-esr91/objdir",
       "codesearch_path": "$WORKING/comm-esr91/livegrep.idx",
       "codesearch_port": 8091,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Thunderbird",
+      "group_order": 33,
+      "help_indexed_langs": ["js"]
     },
 
     "mozilla-esr102": {
@@ -188,7 +221,10 @@
       "objdir_path": "$WORKING/mozilla-esr102/objdir",
       "codesearch_path": "$WORKING/mozilla-esr102/livegrep.idx",
       "codesearch_port": 8092,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Firefox",
+      "group_order": 32,
+      "help_indexed_langs": ["js"]
     },
 
     "comm-esr102": {
@@ -203,7 +239,10 @@
       "objdir_path": "$WORKING/comm-esr102/objdir",
       "codesearch_path": "$WORKING/comm-esr102/livegrep.idx",
       "codesearch_port": 8093,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Thunderbird",
+      "group_order": 32,
+      "help_indexed_langs": ["js"]
     }
   }
 }

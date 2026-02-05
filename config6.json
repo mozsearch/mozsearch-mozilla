@@ -41,7 +41,10 @@
       "objdir_path": "$WORKING/comm-central/objdir",
       "codesearch_path": "$WORKING/comm-central/livegrep.idx",
       "codesearch_port": 8082,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Thunderbird",
+      "group_order": 1,
+      "help_indexed_langs": ["js"]
     },
 
     "comm-esr115": {
@@ -56,7 +59,10 @@
       "objdir_path": "$WORKING/comm-esr115/objdir",
       "codesearch_path": "$WORKING/comm-esr115/livegrep.idx",
       "codesearch_port": 8083,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Thunderbird",
+      "group_order": 19,
+      "help_indexed_langs": ["js"]
     },
 
     "comm-esr128": {
@@ -71,7 +77,10 @@
       "objdir_path": "$WORKING/comm-esr128/objdir",
       "codesearch_path": "$WORKING/comm-esr128/livegrep.idx",
       "codesearch_port": 8084,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Thunderbird",
+      "group_order": 18,
+      "help_indexed_langs": ["js"]
     }
   }
 }

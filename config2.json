@@ -23,7 +23,10 @@
       "objdir_path": "$WORKING/firefox-beta/objdir",
       "codesearch_path": "$WORKING/firefox-beta/livegrep.idx",
       "codesearch_port": 8081,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Firefox",
+      "group_order": 2,
+      "help_indexed_langs": ["js", "idl", "cpp", "rs", "java"]
     },
 
     "firefox-release": {
@@ -45,7 +48,10 @@
       "objdir_path": "$WORKING/firefox-release/objdir",
       "codesearch_path": "$WORKING/firefox-release/livegrep.idx",
       "codesearch_port": 8082,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Firefox",
+      "group_order": 3,
+      "help_indexed_langs": ["js", "idl", "cpp", "rs", "java"]
     },
 
     "firefox-esr140": {
@@ -67,7 +73,10 @@
       "objdir_path": "$WORKING/firefox-esr140/objdir",
       "codesearch_path": "$WORKING/firefox-esr140/livegrep.idx",
       "codesearch_port": 8083,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Firefox",
+      "group_order": 17,
+      "help_indexed_langs": ["js", "idl", "cpp", "rs", "java"]
     },
 
     "firefox-esr128": {
@@ -89,7 +98,10 @@
       "objdir_path": "$WORKING/firefox-esr128/objdir",
       "codesearch_path": "$WORKING/firefox-esr128/livegrep.idx",
       "codesearch_port": 8084,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Firefox",
+      "group_order": 18,
+      "help_indexed_langs": ["js", "idl", "cpp", "rs", "java"]
     },
 
     "firefox-esr115": {
@@ -111,7 +123,10 @@
       "objdir_path": "$WORKING/firefox-esr115/objdir",
       "codesearch_path": "$WORKING/firefox-esr115/livegrep.idx",
       "codesearch_port": 8085,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Firefox",
+      "group_order": 19,
+      "help_indexed_langs": ["js", "idl", "cpp", "rs", "java"]
     }
   }
 }

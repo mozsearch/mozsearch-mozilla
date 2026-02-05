@@ -20,7 +20,11 @@
         ],
         "codesearch_path": "$WORKING/wubkat/livegrep.idx",
         "codesearch_port": 8081,
-        "scip_subtrees": {}
+        "scip_subtrees": {},
+        "group": "Other",
+        "group_order": 0,
+        "help_label": "wubkat (webkit index)",
+        "help_indexed_langs": ["js", "cpp"]
       },
       "graphviz": {
         "priority": 3,
@@ -41,7 +45,11 @@
         ],
         "codesearch_path": "$WORKING/graphviz/livegrep.idx",
         "codesearch_port": 8082,
-        "scip_subtrees": {}
+        "scip_subtrees": {},
+        "group": "Other",
+        "group_order": 0,
+        "label": "Graphviz",
+        "help_indexed_langs": ["cpp"]
       }
     }
   }
