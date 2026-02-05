@@ -31,7 +31,10 @@
           "scip_index_path2": "$WORKING/firefox-main/python2.scip",
           "subtree_root": ""
         }
-      }
+      },
+      "group": "Firefox",
+      "group_order": 1,
+      "help_indexed_langs": ["js", "idl", "cpp", "rs", "java", "py"]
     },
 
     "mozilla-mobile": {
@@ -44,7 +47,10 @@
       "objdir_path": "$WORKING/mozilla-mobile/objdir",
       "codesearch_path": "$WORKING/mozilla-mobile/livegrep.idx",
       "codesearch_port": 8082,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Firefox other",
+      "group_order": 1,
+      "help_indexed_langs": ["js"]
     },
 
     "mozsearch": {
@@ -68,7 +74,10 @@
           "scip_index_path": "$WORKING/mozsearch/rust.scip",
           "subtree_root": "tools"
         }
-      }
+      },
+      "group": "Searchfox",
+      "group_order": 1,
+      "help_indexed_langs": ["js", "idl", "cpp", "rs", "py"]
     },
 
     "mozsearch-mozilla": {
@@ -83,7 +92,10 @@
       "objdir_path": "$WORKING/mozsearch-mozilla/objdir",
       "codesearch_path": "$WORKING/mozsearch-mozilla/livegrep.idx",
       "codesearch_port": 8084,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Searchfox",
+      "group_order": 2,
+      "help_indexed_langs": ["js"]
     },
 
     "mozsearch-tests": {
@@ -98,7 +110,10 @@
       "wpt_root": "testing/web-platform",
       "codesearch_path": "$WORKING/mozsearch-tests/livegrep.idx",
       "codesearch_port": 8085,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Searchfox",
+      "group_order": 3,
+      "help_indexed_langs": ["js", "idl", "cpp", "rs", "java", "py"]
     }
   }
 }

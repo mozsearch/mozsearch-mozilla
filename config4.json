@@ -16,7 +16,10 @@
       "objdir_path": "$WORKING/l10n/objdir",
       "codesearch_path": "$WORKING/l10n/livegrep.idx",
       "codesearch_port": 8081,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Other",
+      "group_order": 0,
+      "help_indexed_langs": ["js"]
     },
 
     "llvm": {
@@ -35,7 +38,11 @@
       ],
       "codesearch_path": "$WORKING/llvm/livegrep.idx",
       "codesearch_port": 8082,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Other",
+      "group_order": 0,
+      "label": "LLVM",
+      "help_indexed_langs": ["cpp"]
     },
 
     "mingw": {
@@ -49,7 +56,11 @@
       "objdir_path": "$WORKING/mingw/objdir",
       "codesearch_path": "$WORKING/mingw/livegrep.idx",
       "codesearch_port": 8083,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "MinGW",
+      "group_order": 1,
+      "help_label": "MinGW-w64",
+      "help_indexed_langs": []
     },
 
     "mingw-moz": {
@@ -63,7 +74,11 @@
       "objdir_path": "$WORKING/mingw-moz/objdir",
       "codesearch_path": "$WORKING/mingw-moz/livegrep.idx",
       "codesearch_port": 8084,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "MinGW",
+      "group_order": 2,
+      "help_label": "MinGW-w64 @revision used by m-c",
+      "help_indexed_langs": []
     },
 
     "rust": {
@@ -79,7 +94,11 @@
       "objdir_path": "$WORKING/rust/objdir",
       "codesearch_path": "$WORKING/rust/livegrep.idx",
       "codesearch_port": 8085,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Other",
+      "group_order": 0,
+      "label": "Rust",
+      "help_indexed_langs": []
     },
 
     "whatwg-html": {
@@ -94,7 +113,11 @@
       "objdir_path": "$WORKING/whatwg-html/objdir",
       "codesearch_path": "$WORKING/whatwg-html/livegrep.idx",
       "codesearch_port": 8086,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Other",
+      "group_order": 0,
+      "label": "WHATWG HTML spec",
+      "help_indexed_langs": ["js"]
     },
 
     "mozilla-build": {
@@ -109,7 +132,10 @@
       "objdir_path": "$WORKING/mozilla-build/dist",
       "codesearch_path": "$WORKING/mozilla-build/livegrep.idx",
       "codesearch_port": 8087,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Other",
+      "group_order": 0,
+      "help_indexed_langs": []
     },
 
     "glean": {
@@ -124,7 +150,10 @@
       "objdir_path": "$WORKING/glean/objdir",
       "codesearch_path": "$WORKING/glean/livegrep.idx",
       "codesearch_port": 8088,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Other",
+      "group_order": 0,
+      "help_indexed_langs": ["js"]
     },
 
     "version-control-tools": {
@@ -139,7 +168,10 @@
       "objdir_path": "$WORKING/version-control-tools/objdir",
       "codesearch_path": "$WORKING/version-control-tools/livegrep.idx",
       "codesearch_port": 8089,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Other",
+      "group_order": 0,
+      "help_indexed_langs": ["js"]
     },
 
     "ecma262": {
@@ -154,7 +186,11 @@
       "objdir_path": "$WORKING/ecma262/objdir",
       "codesearch_path": "$WORKING/ecma262/livegrep.idx",
       "codesearch_port": 8090,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Other",
+      "group_order": 0,
+      "label": "TC39 ECMA262 spec",
+      "help_indexed_langs": ["js"]
     },
 
     "mozilla-vpn-client": {
@@ -169,7 +205,10 @@
       "objdir_path": "$WORKING/mozilla-vpn-client/objdir",
       "codesearch_path": "$WORKING/mozilla-vpn-client/livegrep.idx",
       "codesearch_port": 8091,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Other",
+      "group_order": 0,
+      "help_indexed_langs": ["js"]
     },
 
     "mozilla-elm": {
@@ -184,7 +223,10 @@
       "objdir_path": "$WORKING/mozilla-elm/objdir",
       "codesearch_path": "$WORKING/mozilla-elm/livegrep.idx",
       "codesearch_port": 8092,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Firefox other",
+      "group_order": 2,
+      "help_indexed_langs": ["js", "idl", "cpp", "rs"]
     },
 
     "mozilla-cedar": {
@@ -199,7 +241,10 @@
       "objdir_path": "$WORKING/mozilla-cedar/objdir",
       "codesearch_path": "$WORKING/mozilla-cedar/livegrep.idx",
       "codesearch_port": 8093,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Firefox other",
+      "group_order": 3,
+      "help_indexed_langs": ["js", "idl", "cpp", "rs"]
     },
 
     "nss": {
@@ -215,7 +260,10 @@
       "objdir_path": "$WORKING/nss/dist",
       "codesearch_path": "$WORKING/nss/livegrep.idx",
       "codesearch_port": 8094,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Other",
+      "group_order": 0,
+      "help_indexed_langs": ["js"]
     }
   }
 }

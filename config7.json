@@ -20,7 +20,10 @@
       "objdir_path": "$WORKING/enterprise-main/objdir",
       "codesearch_path": "$WORKING/enterprise-main/livegrep.idx",
       "codesearch_port": 8081,
-      "scip_subtrees": {}
+      "scip_subtrees": {},
+      "group": "Firefox other",
+      "group_order": 4,
+      "help_indexed_langs": ["js", "idl", "cpp", "rs", "java"]
     }
   }
 }
