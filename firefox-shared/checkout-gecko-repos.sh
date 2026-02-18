@@ -105,9 +105,6 @@ done
 #
 # This is necessary also for "mozilla-central" because firefox-main/setup script
 # refers the branch.
-#
-# TODO: Update the enterprise-firefox for REVISION_TREE comparison to
-#       enterprise-main once the taskcluster is updated.
 if [[ "$REVISION_TREE" == "mozilla-central" || \
       "$REVISION_TREE" == "enterprise-firefox.branch.enterprise-main" ]]; then
     git config remote.enterprise-firefox.url \
