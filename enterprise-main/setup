@@ -6,7 +6,6 @@ set -o pipefail # Check all commands in a pipeline
 
 # See ../mozilla-central/setup for documentation
 
-# TODO: Update this to enterprise-main once the taskcluster is updated.
 REVISION_TREE=enterprise-firefox.branch.enterprise-main
 REVISION_ID=latest
 
