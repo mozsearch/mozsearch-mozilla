@@ -1,0 +1,14 @@
+{
+  "mozsearch_path": "$MOZSEARCH_PATH",
+  "config_repo": "$CONFIG_REPO",
+  "instance_type": "t3.2xlarge",
+
+  "trees": {
+    "nss": {
+      "IMPORT": {
+        "file": "$CONFIG_REPO/config4.json",
+        "tree_name": "nss"
+      }
+    }
+  }
+}
