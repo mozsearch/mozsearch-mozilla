@@ -4,7 +4,7 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
+echo "Performing upload::git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Uploading graphviz
 pushd $INDEX_ROOT
@@ -14,7 +14,7 @@ $AWS_ROOT/upload.py $INDEX_ROOT/graphviz.tar.lz4 searchfox.repositories graphviz
 rm graphviz.tar.lz4
 popd
 
-date
+echo "Performing upload::blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Uploading graphviz blame
 pushd $INDEX_ROOT
@@ -23,5 +23,3 @@ tar cf - blame | lz4 - graphviz-blame.tar.lz4
 $AWS_ROOT/upload.py $INDEX_ROOT/graphviz-blame.tar.lz4 searchfox.repositories graphviz-blame.tar.lz4
 rm graphviz-blame.tar.lz4
 popd
-
-date

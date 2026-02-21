@@ -8,10 +8,6 @@ set -o pipefail # Check all commands in a pipeline
 # The mozilla-central repo also uploads an updated gecko.tar which
 # includes esr60 commits, so we don't need our own upload script.
 
-date
-
 # ESR60 isn't getting any new commits, so we can hard-code the last revision
 # for simplicity in checkout-gecko-repos.sh.
 $CONFIG_REPO/shared/checkout-gecko-repos.sh "mozilla-esr60" "esr60" "1aeaa33a64f9873fdeb8f986ef71ec35aa672347"
-
-date

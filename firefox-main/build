@@ -4,13 +4,11 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
-
 pushd $INDEX_ROOT
 $CONFIG_REPO/firefox-shared/process-gecko-analysis.sh
 popd
 
-date
+echo "Performing build::scip-python step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 ## Analyze the unified python corpus
 pushd $GIT_ROOT
@@ -75,5 +73,3 @@ NODE_OPTIONS="--max-old-space-size=10240" scip-python index --show-progress-rate
 mv python2.scip $INDEX_ROOT
 
 popd
-
-date

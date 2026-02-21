@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# NOTE: process-tc-artifacts.sh is executed in parallel, and the step logs
+#       cannot be used.
+
 set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline

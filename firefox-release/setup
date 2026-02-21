@@ -9,16 +9,8 @@ set -o pipefail # Check all commands in a pipeline
 REVISION_TREE=mozilla-release
 REVISION_ID=latest
 
-date
-
 source $CONFIG_REPO/firefox-shared/resolve-gecko-revs.sh $REVISION_TREE $REVISION_ID
-
-date
 
 $CONFIG_REPO/firefox-shared/checkout-gecko-repos.sh $REVISION_TREE "release" "$INDEXED_HG_REV"
 
-date
-
 $CONFIG_REPO/firefox-shared/fetch-tc-artifacts.sh $REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV"
-
-date

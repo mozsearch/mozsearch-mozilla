@@ -4,7 +4,7 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
+echo "Performing setup::download-git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 # Note that our tarball here also includes the flatpak SDK downloads that live
 # under git/WebKitBuild/UserFlatpak.
@@ -20,7 +20,7 @@ else
 fi
 popd
 
-date
+echo "Performing setup::download-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Downloading webkit blame
 pushd $INDEX_ROOT
@@ -34,7 +34,7 @@ else
 fi
 popd
 
-date
+echo "Performing setup::git-pull step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Updating git
 pushd $GIT_ROOT
@@ -42,25 +42,25 @@ git remote prune origin || true
 git pull origin main || handle_tree_error "wubkat git pull"
 popd
 
-date
+echo "Performing setup::last-successful-build-to-git-commit step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Figuring out what revision to use.
 USE_REV=$($CONFIG_REPO/wubkat/last-successful-build-to-git-commit.sh)
 echo Checking out last successfully built revision "${USE_REV}"
 
-date
+echo "Performing setup::git-checkout step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 pushd $GIT_ROOT
 git checkout "${USE_REV}"
 popd
 echo Revision should now be checked out.
 
-date
+echo "Performing setup::build-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Generating blame information
 build-blame $GIT_ROOT $BLAME_ROOT
 
-date
+echo "Performing setup::apt-get-install step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Installing/updating system build dependencies
 
@@ -74,11 +74,9 @@ sudo apt-get update
 # we'll see.)
 sudo apt-get install -y libcairo-dev libharfbuzz-dev gi-docgen
 
-date
+echo "Performing setup::install-dependencies step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 # Support for 22.04 seems to have been officially added in
 # https://searchfox.org/wubkat/commit/aa960b1a0c7b980efdbc66718239a449b5966a0c
 # so we're now using it directly again.
 sudo $FILES_ROOT/Tools/gtk/install-dependencies
-
-date

@@ -4,10 +4,6 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
-
 pushd $INDEX_ROOT
 $CONFIG_REPO/shared/process-gecko-analysis.sh
 popd
-
-date

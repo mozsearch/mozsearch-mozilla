@@ -6,8 +6,6 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
-
 # NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
 #
 # >>> mozilla-central is special because we like code coverage data! <<<
@@ -36,6 +34,8 @@ TC_QUEUE_API_URL=${TC_ROOT_URL}/api/queue/v1/task
 # find the artifacts in taskcluster.
 TRYPUSH_REV=${TRYPUSH_REV:-}
 if [ -n "$TRYPUSH_REV" ]; then
+    echo "Performing setup::use-trypush step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+
     REVISION_TREE=try
     REVISION_ID="revision.${TRYPUSH_REV}"
     echo "TRYPUSH_REV was used, ignoring coverage-based revision choice. Using: ${REVISION_ID}"
@@ -87,8 +87,6 @@ $CONFIG_REPO/shared/checkout-gecko-repos.sh $REVISION_TREE "master" "$INDEXED_HG
 
 $CONFIG_REPO/shared/fetch-tc-artifacts.sh $REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV"
 
-date
-
 # Also generate blame for some other branches, because the gecko-blame repo is
 # shared by those branches. We do this here instead of in e.g. ../mozilla-beta/setup
 # because it's best to have only one indexer instance responsible for updating and
@@ -105,6 +103,7 @@ LASTBRANCH="master"
 # If the pine branch gets reset for a new project and we want to
 # add it back in here, we might need to manually update the tarball to
 # strip the existing pine branch. I don't know if it will work otherwise.
+echo "Performing setup::build-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 for BRANCH in elm cedar cypress beta release esr140 esr128 esr115 esr102 esr91 esr78 esr68 esr60 esr45 esr31 esr17; do
     echo "Updating gecko-dev branch $BRANCH to latest from cinnabar upstream..."
     pushd $GIT_ROOT
@@ -117,5 +116,3 @@ for BRANCH in elm cedar cypress beta release esr140 esr128 esr115 esr102 esr91 e
     BLAME_REF="refs/heads/$BRANCH" build-blame $GIT_ROOT $BLAME_ROOT
     LASTBRANCH="${BRANCH}"
 done
-
-date

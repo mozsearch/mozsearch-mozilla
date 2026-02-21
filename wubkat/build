@@ -4,8 +4,6 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
-
 # the starting point for the build logic here is from:
 # https://github.com/dpino/webkit-index-config/blob/master/webkit/build
 #
@@ -18,7 +16,7 @@ date
 # - we dump the indexer setup to "config" like other build scripts so we can
 #   look at it afterwards rather than sourcing it directly.
 
-date
+echo "Performing build::indexer-setup step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 # Add the special clang flags.
 $MOZSEARCH_PATH/scripts/indexer-setup.py > $INDEX_ROOT/config
@@ -40,7 +38,7 @@ CC=${CC:0:5}
 CXX_FLAGS=${CXX:8}
 CXX=${CXX:0:7}
 
-date
+echo "Performing build::cmake step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 cmake $FILES_ROOT \
     -DCMAKE_C_COMPILER="$CC" \
@@ -60,12 +58,12 @@ cmake $FILES_ROOT \
     -DENABLE_DOCUMENTATION=OFF \
     -DENABLE_INTROSPECTION=OFF
 
-date
+echo "Performing build::make step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 make -j$(nproc)
 cd -
 
-date
+echo "Performing build::remove-duplicate-headers step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 # Webkit does something weird where it ends up with duplicate copies of some
 # header files in OBJDIR/WebCore/PrivateHeaders/.  It seems like they're

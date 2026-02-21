@@ -4,8 +4,6 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
-
 # NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
 #
 # >>> firefox-main is special because we like code coverage data! <<<
@@ -35,6 +33,8 @@ TC_QUEUE_API_URL=${TC_ROOT_URL}/api/queue/v1/task
 # find the artifacts in taskcluster.
 TRYPUSH_REV=${TRYPUSH_REV:-}
 if [ -n "$TRYPUSH_REV" ]; then
+    echo "Performing setup::use-trypush step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+
     BUILD_REVISION_TREE=try
     BUILD_REVISION_ID="revision.${TRYPUSH_REV}"
     COV_HG_REV="$TRYPUSH_REV"
@@ -87,17 +87,14 @@ $CONFIG_REPO/firefox-shared/checkout-gecko-repos.sh $BUILD_REVISION_TREE "main" 
 
 $CONFIG_REPO/firefox-shared/fetch-tc-artifacts.sh $BUILD_REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV" "$COV_HG_REV"
 
-date
-
 CODE_COVERAGE_REPORT="$INDEX_ROOT/code-coverage-report.json"
 if [ -f "$CODE_COVERAGE_REPORT" ]; then
+    echo "Performing setup::codecov2git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
     mkdir -p "$COVERAGE_ROOT"
     COV_GIT_REV="$(git -C "$GIT_ROOT" cinnabar hg2git "$COV_HG_REV")"
     COV_DATE="$(git -C "$GIT_ROOT" show --no-patch --format=%cI "$COV_GIT_REV")"
     codecov2git --report "$CODE_COVERAGE_REPORT" --output-repo "$COVERAGE_ROOT" --commit "$COV_GIT_REV" --date "$COV_DATE"
 fi
-
-date
 
 # Note that only $SHARED_BARE_GIT_ROOT diverges from the worktree $GIT_ROOT.
 # We use these paths for clarity/consistency that we're working in bare-repo space.
@@ -116,6 +113,7 @@ SHARED_BARE_BLAME_ROOT=$SHARED_ROOT/blame
 # without use of `--old-cinnabar-repo-path` or remove that use here.  Specifically,
 # we need to have fully moved off of the old mozilla-* branches for the below
 # branches.
+echo "Performing setup::build-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 for BRANCH in main beta release esr140 esr128 esr115; do
     echo "Generating blame information for $BRANCH..."
     # Try and start from an existing blame branch if this is a new branch.  New
@@ -149,5 +147,3 @@ for BRANCH in enterprise-main; do
     git -C "$SHARED_BARE_BLAME_ROOT" show-ref --verify --quiet "refs/heads/${BRANCH}" || git -C "$SHARED_BARE_BLAME_ROOT" branch "${BRANCH}" "${BASEBRANCH}"
     build-blame "$SHARED_BARE_GIT_ROOT" "$SHARED_BARE_BLAME_ROOT" --blame-ref="refs/heads/$BRANCH"
 done
-
-date

@@ -6,13 +6,11 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
-
 pushd $INDEX_ROOT
 $CONFIG_REPO/shared/process-gecko-analysis.sh
 popd
 
-date
+echo "Performing build::scip-python step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 ## Analyze the unified python corpus
 pushd $GIT_ROOT
@@ -62,5 +60,3 @@ jo verboseOutput=false \
 scip-python index --show-progress-rate-limit 0 --project-name python --output python.scip
 mv python.scip $INDEX_ROOT
 popd
-
-date

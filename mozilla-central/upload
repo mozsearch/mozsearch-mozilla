@@ -6,7 +6,7 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
+echo "Performing upload::git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Uploading Gecko
 pushd $INDEX_ROOT
@@ -16,7 +16,7 @@ $AWS_ROOT/upload.py $INDEX_ROOT/gecko.tar searchfox.repositories gecko.tar
 rm gecko.tar
 popd
 
-date
+echo "Performing upload::blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Uploading Gecko blame
 pushd $INDEX_ROOT
@@ -25,5 +25,3 @@ tar cf gecko-blame.tar blame
 $AWS_ROOT/upload.py $INDEX_ROOT/gecko-blame.tar searchfox.repositories gecko-blame.tar
 rm gecko-blame.tar
 popd
-
-date

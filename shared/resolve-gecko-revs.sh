@@ -17,7 +17,7 @@ fi
 REVISION_TREE=$1
 REVISION_ID=$2
 
-date
+echo "Performing setup::resolve-gecko-revs step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 REVISION="${REVISION_TREE}.${REVISION_ID}"
 CURL="curl -SsfL --compressed"

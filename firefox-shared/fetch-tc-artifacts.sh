@@ -63,6 +63,7 @@ fi
 # Download the bugzilla components file and the artifacts from each platform that
 # we're indexing. But do them in parallel by emitting all the curl commands into
 # a file and then feeding it to GNU parallel.
+echo "Performing setup::fetch-tc-artifacts-create-list step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 TC_TASK="https://firefox-ci-tc.services.mozilla.com/api/index/v1/task"
 TC_REV_PREFIX="${TC_TASK}/${INDEX_NAME}.v2.${REVISION}"
@@ -161,13 +162,16 @@ for PLATFORM in linux64 linux64-opt macosx64 macosx64-aarch64 macosx64-aarch64-o
 done # end PLATFORM loop
 
 # Do the downloads
+echo "Performing setup::fetch-tc-artifacts-download step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 parallel --halt now,fail=1 < downloads.lst
 
 # Clean out any artifacts left over from previous runs
+echo "Performing setup::fetch-tc-artifacts-cleanup step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 rm -rf analysis && mkdir -p analysis
 rm -rf objdir && mkdir -p objdir
 
 # Extract the WPT MANIFEST.json files and rename them if we have them.
+echo "Performing setup::fetch-tc-artifacts-extract step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 if [[ -f wpt-manifests.tar.gz ]]; then
     mkdir manifest-extract
     pushd manifest-extract

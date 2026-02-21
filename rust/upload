@@ -4,7 +4,7 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
+echo "Performing upload::git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Uploading rust
 pushd $INDEX_ROOT
@@ -14,7 +14,7 @@ $AWS_ROOT/upload.py $INDEX_ROOT/rust.tar searchfox.repositories rust.tar
 rm rust.tar
 popd
 
-date
+echo "Performing upload::blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Uploading rust blame
 pushd $INDEX_ROOT
@@ -23,5 +23,3 @@ tar cf rust-blame.tar blame
 $AWS_ROOT/upload.py $INDEX_ROOT/rust-blame.tar searchfox.repositories rust-blame.tar
 rm rust-blame.tar
 popd
-
-date

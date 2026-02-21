@@ -4,14 +4,13 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
-
 # NB: To further increase parallelism we could run all of the aws s3 commands in
 # parallel, but these files are generally large enough on their own that they
 # will take a while and it probably makes sense to mess with the aws command
 # parallelism settings first.
 
 
+echo "Performing upload::git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 echo 'Uploading "git" archive: firefox-shared-git.tar.lz4'
 pushd $SHARED_ROOT
 $CONFIG_REPO/firefox-shared/git-bare-maintenance.sh ./git
@@ -22,8 +21,7 @@ aws s3 cp firefox-shared-git.tar.lz4 s3://searchfox.repositories/firefox-shared-
 rm firefox-shared-git.tar.lz4
 popd
 
-date
-
+echo "Performing upload::oldgit step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 echo 'Uploading "oldgit" archive: firefox-shared-oldgit.tar.lz4'
 pushd $SHARED_ROOT
 $CONFIG_REPO/firefox-shared/git-bare-maintenance.sh ./oldgit
@@ -34,8 +32,7 @@ aws s3 cp firefox-shared-oldgit.tar.lz4 s3://searchfox.repositories/firefox-shar
 rm firefox-shared-oldgit.tar.lz4
 popd
 
-date
-
+echo "Performing upload::blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 echo 'Uploading "blame" archive: firefox-shared-blame.tar.lz4'
 pushd $SHARED_ROOT
 $CONFIG_REPO/firefox-shared/git-bare-maintenance.sh ./blame
@@ -45,5 +42,3 @@ tar cf - blame | lz4 -f - firefox-shared-blame.tar.lz4
 aws s3 cp firefox-shared-blame.tar.lz4 s3://searchfox.repositories/firefox-shared-blame.tar.lz4 --acl public-read
 rm firefox-shared-blame.tar.lz4
 popd
-
-date

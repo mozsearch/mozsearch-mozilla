@@ -4,7 +4,7 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
+echo "Performing setup::download-git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Downloading comm-esr91 repo
 pushd $INDEX_ROOT
@@ -18,7 +18,7 @@ else
 fi
 popd
 
-date
+echo "Performing setup::download-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Downloading comm-esr91 blame.
 pushd $INDEX_ROOT
@@ -32,14 +32,14 @@ else
 fi
 popd
 
-date
+echo "Performing setup::git-pull step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Updating git
 pushd $GIT_ROOT
 git pull
 popd
 
+echo "Performing setup::build-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+
 echo Generating blame information
 build-blame $GIT_ROOT $BLAME_ROOT
-
-date

@@ -4,7 +4,7 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
+echo "Performing setup::download-git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Downloading graphviz repo
 pushd $INDEX_ROOT
@@ -22,7 +22,7 @@ popd
 # This can be deleted once this fix is reflected to the uploaded tarball.
 sed -i -e 's|https://gitlab.com/graphviz/graphviz$|https://gitlab.com/graphviz/graphviz.git|' $GIT_ROOT/.git/config
 
-date
+echo "Performing setup::download-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Downloading graphviz blame.
 pushd $INDEX_ROOT
@@ -36,7 +36,7 @@ else
 fi
 popd
 
-date
+echo "Performing setup::git-pull step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Updating git
 pushd $GIT_ROOT
@@ -44,10 +44,12 @@ git pull origin main
 
 popd
 
+echo "Performing setup::build-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+
 echo Generating blame information
 build-blame $GIT_ROOT $BLAME_ROOT
 
-date
+echo "Performing setup::apt-get-install step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 ## Since graphviz is going in config5 and we already do wacky package
 ## installation at runtime, there's no real harm in doing more of it, and this

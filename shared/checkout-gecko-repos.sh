@@ -16,21 +16,23 @@ REVISION_TREE=$1
 BRANCH=$2
 INDEXED_HG_REV=$3
 
+echo "Performing setup::download-git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+
 echo Downloading Gecko
 pushd $INDEX_ROOT
 $CONFIG_REPO/shared/fetch-gecko-tarball.sh gecko $PWD
 popd
 
-date
+echo "Performing setup::download-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Downloading Gecko blame
 pushd $INDEX_ROOT
 $CONFIG_REPO/shared/fetch-gecko-tarball.sh gecko-blame $PWD
 popd
 
-date
-
+echo "Performing setup::update-git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 echo Updating git
+
 pushd $GIT_ROOT
 # Fetch the m-c repos that we care about with non-grafted cinnabar, so it will have all the necessary hg metadata.
 # This could be simplified by using mozilla-unified, but currently mozilla-unified is updated with some amount
@@ -83,7 +85,7 @@ fi
 git checkout -B "$BRANCH" $INDEXED_GIT_REV
 popd
 
-date
+echo "Performing setup::build-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 # Generate the blame information after checking out the GIT_ROOT to appropriate
 # revision above, so that the blame repo's head matches the git repo's head.
@@ -93,7 +95,7 @@ git reset --soft "$BRANCH"
 popd
 build-blame $GIT_ROOT $BLAME_ROOT
 
-date
+echo "Performing setup::reset-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 # Point the blame repo's HEAD to the commit matching what we have in in the src repo. Note
 # that we use `git reset --soft` because we don't need anything in the repo's working dir.

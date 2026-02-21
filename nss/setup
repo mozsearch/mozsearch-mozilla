@@ -4,7 +4,7 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
+echo "Performing setup::hg-clone step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Downloading NSPR
 # We used to have a hand-built tar file at nss-nspr.tar.  This included
@@ -24,7 +24,7 @@ else
 fi
 popd
 
-date
+echo "Performing setup::download-git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Downloading NSS
 pushd $INDEX_ROOT
@@ -38,7 +38,7 @@ else
 fi
 popd
 
-date
+echo "Performing setup::download-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Downloading NSS blame
 pushd $INDEX_ROOT
@@ -52,7 +52,7 @@ else
 fi
 popd
 
-date
+echo "Performing setup::git-fetch step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Updating NSS git
 pushd $GIT_ROOT
@@ -71,9 +71,7 @@ git reset --hard origin/master
 #git remote update cinnabar
 popd
 
-date
+echo "Performing setup::build-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Generating blame information
 build-blame $GIT_ROOT $BLAME_ROOT
-
-date

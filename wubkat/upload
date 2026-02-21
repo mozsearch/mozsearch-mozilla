@@ -4,7 +4,7 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
+echo "Performing upload::git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 # Note!  This ends up including the flatpak artifacts, and we want that.
 echo Uploading webkit
@@ -15,7 +15,7 @@ $AWS_ROOT/upload.py $INDEX_ROOT/wubkat.tar.lz4 searchfox.repositories wubkat.tar
 rm wubkat.tar.lz4
 popd
 
-date
+echo "Performing upload::blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Uploading webkit blame
 pushd $INDEX_ROOT
@@ -24,5 +24,3 @@ tar cf - blame | lz4 -f - wubkat-blame.tar.lz4
 $AWS_ROOT/upload.py $INDEX_ROOT/wubkat-blame.tar.lz4 searchfox.repositories wubkat-blame.tar.lz4
 rm wubkat-blame.tar.lz4
 popd
-
-date

@@ -4,7 +4,7 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
+echo "Performing upload::git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Uploading mozilla-mobile
 pushd $INDEX_ROOT
@@ -22,5 +22,3 @@ $AWS_ROOT/upload.py $INDEX_ROOT/mozilla-mobile.tar searchfox.repositories mozill
 rm mozilla-mobile.tar
 
 popd
-
-date

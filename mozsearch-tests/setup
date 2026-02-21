@@ -4,7 +4,7 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
+echo "Performing setup::download-git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 # We reuse the mozsearch tarball; we don't reuse its blame or do anything with
 # blame.  We could filter the mozsearch repo down for that, but we want to
@@ -22,7 +22,7 @@ else
 fi
 popd
 
-date
+echo "Performing setup::download-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 # Note that GIT_ROOT is not defined for this tree, but we do need to do an
 # update unless we steal the update done by our sibling "mozsearch-mozilla"
@@ -34,8 +34,6 @@ git pull origin master
 git submodule update --init --recursive
 
 popd
-
-date
 
 ## Invoke the mozsearch tests repo "setup" script for its symlink side-effects
 

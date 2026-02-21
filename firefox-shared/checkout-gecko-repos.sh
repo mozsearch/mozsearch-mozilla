@@ -30,7 +30,8 @@ INDEXED_GIT_REV=${4:-}
 # (because we mark the resources public).
 mkdir -p $SHARED_ROOT
 pushd $SHARED_ROOT
-date
+
+echo "Performing setup::download-git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 if [ ! -d git ]; then
     # firefox-shared/git comes from firefox-shared-git.tar.lz4
@@ -44,7 +45,8 @@ if [ ! -d git ]; then
     # local system.  These will now be stale, so let's prune those.
     git -C ./git worktree prune
 fi
-date
+
+echo "Performing setup::download-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 if [ ! -d blame ]; then
     # firefox-shared/blame comes from firefox-shared-blame.tar.lz4
@@ -58,7 +60,8 @@ if [ ! -d blame ]; then
     # local system.  These will now be stale, so let's prune those.
     git -C ./blame worktree prune
 fi
-date
+
+echo "Performing setup::download-oldgit step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 if [ ! -d oldgit ]; then
     # firefox-shared/oldgit comes from firefox-shared-oldgit.tar.lz4
@@ -72,7 +75,6 @@ if [ ! -d oldgit ]; then
     # local system.  These will now be stale, so let's prune those.
     git -C ./oldgit worktree prune
 fi
-date
 
 popd
 
@@ -83,8 +85,9 @@ SHARED_BARE_GIT_ROOT=$SHARED_ROOT/git
 SHARED_BARE_OLDGIT_ROOT=$SHARED_ROOT/oldgit
 SHARED_BARE_BLAME_ROOT=$SHARED_ROOT/blame
 
+echo "Performing setup::update-git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 echo "Updating new shared bare git"
-date
+
 pushd $SHARED_BARE_GIT_ROOT
 # Note that this fetch is only updating remotes/origin/*, not our local tracking
 # branches (ex: refs/heads/main).
@@ -139,10 +142,10 @@ if [ "$INDEXED_GIT_REV" == "0000000000000000000000000000000000000000" ]; then
 fi
 
 popd
-date
 
+echo "Performing setup::update-oldgit step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 echo "Updating old shared bare git"
-date
+
 pushd $SHARED_BARE_OLDGIT_ROOT
 # Fetch the m-c repos that we care about with non-grafted cinnabar, so it will have all the necessary hg metadata.
 # This could be simplified by using mozilla-unified, but currently mozilla-unified is updated with some amount
@@ -176,7 +179,6 @@ git config cinnabar.graft false
 git config fetch.prune true
 git -c cinnabar.check=traceback fetch --multiple central elm cedar cypress beta release esr140 esr128 esr115 esr102 esr91 esr78 esr68 esr60 esr45 esr31 esr17
 popd
-date
 
 # --- Perform the checkout using a worktree
 # Currently we do need/want a full checkout for "files_path", so we need to
@@ -184,8 +186,8 @@ date
 # but note that for "oldgit" and "blame" we can and do just use the shared bare
 # repositories.
 
+echo "Performing setup::worktree step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 echo "Checking out the revision in new git as a worktree"
-date
 pushd $SHARED_BARE_GIT_ROOT
 # If we are being run by a dev locally, it's possible the worktree may already
 # exist and be valid, so forcibly clean up the old work tree and start fresh.
@@ -207,7 +209,6 @@ fi
 # indexer runs.
 git worktree add --detach "$GIT_ROOT" "$INDEXED_GIT_REV"
 popd
-date
 
 # --- Ensure we have up-to-date blame for this branch
 # Note that the firefox-main "setup" script will also try and generate blame for
@@ -215,12 +216,10 @@ date
 # script that uploads things.  But because this script is invoked by firefox-main's
 # setup script before it does that, this logic will run before that logic (and
 # so that logic should end up as a no-op when it runs for the "main" branch).
+echo "Performing setup::build-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 echo "Generating blame information for $BRANCH..."
-date
 
 build-blame "$SHARED_BARE_GIT_ROOT" "$SHARED_BARE_BLAME_ROOT" --blame-ref "refs/heads/$BRANCH" --old-cinnabar-repo-path "$SHARED_BARE_OLDGIT_ROOT"
-
-date
 
 # We used to reset the blame branch so that its HEAD matches up with the indexed
 # revision, but now that we use a single shared blame repo for multiple searchfox

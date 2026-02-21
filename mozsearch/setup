@@ -4,7 +4,7 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
+echo "Performing setup::download-git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Downloading mozsearch repo
 pushd $INDEX_ROOT
@@ -18,7 +18,7 @@ else
 fi
 popd
 
-date
+echo "Performing setup::download-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Downloading mozsearch blame.
 pushd $INDEX_ROOT
@@ -32,7 +32,7 @@ else
 fi
 popd
 
-date
+echo "Performing setup::git-pull step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Updating git
 pushd $GIT_ROOT
@@ -42,15 +42,15 @@ git submodule update --init --recursive
 
 popd
 
+echo "Performing setup::git-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+
 echo Generating blame information
 build-blame $GIT_ROOT $BLAME_ROOT
 
-date
+echo "Performing setup::codecov2git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 rm -rf "$COVERAGE_ROOT"
 mkdir -p "$COVERAGE_ROOT"
 HEAD_OID="$(git -C "$GIT_ROOT" rev-parse HEAD)"
 HEAD_DATE="$(git -C "$GIT_ROOT" show --no-patch --format=%cI HEAD)"
 codecov2git --report "$GIT_ROOT/tests/searchfox/metadata/code-coverage-report.json" --output-repo "$COVERAGE_ROOT" --commit "$HEAD_OID" --date "$HEAD_DATE"
-
-date

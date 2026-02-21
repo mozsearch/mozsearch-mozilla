@@ -4,7 +4,7 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
+echo "Performing build::indexer-setup step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 # Add the special clang flags.
 $MOZSEARCH_PATH/scripts/indexer-setup.py > $INDEX_ROOT/config
@@ -12,10 +12,9 @@ $MOZSEARCH_PATH/scripts/indexer-setup.py > $INDEX_ROOT/config
 
 mkdir -p $OBJDIR
 
+echo "Performing build::cmake step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+
 cd $OBJDIR
 cmake -S $FILES_ROOT/llvm -B $OBJDIR -G Ninja -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;lld" -DCMAKE_BUILD_TYPE=Release -DLLVM_USE_LINKER=lld
 cmake --build .
-
 cd -
-
-date

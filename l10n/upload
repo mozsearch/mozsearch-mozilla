@@ -4,7 +4,7 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
+echo "Performing upload::git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Uploading l10n
 pushd $INDEX_ROOT
@@ -14,7 +14,7 @@ $AWS_ROOT/upload.py $INDEX_ROOT/firefox-l10n.tar.lz4 searchfox.repositories fire
 rm firefox-l10n.tar.lz4
 popd
 
-date
+echo "Performing upload::blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Uploading l10n blame
 pushd $INDEX_ROOT
@@ -23,5 +23,3 @@ tar cf - blame | lz4 - firefox-l10n-blame.tar.lz4
 $AWS_ROOT/upload.py $INDEX_ROOT/firefox-l10n-blame.tar.lz4 searchfox.repositories firefox-l10n-blame.tar.lz4
 rm firefox-l10n-blame.tar.lz4
 popd
-
-date

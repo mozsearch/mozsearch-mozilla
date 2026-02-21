@@ -9,8 +9,6 @@ set -o pipefail # Check all commands in a pipeline
 REVISION_TREE=enterprise-firefox.branch.enterprise-main
 REVISION_ID=latest
 
-date
-
 source $CONFIG_REPO/firefox-shared/resolve-gecko-revs.sh $REVISION_TREE $REVISION_ID
 
 # enterprise-firefox is pure git-based repository and the result of
@@ -20,12 +18,7 @@ INDEXED_HG_REV=-
 PREEXISTING_GIT_REV=$PREEXISTING_HG_REV
 PREEXISTING_HG_REV=-
 
-date
-
 $CONFIG_REPO/firefox-shared/checkout-gecko-repos.sh $REVISION_TREE "enterprise-main" - "$INDEXED_GIT_REV"
-
-date
 
 $CONFIG_REPO/firefox-shared/fetch-tc-artifacts.sh $REVISION_TREE $INDEXED_GIT_REV "$PREEXISTING_GIT_REV"
 
-date

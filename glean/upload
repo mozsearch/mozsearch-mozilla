@@ -4,7 +4,7 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
+echo "Performing upload::git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Uploading glean
 pushd $INDEX_ROOT
@@ -14,7 +14,7 @@ $AWS_ROOT/upload.py $INDEX_ROOT/glean.tar searchfox.repositories glean.tar
 rm glean.tar
 popd
 
-date
+echo "Performing upload::blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Uploading glean blame
 pushd $INDEX_ROOT
@@ -23,5 +23,3 @@ tar cf glean-blame.tar blame
 $AWS_ROOT/upload.py $INDEX_ROOT/glean-blame.tar searchfox.repositories glean-blame.tar
 rm glean-blame.tar
 popd
-
-date

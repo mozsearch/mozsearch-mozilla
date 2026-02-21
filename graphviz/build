@@ -4,7 +4,7 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
+echo "Performing build::indexer-setup step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 # Add the special clang flags.
 # See $MOZSEARCH_PATH/scripts/ld-wrapper for WRAPPED_LD and --use-ld-wrapper.
@@ -15,22 +15,22 @@ $MOZSEARCH_PATH/scripts/indexer-setup.py --use-ld-wrapper > $INDEX_ROOT/config
 rm -rf $OBJDIR
 mkdir -p $OBJDIR
 
+echo "Performing build::autogen step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+
 cd $FILES_ROOT
 # For git checkouts we need to run autogen.
 ./autogen.sh
 
-date
+echo "Performing build::configure step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 cd $OBJDIR
 # As per https://www.gnu.org/software/automake/manual/html_node/VPATH-Builds.html
 # we want to run configure from the objdir to set up the build tree here.
 $FILES_ROOT/configure
 
-date
+echo "Performing build::make step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 # And then we can run make here.
 make
 
 cd -
-
-date

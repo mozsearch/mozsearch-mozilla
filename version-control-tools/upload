@@ -4,7 +4,7 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-date
+echo "Performing upload::git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Uploading v-c-t
 pushd $INDEX_ROOT
@@ -14,7 +14,7 @@ $AWS_ROOT/upload.py $INDEX_ROOT/version-control-tools.tar searchfox.repositories
 rm version-control-tools.tar
 popd
 
-date
+echo "Performing upload::blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 echo Uploading v-c-t blame
 pushd $INDEX_ROOT
@@ -23,5 +23,3 @@ tar cf version-control-tools-blame.tar blame
 $AWS_ROOT/upload.py $INDEX_ROOT/version-control-tools-blame.tar searchfox.repositories version-control-tools-blame.tar
 rm version-control-tools-blame.tar
 popd
-
-date
