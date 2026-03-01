@@ -12,7 +12,7 @@ our <a href="https://github.com/mozsearch/mozsearch">GitHub page</a>.
 Please send bug reports to
 <a href="https://bugzilla.mozilla.org/enter_bug.cgi?product=Webtools&component=Searchfox">Bugzilla</a>.
 
-<h3>Query Language</h3>
+<h2>Query Language</h2>
 
 <p>Searchfox supports both text and file path searches.</p>
 
@@ -53,21 +53,24 @@ subdirectories (i.e., <code>*</code> does not match <code>/</code>).
 
 </dl>
 
-<h3>Repositories indexed</h3>
+<h2>Repositories indexed</h2>
 {TABLE}
 
-<h3>Cross-referencing</h3>
+<h2>Cross-referencing</h2>
 
+<p>
 Once you have arrived at a file, you can mouse over identifiers. If
 the color of the identifier changes, then clicking on the identifier
 will open a context menu for cross-referencing identifiers.
+</p>
 
-<p>
 <div id="file">
+<p>
 You can see an example by mousing
 over &ldquo;<code><span class="syn_def syn_def" data-symbols="#reviveCrashedTab" data-confidences="[&quot;concrete&quot;]">reviveCrashedTab</span></code>&rdquo; and
 clicking. A context menu will open and you can choose to search for all references to the symbol
 (definitions, assignments, and uses).
+</p>
 
 <p>
 In JavaScript code, a second option is sometimes offered.  Try mousing
@@ -77,6 +80,7 @@ In this case, you're given the opportunity to search for
 <code>SessionStore.reviveCrashedTab</code> (and not
 <code>SessionStoreInternal.reviveCrashedTab</code>). Also, since there is only one definition of
 <code>SessionStore.reviveCrashedTab</code>, you can jump directly to it.
+</p>
 </div>
 
 <p>
@@ -86,8 +90,9 @@ method from C++ or JavaScript will find the same-language
 implementations of that method as well as the IDL
 declaration. Visiting the IDL declaration and searching from there
 will yield all implementations.
+</p>
 
-<h3>Syntax Highlighting</h3>
+<h2>Syntax Highlighting</h2>
 
 <p>
 Searchfox uses semantic syntax highlighting.
