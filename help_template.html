@@ -16,10 +16,12 @@ Please send bug reports to
 
 <p>Searchfox supports both text and file path searches.</p>
 
-<p>Queries entered into the search box use exact string matching. No
-search operators are supported. Case insensitive matching and
+<p>Queries entered into the search box use exact string matching, except for <a href="https://firefox-source-docs.mozilla.org/contributing/searchfox/searchfox_search.html#advanced-query-syntax">the advanced syntax</a>.
+Case insensitive matching and
 <a href="https://github.com/google/re2/wiki/syntax">regular expression matching</a>
-can be requested with the check boxes.</p>
+can be requested with the check boxes.
+See <a href="https://firefox-source-docs.mozilla.org/contributing/searchfox/searchfox_search.html">the documentation</a> for more details.
+</p>
 
 <p>Path filtering uses globbing. A path matches even if only a substring
 of the path is matched by the glob. Use the <code>^</code>
