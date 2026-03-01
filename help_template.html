@@ -65,14 +65,14 @@ will open a context menu for cross-referencing identifiers.
 <p>
 <div id="file">
 You can see an example by mousing
-over &ldquo;<code><span data-id="#reviveCrashedTab" data-i="0">reviveCrashedTab</span></code>&rdquo; and
+over &ldquo;<code><span class="syn_def syn_def" data-symbols="#reviveCrashedTab" data-confidences="[&quot;concrete&quot;]">reviveCrashedTab</span></code>&rdquo; and
 clicking. A context menu will open and you can choose to search for all references to the symbol
 (definitions, assignments, and uses).
 
 <p>
 In JavaScript code, a second option is sometimes offered.  Try mousing
 over the same identifier in the following:
-&ldquo;<code>SessionStore.<span data-id="#reviveCrashedTab" data-i="1">reviveCrashedTab</span></code>&rdquo;.
+&ldquo;<code>SessionStore.<span class="syn_def" data-symbols="#reviveCrashedTab,SessionStore#reviveCrashedTab" data-confidences="[&quot;concrete&quot;,&quot;concrete&quot;]">reviveCrashedTab</span></code>&rdquo;.
 In this case, you're given the opportunity to search for
 <code>SessionStore.reviveCrashedTab</code> (and not
 <code>SessionStoreInternal.reviveCrashedTab</code>). Also, since there is only one definition of
@@ -96,8 +96,8 @@ identifier highlights other uses of that identifier.
 </div>
 
 <script>
-var ANALYSIS_DATA = [
-[[], [{sym: "#reviveCrashedTab", pretty: "property reviveCrashedTab"}]],
-[[{sym: "SessionStore#reviveCrashedTab", pretty: "property SessionStore.reviveCrashedTab"}], [{sym: "SessionStore#reviveCrashedTab", pretty: "property SessionStore.reviveCrashedTab"}, {sym: "#reviveCrashedTab", pretty: "property reviveCrashedTab"}]],
-];
+var SYM_INFO = {
+"#reviveCrashedTab": {"sym":"#reviveCrashedTab","pretty":"reviveCrashedTab"},
+"SessionStore#reviveCrashedTab": {"sym":"SessionStore#reviveCrashedTab","pretty":"SessionStore.reviveCrashedTab","jumps":{"def":"browser/components/sessionstore/SessionStore.sys.mjs#708"}},
+};
 </script>
