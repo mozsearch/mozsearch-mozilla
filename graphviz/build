@@ -6,6 +6,8 @@ set -o pipefail # Check all commands in a pipeline
 
 echo "Performing build::indexer-setup step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
+export PYTHON3=python3
+
 # Add the special clang flags.
 # See $MOZSEARCH_PATH/scripts/ld-wrapper for WRAPPED_LD and --use-ld-wrapper.
 export WRAPPED_LD=ld
@@ -31,6 +33,6 @@ $FILES_ROOT/configure
 echo "Performing build::make step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
 # And then we can run make here.
-PYTHON3=python3 make
+make
 
 cd -
