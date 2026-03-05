@@ -48,6 +48,15 @@ else
     # The revision to index is passed specifically to the job
     COV_HG_REV=$(jq -Mr '.payload.env.REVISION' <<< $COV_TASK_INFO)
 
+    # Since https://github.com/mozilla/code-coverage/commit/9aa6d1016b39bb0b04da03c6807194f1ddd57762
+    # the coverage aggregation task doesn't directly link to the revision but to a task group which
+    # has the revision.
+    if [[ $COV_HG_REV = "null" ]]; then
+        COV_TASK_GROUP_ID=$(jq -Mr '.payload.env.TASK_GROUP_ID' <<< $COV_TASK_INFO)
+        COV_TASK_GROUP_INFO=$(curl -ssL "${TC_QUEUE_API_URL}/${COV_TASK_GROUP_ID}")
+        COV_HG_REV=$(jq -Mr '.payload.env.GECKO_HEAD_REV' <<< $COV_TASK_GROUP_INFO)
+    fi
+
     # How many whole days have passed since the coverage aggregation task was
     # started and now?  If it's been less than a day (therefore "0"), the data
     # is good enough for our purposes.
