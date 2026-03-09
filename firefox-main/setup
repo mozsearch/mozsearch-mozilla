@@ -4,20 +4,6 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-# NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
-#
-# >>> firefox-main is special because we like code coverage data! <<<
-#     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-#
-# Unless a `TRYPUSH_REV` is specified below, we are going to use the
-# `project.relman.code-coverage.production.repo.mozilla-central.latest` route
-# in order to try and find a recent hg revision to use that has coverage.
-#
-# To do this, we are going to use a few taskcluster APIs directly via curl.
-# Arguably, a better idea is to use the `taskcluster` binary, but we only
-# actually need to hit 2 URLs here and so the moving parts theory favors not
-# provisioning `taskcluster` yet, but it would probably be a reasonable step.
-
 # This defaults to the most recent searchfox indexing run for mozilla-central
 # which is still the name of the firefox-main tree for build purposes.
 BUILD_REVISION_TREE=mozilla-central
@@ -25,68 +11,6 @@ BUILD_REVISION_ID=latest
 
 TC_ROOT_URL=https://firefox-ci-tc.services.mozilla.com
 TC_INDEX_API_URL=${TC_ROOT_URL}/api/index/v1/task
-COVERAGE_ROUTE=project.relman.code-coverage.production.repo.${BUILD_REVISION_TREE}.latest
-TC_QUEUE_API_URL=${TC_ROOT_URL}/api/queue/v1/task
-
-# Set TRYPUSH_REV in the environment to e.g. ee64db93dcc149da9313460317257b8c42eec5b2
-# or whatever to test a try revision. It needs to be the full rev hash, so that we can
-# find the artifacts in taskcluster.
-TRYPUSH_REV=${TRYPUSH_REV:-}
-if [ -n "$TRYPUSH_REV" ]; then
-    echo "Performing setup::use-trypush step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
-
-    BUILD_REVISION_TREE=try
-    BUILD_REVISION_ID="revision.${TRYPUSH_REV}"
-    COV_HG_REV="$TRYPUSH_REV"
-    echo "TRYPUSH_REV was used, ignoring coverage-based revision choice. Using: ${BUILD_REVISION_ID}"
-else
-    # find the taskId that the "latest" code coverage for our tree
-    COV_TASKID=$(curl -ssL "${TC_INDEX_API_URL}/${COVERAGE_ROUTE}" | jq -Mr '.taskId')
-    # get the task definition JSON and save it into a variable so we can pick
-    # multiple fields out
-    COV_TASK_INFO=$(curl -ssL "${TC_QUEUE_API_URL}/${COV_TASKID}")
-    # The revision to index is passed specifically to the job
-    COV_HG_REV=$(jq -Mr '.payload.env.REVISION' <<< $COV_TASK_INFO)
-
-    # Since https://github.com/mozilla/code-coverage/commit/9aa6d1016b39bb0b04da03c6807194f1ddd57762
-    # the coverage aggregation task doesn't directly link to the revision but to a task group which
-    # has the revision.
-    if [[ $COV_HG_REV = "null" ]]; then
-        COV_TASK_GROUP_ID=$(jq -Mr '.payload.env.TASK_GROUP_ID' <<< $COV_TASK_INFO)
-        COV_TASK_GROUP_INFO=$(curl -ssL "${TC_QUEUE_API_URL}/${COV_TASK_GROUP_ID}")
-        COV_HG_REV=$(jq -Mr '.payload.env.GECKO_HEAD_REV' <<< $COV_TASK_GROUP_INFO)
-    fi
-
-    # How many whole days have passed since the coverage aggregation task was
-    # started and now?  If it's been less than a day (therefore "0"), the data
-    # is good enough for our purposes.
-    if [[ $COV_HG_REV = "null" ]]; then
-        # In the failure mode we're seeing in Bug 1909053, COV_TASK_INFO is a
-        # 404 JSON blob and we will have extracted null from it.  Let's just
-        # pick a very obvious non-zero value so that we can just use the latest
-        # indexed revision.
-        echo "No sign of coverage data; pretending the data is stale."
-        COV_RECENCY_DAYS=999
-    else
-        COV_RECENCY_DAYS=$(jq -Mr '.created | sub("\\.[0-9]+Z$"; "Z") | (now - fromdate) / (24 * 60 * 60) | floor' <<< $COV_TASK_INFO)
-    fi
-
-    if [[ $COV_RECENCY_DAYS = "0" ]]; then
-        # We also need to check that the revision is itself recent enough, see
-        # bug 1818083.
-        COV_HG_REV_TARGET_INFO=$(curl -SsfL --compressed "${TC_INDEX_API_URL}/gecko.v2.${BUILD_REVISION_TREE}.revision.${COV_HG_REV}.firefox.linux64-searchfox-debug/artifacts/public/build/target.json")
-        COV_BUILDID=$(jq -Mr .buildid <<< $COV_HG_REV_TARGET_INFO)
-        COV_BUILDID_IS_RECENT=$(jq -Mr --arg today $(date +%Y%m%d) --arg yesterday $(date --date yesterday +%Y%m%d) '.buildid | startswith($today) or startswith($yesterday)' <<< $COV_HG_REV_TARGET_INFO)
-        if [ $COV_BUILDID_IS_RECENT = "true" ]; then
-            BUILD_REVISION_ID="revision.${COV_HG_REV}"
-            echo "Coverage data is recent enough, using explicit revision: ${BUILD_REVISION_ID}"
-        else
-            echo "Coverage data is recent, but it's for an old revision (${COV_HG_REV}, ${COV_BUILDID}), sticking with: ${BUILD_REVISION_ID}"
-        fi
-    else
-        echo "Coverage data is ${COV_RECENCY_DAYS} old, sticking with: ${BUILD_REVISION_ID}"
-    fi
-fi
 
 # The next line populates the INDEXED_HG_REV and PREEXISTING_HG_REV env vars.
 # Note that PREEXISTING_HG_REV will generally be empty in production.
@@ -94,16 +18,31 @@ source $CONFIG_REPO/firefox-shared/resolve-gecko-revs.sh $BUILD_REVISION_TREE $B
 
 $CONFIG_REPO/firefox-shared/checkout-gecko-repos.sh $BUILD_REVISION_TREE "main" "$INDEXED_HG_REV"
 
-$CONFIG_REPO/firefox-shared/fetch-tc-artifacts.sh $BUILD_REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV" "$COV_HG_REV"
+$CONFIG_REPO/firefox-shared/fetch-tc-artifacts.sh $BUILD_REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV"
 
-CODE_COVERAGE_REPORT="$INDEX_ROOT/code-coverage-report.json"
-if [ -f "$CODE_COVERAGE_REPORT" ]; then
-    echo "Performing setup::codecov2git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
-    mkdir -p "$COVERAGE_ROOT"
-    COV_GIT_REV="$(git -C "$GIT_ROOT" cinnabar hg2git "$COV_HG_REV")"
-    COV_DATE="$(git -C "$GIT_ROOT" show --no-patch --format=%cI "$COV_GIT_REV")"
-    codecov2git --report "$CODE_COVERAGE_REPORT" --output-repo "$COVERAGE_ROOT" --commit "$COV_GIT_REV" --date "$COV_DATE"
-fi
+echo "Performing setup::codecov2git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+mkdir -p "$COVERAGE_ROOT"
+
+# Fetch the mozilla-central pushes for the last week, with 1 line per push and format <hg hash>:<git hash>
+RECENT_PUSHES=$(curl "https://hg-edge.mozilla.org/mozilla-central/json-pushes?version=2&tipsonly=1&startdate=-1w" | jq -r '.pushes | to_entries | sort_by(.key) | [.[] | .value | {hg: .changesets[0], git: .git_changesets[0]}] | .[] | .hg + ":" + .git')
+COVERAGE_BUCKET_ROOT="https://storage.googleapis.com/download/storage/v1/b/relman-code-coverage-prod/o"
+
+for PUSH in $RECENT_PUSHES; do
+    IFS=':' read -ra SPLIT <<< "$PUSH"
+    COVERAGE_HG_REV=${SPLIT[0]}
+    COVERAGE_GIT_REV=${SPLIT[1]}
+    COVERAGE_INDEX=project.relman.code-coverage.production.repo.${BUILD_REVISION_TREE}.${COVERAGE_HG_REV}
+
+    CURL="curl -SsfL --compressed"
+    # First try downloading from the bucket as that's faster, or try the taskcluster API as that's available faster, otherwise bail-out for this push
+    ${CURL} "${COVERAGE_BUCKET_ROOT}/${BUILD_REVISION_TREE}%2F${COVERAGE_HG_REV}%2Fall:all.json.zstd?alt=media" | unzstd > code-coverage-report.json \
+        || ${CURL} ${TC_INDEX_API_URL}/${COVERAGE_INDEX}/artifacts/public/code-coverage-report.json > code-coverage-report.json \
+        || continue
+
+    COVERAGE_DATE="$(git -C "$GIT_ROOT" show --no-patch --format=%cI "$COVERAGE_GIT_REV")"
+    codecov2git --report code-coverage-report.json --output-repo "$COVERAGE_ROOT" --commit "$COVERAGE_GIT_REV" --date "$COVERAGE_DATE"
+    rm code-coverage-report.json
+done
 
 # Note that only $SHARED_BARE_GIT_ROOT diverges from the worktree $GIT_ROOT.
 # We use these paths for clarity/consistency that we're working in bare-repo space.

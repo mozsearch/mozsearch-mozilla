@@ -5,9 +5,8 @@ set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
 if [ $# -lt 3 -o $# -gt 4 ]; then
-    echo "Usage: $0 <revision-tree> <hg-rev> <pre-existing-hg-rev> [coverage-hg-rev]"
+    echo "Usage: $0 <revision-tree> <hg-rev> <pre-existing-hg-rev>"
     echo " e.g.: $0 mozilla-central 588208caeaf863f2207792eeb1bd97e6c8fceed4 ''"
-    echo " e.g.: coverage-hg-rev defaults to hg-rev"
     exit 1
 fi
 
@@ -17,7 +16,6 @@ REVISION_TREE=$1
 #       depends on the automation configuration of each tree.
 INDEXED_HG_REV=$2
 PREEXISTING_HG_REV=$3
-COVERAGE_HG_REV=${4:-$2}
 
 INDEX_NAME="gecko"
 if echo $REVISION_TREE | grep enterprise > /dev/null; then
@@ -93,12 +91,6 @@ echo "${CURL} ${TC_REV_PREFIX}.source.source-wpt-metadata-summary/artifacts/publ
 # Note that these end up in a tarball and we need to extract these, etc.
 echo "${CURL} ${TC_REV_PREFIX}.source.manifest-upload/artifacts/public/manifests.tar.gz -o wpt-manifests.tar.gz || \
       ${CURL} ${TC_LATEST_PREFIX}.source.manifest-upload/artifacts/public/manifests.tar.gz -o wpt-manifests.tar.gz || true" >> downloads.lst
-
-# Coverage data currently requires that we use the exact version or not use any
-# coverage data because mozilla-central's merges will usually involve a ton of
-# patches, making stale data potentially very misleading.  See Bug 1677903 for
-# more discussion.
-echo "${CURL} ${TC_TASK}/project.relman.code-coverage.production.repo.${REVISION_TREE}.${COVERAGE_HG_REV}/artifacts/public/code-coverage-report.json -o code-coverage-report.json || true" >> downloads.lst
 
 # Firefox Source Docs trees.
 echo "${CURL} ${TC_LATEST_PREFIX}.source.doc-generate/artifacts/public/trees.json -o doc-trees.json || true" >> downloads.lst
