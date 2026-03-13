@@ -229,24 +229,6 @@
       "help_indexed_langs": ["js", "idl", "cpp", "rs"]
     },
 
-    "mozilla-cedar": {
-      "priority": 195,
-      "on_error": "continue",
-      "cache": "codesearch",
-      "index_path": "$WORKING/mozilla-cedar",
-      "files_path": "$WORKING/mozilla-cedar/git",
-      "git_path": "$WORKING/mozilla-cedar/git",
-      "git_blame_path": "$WORKING/mozilla-cedar/blame",
-      "hg_root": "https://hg.mozilla.org/projects/cedar",
-      "objdir_path": "$WORKING/mozilla-cedar/objdir",
-      "codesearch_path": "$WORKING/mozilla-cedar/livegrep.idx",
-      "codesearch_port": 8093,
-      "scip_subtrees": {},
-      "group": "Firefox other",
-      "group_order": 3,
-      "help_indexed_langs": ["js", "idl", "cpp", "rs"]
-    },
-
     "nss": {
       "priority": 10,
       "on_error": "continue",
@@ -259,7 +241,7 @@
       "hg_root": "https://hg.mozilla.org/projects/nss",
       "objdir_path": "$WORKING/nss/dist",
       "codesearch_path": "$WORKING/nss/livegrep.idx",
-      "codesearch_port": 8094,
+      "codesearch_port": 8093,
       "scip_subtrees": {},
       "group": "Other",
       "group_order": 0,
