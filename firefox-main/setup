@@ -21,28 +21,23 @@ $CONFIG_REPO/firefox-shared/checkout-gecko-repos.sh $BUILD_REVISION_TREE "main" 
 $CONFIG_REPO/firefox-shared/fetch-tc-artifacts.sh $BUILD_REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV"
 
 echo "Performing setup::codecov2git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
-mkdir -p "$COVERAGE_ROOT"
+if [ ! -d "$COVERAGE_ROOT" ]; then
+    # Can't directly clone https://searchfox.repositories.s3.amazonaws.com/firefox-main-coverage.bundle because the bucket has got a . in its name.
+    if [[ ! -f "firefox-main-coverage.bundle" ]]; then
+        aws s3 cp s3://searchfox.repositories/firefox-main-coverage.bundle . --no-sign-request || true
+    fi
+    # Test runs won't have a firefox-main-coverage.bundle
+    if [[ -f firefox-main-coverage.bundle ]]; then
+        git clone --mirror firefox-main-coverage.bundle "$COVERAGE_ROOT"
+        rm firefox-main-coverage.bundle
+    else
+        mkdir -p "$COVERAGE_ROOT"
+    fi
+fi
 
-# Fetch the mozilla-central pushes for the last week, with 1 line per push and format <hg hash>:<git hash>
-RECENT_PUSHES=$(curl "https://hg-edge.mozilla.org/mozilla-central/json-pushes?version=2&tipsonly=1&startdate=-1w" | jq -r '.pushes | to_entries | sort_by(.key) | [.[] | .value | {hg: .changesets[0], git: .git_changesets[0]}] | .[] | .hg + ":" + .git')
-COVERAGE_BUCKET_ROOT="https://storage.googleapis.com/download/storage/v1/b/relman-code-coverage-prod/o"
-
-for PUSH in $RECENT_PUSHES; do
-    IFS=':' read -ra SPLIT <<< "$PUSH"
-    COVERAGE_HG_REV=${SPLIT[0]}
-    COVERAGE_GIT_REV=${SPLIT[1]}
-    COVERAGE_INDEX=project.relman.code-coverage.production.repo.${BUILD_REVISION_TREE}.${COVERAGE_HG_REV}
-
-    CURL="curl -SsfL --compressed"
-    # First try downloading from the bucket as that's faster, or try the taskcluster API as that's available faster, otherwise bail-out for this push
-    ${CURL} "${COVERAGE_BUCKET_ROOT}/${BUILD_REVISION_TREE}%2F${COVERAGE_HG_REV}%2Fall:all.json.zstd?alt=media" | unzstd > code-coverage-report.json \
-        || ${CURL} ${TC_INDEX_API_URL}/${COVERAGE_INDEX}/artifacts/public/code-coverage-report.json > code-coverage-report.json \
-        || continue
-
-    COVERAGE_DATE="$(git -C "$GIT_ROOT" show --no-patch --format=%cI "$COVERAGE_GIT_REV")"
-    codecov2git --report code-coverage-report.json --output-repo "$COVERAGE_ROOT" --commit "$COVERAGE_GIT_REV" --date "$COVERAGE_DATE"
-    rm code-coverage-report.json
-done
+COVERAGE_SINCE=$(date --iso-8601=seconds --date='last month')
+COVERAGE_BRANCH="all/all"
+codecov2git_gcloud --firefox-repo "$GIT_ROOT" --output-repo "$COVERAGE_ROOT" --since "$COVERAGE_SINCE" --branch "$COVERAGE_BRANCH"
 
 # Note that only $SHARED_BARE_GIT_ROOT diverges from the worktree $GIT_ROOT.
 # We use these paths for clarity/consistency that we're working in bare-repo space.
