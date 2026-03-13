@@ -42,3 +42,13 @@ tar cf - blame | lz4 -f - firefox-shared-blame.tar.lz4
 aws s3 cp firefox-shared-blame.tar.lz4 s3://searchfox.repositories/firefox-shared-blame.tar.lz4 --acl public-read
 rm firefox-shared-blame.tar.lz4
 popd
+
+echo "Performing upload::coverage step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+echo 'Uploading "coverage" bundle: firefox-main-coverage.bundle'
+pushd $SHARED_ROOT
+git -C "$COVERAGE_ROOT" bundle create "$(pwd)/firefox-main-coverage.bundle" --all
+# Note that we're using the "aws" command instead of $AWS_ROOT/upload.py for
+# parallelism reasons.
+aws s3 cp firefox-main-coverage.bundle s3://searchfox.repositories/firefox-main-coverage.bundle --acl public-read
+rm firefox-main-coverage.bundle
+popd
