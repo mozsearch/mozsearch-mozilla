@@ -2,7 +2,7 @@
   "mozsearch_path": "$MOZSEARCH_PATH",
   "config_repo": "$CONFIG_REPO",
   "default_tree": "firefox-main",
-  "instance_type": "t3.2xlarge",
+  "instance_type": "m6id.2xlarge",
 
   "trees": {
     "firefox-main": {
