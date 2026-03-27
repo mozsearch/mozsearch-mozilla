@@ -20,7 +20,6 @@
       "github_repo": "https://github.com/mozilla-firefox/firefox",
       "oldgithub_repo": "https://github.com/mozilla/gecko-dev",
       "hg_root": "https://hg.mozilla.org/mozilla-central",
-      "ccov_root": "https://coverage.moz.tools/",
       "wpt_root": "testing/web-platform",
       "objdir_path": "$WORKING/firefox-main/objdir",
       "codesearch_path": "$WORKING/firefox-main/livegrep.idx",
