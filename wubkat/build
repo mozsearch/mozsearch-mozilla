@@ -60,7 +60,7 @@ cmake $FILES_ROOT \
 
 echo "Performing build::make step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
-make -j$(nproc)
+make -j$(nproc) VERBOSE=1
 cd -
 
 echo "Performing build::remove-duplicate-headers step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
