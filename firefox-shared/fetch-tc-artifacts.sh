@@ -35,6 +35,41 @@ fi
 # ${CURL} url -o outut-location || true
 CURL=${CURL:-"curl -SsfL --compressed"}
 
+warn() { echo "WARNING: $*"; }
+
+# Try suffixes .zst, .gz, and bare; decompress via bsdtar (handles any format).
+# Returns 1 if not found, 2 if decompression failed.
+download_artifact() {
+    local url_base="$1"
+    local outfile="$2"
+    local tmpfile
+    tmpfile=$(mktemp)
+    trap "rm -f '${tmpfile}'" RETURN
+
+    if ${CURL} "${url_base}.zst" -o "${tmpfile}" ||
+       ${CURL} "${url_base}.gz"  -o "${tmpfile}"; then
+        bsdtar -xOf "${tmpfile}" > "${outfile}" || { warn "Failed to decompress ${url_base}"; return 2; }
+    elif ${CURL} "${url_base}" -o "${tmpfile}"; then
+        mv "${tmpfile}" "${outfile}"
+    else
+        return 1
+    fi
+}
+
+# Extract allFunctions.txt from the hazardIntermediates bundle.
+fetch_all_functions_from_bundle() {
+    local haz_url="$1"
+    local tmpfile
+    tmpfile=$(mktemp)
+    trap "rm -f '${tmpfile}'" RETURN
+
+    if ${CURL} "${haz_url}/hazardIntermediates.tar.zst" -o "${tmpfile}" ||
+       ${CURL} "${haz_url}/hazardIntermediates.tar.gz"  -o "${tmpfile}"; then
+        tar xf "${tmpfile}" --no-anchored allFunctions.txt || \
+            warn "Unable to extract allFunctions.txt from hazardIntermediates."
+    fi
+}
+
 # Rewrite REVISION to be a specific revision in case the "latest" pointer changes while
 # we're in the midst of downloading stuff. Using a specific revision id is safer.
 REVISION="${REVISION_TREE}.revision.${INDEXED_HG_REV}"
@@ -95,9 +130,7 @@ echo "${CURL} ${TC_REV_PREFIX}.source.manifest-upload/artifacts/public/manifests
 # Firefox Source Docs trees.
 echo "${CURL} ${TC_LATEST_PREFIX}.source.doc-generate/artifacts/public/trees.json -o doc-trees.json || true" >> downloads.lst
 
-# Hazard analysis.
-echo "${CURL} ${TC_REV_PREFIX}.firefox.browser-haz-debug/artifacts/public/build/gcFunctions.txt.gz -o gcFunctions.txt.gz || true" >> downloads.lst
-echo "${CURL} ${TC_REV_PREFIX}.firefox.browser-haz-debug/artifacts/public/build/allFunctions.txt.gz -o allFunctions.txt.gz || true" >> downloads.lst
+HAZ_URL="${TC_REV_PREFIX}.firefox.browser-haz-debug/artifacts/public/build"
 
 for PLATFORM in linux64 linux64-opt macosx64 macosx64-aarch64 macosx64-aarch64-opt win64 win64-opt android-armv7 android-aarch64 ios; do
     case "${PLATFORM}" in
@@ -174,12 +207,12 @@ if [[ -f wpt-manifests.tar.gz ]]; then
     rm -rf manifest-extract
 fi
 
-# Extract hazard analysis.
-if [[ -f gcFunctions.txt.gz ]]; then
-    gunzip gcFunctions.txt.gz
-fi
-if [[ -f allFunctions.txt.gz ]]; then
-    gunzip allFunctions.txt.gz
+# Download hazard analysis artifacts, handling any compression format.
+download_artifact "${HAZ_URL}/gcFunctions.txt" gcFunctions.txt || true
+rc=0
+download_artifact "${HAZ_URL}/allFunctions.txt" allFunctions.txt || rc=$?
+if [ $rc -eq 1 ]; then
+    fetch_all_functions_from_bundle "${HAZ_URL}" || true
 fi
 
 popd
