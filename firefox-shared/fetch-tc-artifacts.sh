@@ -46,9 +46,10 @@ download_artifact() {
     tmpfile=$(mktemp)
     trap "rm -f '${tmpfile}'" RETURN
 
-    if ${CURL} "${url_base}.zst" -o "${tmpfile}" ||
-       ${CURL} "${url_base}.gz"  -o "${tmpfile}"; then
-        bsdtar -xOf "${tmpfile}" > "${outfile}" || { warn "Failed to decompress ${url_base}"; return 2; }
+    if ${CURL} "${url_base}.zst" -o "${tmpfile}"; then
+        unzstd < "${tmpfile}" > "${outfile}" || { warn "Failed to decompress ${url_base}"; return 2; }
+    elif ${CURL} "${url_base}.gz"  -o "${tmpfile}"; then
+        gunzip < "${tmpfile}" > "${outfile}" || { warn "Failed to decompress ${url_base}"; return 2; }
     elif ${CURL} "${url_base}" -o "${tmpfile}"; then
         mv "${tmpfile}" "${outfile}"
     else
