@@ -23,7 +23,8 @@ cd $OBJDIR/clang-plugin
 CLANG_PLUGIN_DIR=$FILES_ROOT/clang-plugin
 # Passing a VPATH will let make find the source files despite us using an objdir.
 # Explicitly passing CC and CXX propagates the special clang flags.
-make -f $CLANG_PLUGIN_DIR/Makefile VPATH=$CLANG_PLUGIN_DIR CC="$CC" CXX="$CXX"
+# We don't want the build to overwrite the plugin located at $MOZSEARCH_CLANG_PLUGIN_DIR
+env -u MOZSEARCH_CLANG_PLUGIN_DIR make -f $CLANG_PLUGIN_DIR/Makefile VPATH=$CLANG_PLUGIN_DIR CC="$CC" CXX="$CXX"
 
 echo "Performing build::scip-python step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
