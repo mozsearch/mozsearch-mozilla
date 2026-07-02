@@ -51,6 +51,7 @@ git config remote.cedar.url || git remote add -t branches/default/tip cedar hg::
 git config remote.cypress.url || git remote add -t branches/default/tip cypress hg::https://hg.mozilla.org/projects/cypress
 git config remote.beta.url || git remote add -t branches/default/tip beta hg::https://hg.mozilla.org/releases/mozilla-beta
 git config remote.release.url || git remote add -t branches/default/tip release hg::https://hg.mozilla.org/releases/mozilla-release
+git config remote.esr153.url || git remote add -t branches/default/tip esr153 hg::https://hg.mozilla.org/releases/mozilla-esr153
 git config remote.esr140.url || git remote add -t branches/default/tip esr140 hg::https://hg.mozilla.org/releases/mozilla-esr140
 git config remote.esr128.url || git remote add -t branches/default/tip esr128 hg::https://hg.mozilla.org/releases/mozilla-esr128
 git config remote.esr115.url || git remote add -t branches/default/tip esr115 hg::https://hg.mozilla.org/releases/mozilla-esr115
@@ -64,7 +65,7 @@ git config remote.esr31.url || git remote add -t branches/default/tip esr31 hg::
 git config remote.esr17.url || git remote add -t branches/default/tip esr17 hg::https://hg.mozilla.org/releases/mozilla-esr17
 git config cinnabar.graft false
 git config fetch.prune true
-git -c cinnabar.check=traceback fetch --multiple central elm cedar cypress beta release esr140 esr128 esr115 esr102 esr91 esr78 esr68 esr60 esr45 esr31 esr17
+git -c cinnabar.check=traceback fetch --multiple central elm cedar cypress beta release esr153 esr140 esr128 esr115 esr102 esr91 esr78 esr68 esr60 esr45 esr31 esr17
 
 # If a try push was specified, pull it in non-graft mode so we actually pull those changes.
 if [ "$REVISION_TREE" == "try" ]; then

@@ -1,7 +1,7 @@
 {
   "mozsearch_path": "$MOZSEARCH_PATH",
   "config_repo": "$CONFIG_REPO",
-  "instance_type": "t3.2xlarge",
+  "instance_type": "m6id.2xlarge",
 
   "trees": {
     "firefox-beta": {
@@ -54,6 +54,31 @@
       "help_indexed_langs": ["js", "idl", "cpp", "rs", "java"]
     },
 
+    "firefox-esr153": {
+      "priority": 100,
+      "on_error": "continue",
+      "cache": "codesearch",
+      "shared_path": "$WORKING/firefox-shared",
+      "index_path": "$WORKING/firefox-esr153",
+      "files_path": "$WORKING/firefox-esr153/git",
+      "git_path": "$WORKING/firefox-esr153/git",
+      "git_branch": "esr153",
+      "oldtree_name": "mozilla-esr153",
+      "oldgit_path": "$WORKING/firefox-shared/oldgit",
+      "git_blame_path": "$WORKING/firefox-shared/blame",
+      "github_repo": "https://github.com/mozilla-firefox/firefox",
+      "oldgithub_repo": "https://github.com/mozilla/gecko-dev",
+      "hg_root": "https://hg.mozilla.org/releases/mozilla-esr153",
+      "wpt_root": "testing/web-platform",
+      "objdir_path": "$WORKING/firefox-esr153/objdir",
+      "codesearch_path": "$WORKING/firefox-esr153/livegrep.idx",
+      "codesearch_port": 8083,
+      "scip_subtrees": {},
+      "group": "Firefox",
+      "group_order": 17,
+      "help_indexed_langs": ["js", "idl", "cpp", "rs", "java"]
+    },
+
     "firefox-esr140": {
       "priority": 100,
       "on_error": "continue",
@@ -72,7 +97,7 @@
       "wpt_root": "testing/web-platform",
       "objdir_path": "$WORKING/firefox-esr140/objdir",
       "codesearch_path": "$WORKING/firefox-esr140/livegrep.idx",
-      "codesearch_port": 8083,
+      "codesearch_port": 8084,
       "scip_subtrees": {},
       "group": "Firefox",
       "group_order": 17,
@@ -97,7 +122,7 @@
       "wpt_root": "testing/web-platform",
       "objdir_path": "$WORKING/firefox-esr128/objdir",
       "codesearch_path": "$WORKING/firefox-esr128/livegrep.idx",
-      "codesearch_port": 8084,
+      "codesearch_port": 8085,
       "scip_subtrees": {},
       "group": "Firefox",
       "group_order": 18,
@@ -122,7 +147,7 @@
       "wpt_root": "testing/web-platform",
       "objdir_path": "$WORKING/firefox-esr115/objdir",
       "codesearch_path": "$WORKING/firefox-esr115/livegrep.idx",
-      "codesearch_port": 8085,
+      "codesearch_port": 8086,
       "scip_subtrees": {},
       "group": "Firefox",
       "group_order": 19,

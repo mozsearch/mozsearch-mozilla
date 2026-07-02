@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# The mozilla-central repo uploads an updated gecko.tar which
+# includes esr140 commits, so we don't need to do anything here.

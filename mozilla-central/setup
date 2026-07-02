@@ -104,7 +104,7 @@ LASTBRANCH="master"
 # add it back in here, we might need to manually update the tarball to
 # strip the existing pine branch. I don't know if it will work otherwise.
 echo "Performing setup::build-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
-for BRANCH in elm cedar cypress beta release esr140 esr128 esr115 esr102 esr91 esr78 esr68 esr60 esr45 esr31 esr17; do
+for BRANCH in elm cedar cypress beta release esr153 esr140 esr128 esr115 esr102 esr91 esr78 esr68 esr60 esr45 esr31 esr17; do
     echo "Updating gecko-dev branch $BRANCH to latest from cinnabar upstream..."
     pushd $GIT_ROOT
     git branch -f $BRANCH $BRANCH/branches/default/tip

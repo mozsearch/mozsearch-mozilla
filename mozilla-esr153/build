@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+pushd $INDEX_ROOT
+$CONFIG_REPO/shared/process-gecko-analysis.sh
+popd
+

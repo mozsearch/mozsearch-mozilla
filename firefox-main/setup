@@ -52,7 +52,7 @@ SHARED_BARE_BLAME_ROOT=$SHARED_ROOT/blame
 # we need to have fully moved off of the old mozilla-* branches for the below
 # branches.
 echo "Performing setup::build-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
-for BRANCH in main beta release esr140 esr128 esr115; do
+for BRANCH in main beta release esr153 esr140 esr128 esr115; do
     echo "Generating blame information for $BRANCH..."
     # Try and start from an existing blame branch if this is a new branch.  New
     # esr branches should look most like the release branch, and we expect other

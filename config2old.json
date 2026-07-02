@@ -112,6 +112,22 @@
       "codesearch_path": "$WORKING/mozilla-esr140/livegrep.idx",
       "codesearch_port": 8087,
       "scip_subtrees": {}
+    },
+
+    "mozilla-esr153": {
+      "priority": 20,
+      "on_error": "continue",
+      "cache": "codesearch",
+      "index_path": "$WORKING/mozilla-esr153",
+      "files_path": "$WORKING/mozilla-esr153/git",
+      "git_path": "$WORKING/mozilla-esr153/git",
+      "git_blame_path": "$WORKING/mozilla-esr153/blame",
+      "github_repo": "https://github.com/mozilla/gecko-dev",
+      "hg_root": "https://hg.mozilla.org/releases/mozilla-esr153",
+      "objdir_path": "$WORKING/mozilla-esr153/objdir",
+      "codesearch_path": "$WORKING/mozilla-esr153/livegrep.idx",
+      "codesearch_port": 8088,
+      "scip_subtrees": {}
     }
   }
 }
