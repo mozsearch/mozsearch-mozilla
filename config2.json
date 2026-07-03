@@ -75,7 +75,7 @@
       "codesearch_port": 8083,
       "scip_subtrees": {},
       "group": "Firefox",
-      "group_order": 17,
+      "group_order": 16,
       "help_indexed_langs": ["js", "idl", "cpp", "rs", "java"]
     },
 
