@@ -11,10 +11,15 @@ pushd $INDEX_ROOT
 if [ -d "git" ]
 then
     echo "Found pre-existing comm-central git folder; skipping re-download."
-else
-    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/comm-central.tar
+elif wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/comm-central.tar
+then
     tar xf comm-central.tar
     rm comm-central.tar
+else
+    # Tarball was cleared to force cloning of new git repo
+    repo='https://github.com/thunderbird/thunderbird-desktop'
+    echo "Cached tarball not found. Cloning from ${repo} for comm-central."
+    git clone --branch main "${repo}" git
 fi
 popd
 
@@ -25,10 +30,15 @@ pushd $INDEX_ROOT
 if [ -d "blame" ]
 then
     echo "Found pre-existing blame folder; skipping re-download."
-else
-    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/comm-central-blame.tar
+elif wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/comm-central-blame.tar
+then
     tar xf comm-central-blame.tar
     rm comm-central-blame.tar
+else
+    # Tarball was cleared to force initialization of new blame repo
+    echo "Cached tarball not found. Initializing new blame repo for comm-central."
+    mkdir blame
+    git -C blame init
 fi
 popd
 

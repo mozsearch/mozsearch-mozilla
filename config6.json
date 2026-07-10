@@ -35,7 +35,7 @@
       "files_path": "$WORKING/comm-central/git",
       "git_path": "$WORKING/comm-central/git",
       "git_blame_path": "$WORKING/comm-central/blame",
-      "github_repo": "https://github.com/mozilla/releases-comm-central",
+      "github_repo": "https://github.com/thunderbird/thunderbird-desktop",
       "hg_root": "https://hg.mozilla.org/comm-central",
       "objdir_path": "$WORKING/comm-central/objdir",
       "codesearch_path": "$WORKING/comm-central/livegrep.idx",
