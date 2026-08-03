@@ -181,6 +181,23 @@ git config fetch.prune true
 git -c cinnabar.check=traceback fetch --multiple central elm cedar cypress beta release esr153 esr140 esr128 esr115 esr102 esr91 esr78 esr68 esr60 esr45 esr31 esr17
 popd
 
+# --- Validate the indexed git revision is on the branch we are using for history
+# In bug 2060095 we saw a situation where synchronizing the mozilla-unified repo
+# to our "git" repo somehow did not get us an update to the "central" branch but
+# we were able to map the hg revision to a git revision, resulting in a failure
+# to generate blame for the indexed revision because the "main" branch we ran
+# build-blame on did not contain the commit.  So we want to make sure the indexed
+# rev is on the branch we will be running build-blame against.
+#
+# This is something that should ideally happen incredibly rarely; if we see this
+# with any regularity then we should escalate the issue as a relative of
+# bug 2029158.
+if ! git -C "$SHARED_BARE_GIT_ROOT" merge-base --is-ancestor "$INDEXED_GIT_REV^{commit}" "refs/heads/$BRANCH"; then
+    echo "ERROR: git rev $INDEXED_GIT_REV is not present in the history chain for $BRANCH."
+    echo "This suggests the hg bookmark was not updated but we know about the commit via autoland."
+    exit 1
+fi
+
 # --- Perform the checkout using a worktree
 # Currently we do need/want a full checkout for "files_path", so we need to
 # create a worktree for that (and "git_path" can't just be the bare git repo),
