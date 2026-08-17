@@ -195,10 +195,12 @@ popd
 # This is something that should ideally happen incredibly rarely; if we see this
 # with any regularity then we should escalate the issue as a relative of
 # bug 2029158.
-if ! git -C "$SHARED_BARE_GIT_ROOT" merge-base --is-ancestor "$INDEXED_GIT_REV^{commit}" "refs/heads/$BRANCH"; then
-    echo "ERROR: git rev $INDEXED_GIT_REV is not present in the history chain for $BRANCH."
-    echo "This suggests the hg bookmark was not updated but we know about the commit via autoland."
-    exit 1
+if [ "$REVISION_TREE" != "try" ]; then
+    if ! git -C "$SHARED_BARE_GIT_ROOT" merge-base --is-ancestor "$INDEXED_GIT_REV^{commit}" "refs/heads/$BRANCH"; then
+        echo "ERROR: git rev $INDEXED_GIT_REV is not present in the history chain for $BRANCH."
+        echo "This suggests the hg bookmark was not updated but we know about the commit via autoland."
+        exit 1
+    fi
 fi
 
 # --- Perform the checkout using a worktree
