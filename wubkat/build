@@ -40,21 +40,26 @@ CXX=${CXX:0:7}
 
 echo "Performing build::cmake step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
-cmake $FILES_ROOT \
+# The upstream builder we use to determine good revisions has both of the
+# following currently disabled and so we disable them too:
+# -DUSE_LIBBACKTRACE=OFF \
+# -DENABLE_SPEECH_SYNTHESIS=OFF \
+#
+# We also disable documentation and introspection because they historically have
+# had stability problems for us, although it's conceivable the change to use
+# ninja has improved things there as well and we could build them.  But since
+# we don't actually serve the documentation and people would normally want the
+# sources anyways, it seems easiest to just leave those disabled.  But we could
+# certainly try re-enabling them.
+cmake "$FILES_ROOT" \
     -GNinja \
     -DCMAKE_C_COMPILER="$CC" \
     -DCMAKE_CXX_COMPILER="$CXX" \
     -DCMAKE_C_FLAGS="$C_FLAGS" \
     -DCMAKE_CXX_FLAGS="$CXX_FLAGS" \
-    -DUSE_WPE_RENDERER=OFF \
-    -DUSE_LCMS=OFF \
-    -DUSE_JPEGXL=OFF \
-    -DUSE_LIBBACKTRACE=OFF \
-    -DENABLE_BUBBLEWRAP_SANDBOX=OFF \
     -DCMAKE_BUILD_TYPE=Debug \
-    -DPORT=$PORT \
-    -DUSE_SYSTEM_SYSPROF_CAPTURE=OFF \
-    -DENABLE_GPU_PROCESS=OFF \
+    -DPORT="$PORT" \
+    -DUSE_LIBBACKTRACE=OFF \
     -DENABLE_SPEECH_SYNTHESIS=OFF \
     -DENABLE_DOCUMENTATION=OFF \
     -DENABLE_INTROSPECTION=OFF
