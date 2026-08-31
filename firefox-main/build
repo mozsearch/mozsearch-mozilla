@@ -73,3 +73,14 @@ NODE_OPTIONS="--max-old-space-size=10240" scip-python index --show-progress-rate
 mv python2.scip $INDEX_ROOT
 
 popd
+
+
+echo "Performing build::scip-typescript step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+pushd "$GIT_ROOT"
+npm install
+# TS_PROJECTS=$(yq -r '.typescript.include | join(" ")' tools/lint/typescript.yml)
+TS_PROJECTS=$(find . -name '[tj]sconfig.json' | grep -v 'node_modules\|third_party')
+scip-typescript index $TS_PROJECTS
+mv index.scip "$INDEX_ROOT/typescript.scip"
+rm -rf node_modules
+popd
