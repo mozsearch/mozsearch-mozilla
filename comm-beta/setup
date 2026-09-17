@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+echo "Performing setup::download-git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+
+echo Downloading comm-beta repo
+pushd $INDEX_ROOT
+if [ -d "git" ]
+then
+    echo "Found pre-existing folder; skipping re-download."
+else
+    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/comm-beta.tar.lz4
+    lz4 -dc comm-beta.tar.lz4 | tar -x
+    rm comm-beta.tar.lz4
+fi
+popd
+
+echo "Performing setup::download-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+
+echo Downloading comm-beta blame.
+pushd $INDEX_ROOT
+if [ -d "blame" ]
+then
+    echo "Found pre-existing blame folder; skipping re-download."
+else
+    wget -nv https://s3-us-west-2.amazonaws.com/searchfox.repositories/comm-beta-blame.tar.lz4
+    lz4 -dc comm-beta-blame.tar.lz4 | tar -x
+    rm comm-beta-blame.tar.lz4
+fi
+popd
+
+echo "Performing setup::git-pull step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+
+echo Updating git
+pushd $GIT_ROOT
+git pull
+popd
+
+echo "Performing setup::build-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+
+echo Generating blame information
+build-blame $GIT_ROOT $BLAME_ROOT
