@@ -111,6 +111,12 @@ TC_LATEST_PREFIX="${TC_TASK}/${INDEX_NAME}.v2.${REVISION_TREE}.latest"
 echo "${CURL} ${TC_REV_PREFIX}.source.source-bugzilla-info/artifacts/public/components-normalized.json -o bugzilla-components.json \
    || ${CURL} ${TC_LATEST_PREFIX}.source.source-bugzilla-info/artifacts/public/components-normalized.json -o bugzilla-components.json || true" > downloads.lst
 echo "${CURL} ${TC_REV_PREFIX}.source.test-info-all/artifacts/public/test-info-all-tests.json -o test-info-all-tests.json || true" >> downloads.lst
+# CI results of the xpcshell and mochitest tests over the last 21 days, as shown
+# on https://tests.firefox.dev/, summarized by mozsearch's
+# scripts/summarize-test-results.py.  These jobs run nightly on mozilla-central
+# only, so other trees will not have them.
+echo "${CURL} ${TC_LATEST_PREFIX}.source.test-info-xpcshell-timings/artifacts/public/xpcshell-issues.json -o xpcshell-issues.json || true" >> downloads.lst
+echo "${CURL} ${TC_LATEST_PREFIX}.source.test-info-mochitest-timings/artifacts/public/mochitest-issues.json -o mochitest-issues.json || true" >> downloads.lst
 # Right now the WPT metadata job explicitly only runs when files it is interested
 # in have changed.  So if we can't find the specific revision of interest, let's
 # just fail over to latest.  Because this is per-tree, there ideally shouldn't
