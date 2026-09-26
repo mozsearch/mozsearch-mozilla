@@ -1,0 +1,33 @@
+{
+  "mozsearch_path": "$MOZSEARCH_PATH",
+  "config_repo": "$CONFIG_REPO",
+  "default_tree": "firefox-disco",
+  "instance_type": "m6id.2xlarge",
+
+  "trees": {
+    "firefox-disco": {
+      "priority": 1000,
+      "on_error": "halt",
+      "cache": "everything",
+      "shared_path": "$WORKING/firefox-shared",
+      "index_path": "$WORKING/firefox-disco",
+      "files_path": "$WORKING/firefox-disco/git",
+      "git_path": "$WORKING/firefox-disco/git",
+      "git_branch": "main",
+      "oldgit_path": "$WORKING/firefox-shared/oldgit",
+      "git_blame_path": "$WORKING/firefox-shared/blame",
+      "history_path": "$WORKING/firefox-shared/history",
+      "github_repo": "https://github.com/mozilla-firefox/firefox",
+      "oldgithub_repo": "https://github.com/mozilla/gecko-dev",
+      "hg_root": "https://hg.mozilla.org/mozilla-central",
+      "wpt_root": "testing/web-platform",
+      "objdir_path": "$WORKING/firefox-disco/objdir",
+      "codesearch_path": "$WORKING/firefox-disco/livegrep.idx",
+      "codesearch_port": 8081,
+      "scip_subtrees": {},
+      "group": "Firefox other",
+      "group_order": 5,
+      "help_indexed_langs": ["js", "idl", "cpp", "rs", "java"]
+    }
+  }
+}

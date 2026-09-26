@@ -47,6 +47,7 @@ def load_configs(config_repo_dir, langs):
         'config5.json',
         'config6.json',
         'config7.json',
+        'config8.json',
     ]
 
     groups = {}

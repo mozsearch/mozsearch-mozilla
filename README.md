@@ -104,6 +104,9 @@ that lives in the `shared/` folder in this repository.
      - 13:00 UTC
    - `config7.json`:
      - 14:00 UTC
+   - `config8.json`, which hosts the temporary firefox-disco tree for developing
+     the token-centric history (bug 1517978):
+     - Not scheduled yet
 3. The indexer jobs run, for the specific example of mozilla-central:
    - The indexer invokes https://github.com/mozsearch/mozsearch-mozilla/blob/master/mozilla-central/setup
    - That script invokes https://github.com/mozsearch/mozsearch-mozilla/blob/master/shared/resolve-gecko-revs.sh which fetches

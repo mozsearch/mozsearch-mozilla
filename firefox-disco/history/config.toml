@@ -1,0 +1,10 @@
+# Settings for firefox-disco's token-centric history; see
+# tools/src/hyperblame/history_config.rs in mozsearch.
+
+# Deriving history for all of firefox-main (back to 1998) isn't practical yet,
+# so we start at the last main commit before 2025-04-01.  Sheriffs switched
+# from hg-style "Backed out changeset" backouts to git reverts at the start of
+# May 2025 (241 vs 21 in April, 1 vs 701 in May), so this spans both, which is
+# what we're initially testing.  Changing this requires regenerating the
+# history.
+start = "aa7f89dfca3f31132b11a48776324a9f775525d9"

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# firefox-disco is a temporary tree, on its own server (config8.json), for
+# developing the token-centric history ("hyperblame", bug 1517978).  It indexes
+# the same revision as firefox-main (see ../firefox-main/setup for
+# documentation), and it is the only tree which downloads, builds, updates, or
+# uploads the history (firefox-shared-history.tar.lz4); see update-history.sh.
+
+BUILD_REVISION_TREE=mozilla-central
+BUILD_REVISION_ID=latest
+
+# The next line populates the INDEXED_HG_REV and PREEXISTING_HG_REV env vars.
+source $CONFIG_REPO/firefox-shared/resolve-gecko-revs.sh $BUILD_REVISION_TREE $BUILD_REVISION_ID
+
+$CONFIG_REPO/firefox-shared/checkout-gecko-repos.sh $BUILD_REVISION_TREE "main" "$INDEXED_HG_REV"
+
+$CONFIG_REPO/firefox-shared/fetch-tc-artifacts.sh $BUILD_REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV"
+
+$CONFIG_REPO/firefox-disco/update-history.sh "main"

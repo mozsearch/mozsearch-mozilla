@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# firefox-main handles all uploads of the other firefox-shared tarballs; this
+# tree only uploads the history, which only this tree builds.  See
+# update-history.sh.
+
+echo "Performing upload::history step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+echo 'Uploading "history" archive: firefox-shared-history.tar.lz4'
+pushd $SHARED_ROOT
+if [[ $(date +%A) == "Saturday" ]]; then
+    git -C "$HISTORY_ROOT/syntax" gc
+    git -C "$HISTORY_ROOT/timeline" gc
+fi
+tar cf - "$(basename "$HISTORY_ROOT")" | lz4 -f - firefox-shared-history.tar.lz4
+# Note that we're using the "aws" command instead of $AWS_ROOT/upload.py for
+# parallelism reasons.
+aws s3 cp firefox-shared-history.tar.lz4 s3://searchfox.repositories/firefox-shared-history.tar.lz4 --acl public-read
+rm firefox-shared-history.tar.lz4
+popd

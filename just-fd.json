@@ -1,0 +1,15 @@
+{
+  "mozsearch_path": "$MOZSEARCH_PATH",
+  "config_repo": "$CONFIG_REPO",
+  "default_tree": "firefox-disco",
+  "instance_type": "m6id.2xlarge",
+
+  "trees": {
+    "firefox-disco": {
+      "IMPORT": {
+        "file": "$CONFIG_REPO/config8.json",
+        "tree_name": "firefox-disco"
+      }
+    }
+  }
+}
