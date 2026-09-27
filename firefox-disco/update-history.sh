@@ -79,5 +79,9 @@ fi
 # the uploaded history.  build-history.py runs build-syntax-token-tree and then
 # build-timeline-tree in chunks of revisions, repacking the history repos
 # after each chunk, which keeps the number of packs down.
+# HISTORY_STATUS_COMMAND can name a command to report progress to (see
+# build-history.py's --status-command), ex: reblame's.
 echo "Performing setup::build-history step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
-BLAME_REF="refs/heads/$BRANCH" $MOZSEARCH_PATH/scripts/build-history.py "$SHARED_BARE_GIT_ROOT" "$HISTORY_ROOT" "$HISTORY_CONFIG" "${OLD_REVISION_ARGS[@]}"
+BLAME_REF="refs/heads/$BRANCH" $MOZSEARCH_PATH/scripts/build-history.py \
+    ${HISTORY_STATUS_COMMAND:+--status-command "$HISTORY_STATUS_COMMAND"} \
+    "$SHARED_BARE_GIT_ROOT" "$HISTORY_ROOT" "$HISTORY_CONFIG" "${OLD_REVISION_ARGS[@]}"

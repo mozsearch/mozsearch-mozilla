@@ -1,0 +1,124 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# Generate firefox-disco's token-centric history ("hyperblame", bug 1517978)
+# from scratch, and upload it if passed --upload; see update-history.sh, which
+# this uses, for what the history is.  This is run on a fresh instance by
+# mozsearch's infrastructure/aws/trigger_blame_rebuild.py (via rebuild-blame.sh
+# and reblame-run.sh, which pass --upload), ex:
+#
+#   ./trigger_blame_rebuild.py https://github.com/mozsearch/mozsearch \
+#     https://github.com/mozsearch/mozsearch-mozilla just-fd.json hyperblame \
+#     dev-history --config-rev firefox-disco --instance-type m8id.16xlarge \
+#     --setenv HISTORY_WINDOW_DAYS=14
+#
+# Options come from the environment (--setenv for the trigger script):
+# - HISTORY_WINDOW_DAYS=N: Start the history at the last main revision from
+#   more than N days ago, rather than at history/config.toml's start.
+# - HISTORY_START=REV: Start the history at REV, or at the beginning of the
+#   history if "none".
+# - HISTORY_IN_PLACE=1: Upload the history as firefox-shared-history.tar.lz4,
+#   which is the one the indexer updates, after copying any existing one to
+#   backups/.  Otherwise it's uploaded as firefox-shared-history-new.tar.lz4.
+#   (The indexer can only update a history whose start is history/config.toml's
+#   start, since build-syntax-token-tree refuses to continue a history derived
+#   with a different start.)
+# - COMMIT_LIMIT, as for update-history.sh.
+#
+# Progress is recorded in the instance's status tag, which mozsearch's
+# infrastructure/aws/reblame-status.py shows.
+
+UPLOAD=no
+for ARG in "$@"; do
+    case "$ARG" in
+        --upload)
+            UPLOAD=yes
+            ;;
+        *)
+            echo "Unknown argument $ARG" > /dev/stderr
+            exit 1
+            ;;
+    esac
+done
+
+status() {
+    if [[ -n "${AWS_ROOT:-}" ]]; then
+        $AWS_ROOT/set-status.py "$*"
+    fi
+}
+
+if [[ -e "$HISTORY_ROOT" ]]; then
+    echo "$HISTORY_ROOT already exists, but reblame generates the history from scratch." > /dev/stderr
+    exit 1
+fi
+
+# ## The shared git repos
+#
+# Like ../firefox-shared/checkout-gecko-repos.sh, but we only need the new git
+# repo, updated to the latest main, and the old git repo for the old revisions
+# (which we don't bother updating, since only old revisions are in it).
+status "downloading the shared firefox git repos"
+mkdir -p $SHARED_ROOT
+pushd $SHARED_ROOT
+for REPO in git oldgit; do
+    if [[ ! -d $REPO ]]; then
+        aws s3 cp s3://searchfox.repositories/firefox-shared-$REPO.tar.lz4 . --no-sign-request
+        lz4 -dc firefox-shared-$REPO.tar.lz4 | tar -x
+        rm firefox-shared-$REPO.tar.lz4
+        git -C ./$REPO worktree prune
+    fi
+done
+popd
+
+status "fetching the latest firefox main"
+SHARED_BARE_GIT_ROOT=$SHARED_ROOT/git
+git -C $SHARED_BARE_GIT_ROOT fetch
+git -C $SHARED_BARE_GIT_ROOT update-ref refs/heads/main refs/remotes/origin/bookmarks/central
+
+# ## The history configuration, with a different start if requested.
+START=${HISTORY_START:-}
+if [[ -n "${HISTORY_WINDOW_DAYS:-}" ]]; then
+    START=$(git -C $SHARED_BARE_GIT_ROOT rev-list -1 --first-parent \
+        --before="$HISTORY_WINDOW_DAYS days ago" refs/heads/main)
+fi
+export HISTORY_CONFIG=$CONFIG_REPO/firefox-disco/history
+if [[ -n "$START" ]]; then
+    mkdir -p $INDEX_ROOT
+    HISTORY_CONFIG=$(mktemp -d "$INDEX_ROOT/history-config.XXXXXX")
+    cp -r $CONFIG_REPO/firefox-disco/history/. "$HISTORY_CONFIG"
+    grep -v '^start = ' $CONFIG_REPO/firefox-disco/history/config.toml > "$HISTORY_CONFIG/config.toml" || true
+    if [[ "$START" != "none" ]]; then
+        echo "start = \"$START\"" >> "$HISTORY_CONFIG/config.toml"
+    fi
+    cat "$HISTORY_CONFIG/config.toml"
+fi
+
+# ## The history
+#
+# update-history.sh downloads the uploaded history unless $HISTORY_ROOT exists.
+mkdir -p "$HISTORY_ROOT"
+status "generating the history (start ${START:-from history/config.toml})"
+HISTORY_STATUS_COMMAND=${AWS_ROOT:+$AWS_ROOT/set-status.py} \
+    $CONFIG_REPO/firefox-disco/update-history.sh "main"
+
+if [[ "$UPLOAD" == "yes" ]]; then
+    NAME=firefox-shared-history-new.tar.lz4
+    if [[ "${HISTORY_IN_PLACE:-}" == "1" ]]; then
+        NAME=firefox-shared-history.tar.lz4
+    fi
+    status "compressing the history for $NAME"
+    git -C "$HISTORY_ROOT/syntax" gc
+    git -C "$HISTORY_ROOT/timeline" gc
+    pushd $SHARED_ROOT
+    tar cf - "$(basename "$HISTORY_ROOT")" | lz4 -f - firefox-shared-history.tar.lz4
+    status "uploading the history ($(du -h firefox-shared-history.tar.lz4 | cut -f1)) as $NAME"
+    if [[ "$NAME" == "firefox-shared-history.tar.lz4" ]]; then
+        aws s3 cp "s3://searchfox.repositories/$NAME" "s3://searchfox.repositories/backups/$NAME" --acl public-read || true
+    fi
+    aws s3 cp firefox-shared-history.tar.lz4 "s3://searchfox.repositories/$NAME" --acl public-read
+    rm firefox-shared-history.tar.lz4
+    popd
+fi
