@@ -57,11 +57,25 @@ for REPO in syntax timeline; do
 done
 mkdir -p "$HISTORY_ROOT/rev-summaries"
 
+# Like blame, we record the old gecko-dev revisions ("oldrevs") of revisions
+# using the old git-cinnabar repo (downloaded by checkout-gecko-repos.sh) and,
+# for CVS-era revisions which no longer exist in the new repo, a mapping file.
+echo "Performing setup::download-old-revision-map step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+OLD_REVISION_MAP=$SHARED_ROOT/firefox-cvs-new-revisions-and-related-old-revisions.txt
+if [ ! -f "$OLD_REVISION_MAP" ]; then
+    aws s3 cp s3://searchfox.repositories/firefox-cvs-new-revisions-and-related-old-revisions.txt "$OLD_REVISION_MAP" --no-sign-request
+fi
+OLD_REVISION_ARGS=(--old-revision-map "$OLD_REVISION_MAP")
+if [ -d "$SHARED_ROOT/oldgit" ]; then
+    OLD_REVISION_ARGS+=(--old-cinnabar-repo-path "$SHARED_ROOT/oldgit")
+fi
+
 # The history is derived from the shared bare repo (like blame), which has the
 # git-cinnabar metadata that lets build-syntax-token-tree record each
-# revision's hg revision, which is needed to recognize hg-era backouts.
+# revision's hg revision, which is needed to recognize hg-era backouts and to
+# find the old revisions.
 echo "Performing setup::build-syntax-token-tree step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
-BLAME_REF="refs/heads/$BRANCH" build-syntax-token-tree "$SHARED_BARE_GIT_ROOT" "$HISTORY_ROOT/syntax" "$HISTORY_CONFIG"
+BLAME_REF="refs/heads/$BRANCH" build-syntax-token-tree "$SHARED_BARE_GIT_ROOT" "$HISTORY_ROOT/syntax" "$HISTORY_CONFIG" "${OLD_REVISION_ARGS[@]}"
 
 echo "Performing setup::build-timeline-tree step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 BLAME_REF="refs/heads/$BRANCH" build-timeline-tree "$SHARED_BARE_GIT_ROOT" "$HISTORY_ROOT/syntax" "$HISTORY_ROOT/timeline" "$HISTORY_ROOT/rev-summaries"
