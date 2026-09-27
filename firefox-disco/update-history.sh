@@ -17,8 +17,8 @@ set -o pipefail # Check all commands in a pipeline
 # revisions already processed) requires regenerating the history, which
 # build-syntax-token-tree will refuse to do incrementally.
 #
-# For testing, the environment variable COMMIT_LIMIT (see build-syntax-token-tree
-# and build-timeline-tree) can limit how many revisions are processed, and
+# For testing, the environment variable COMMIT_LIMIT (see mozsearch's
+# scripts/build-history.py) can limit how many revisions are processed, and
 # HISTORY_CONFIG can name a different history configuration directory (ex: one
 # with a note limiting which paths get history).
 
@@ -76,9 +76,8 @@ fi
 # build-timeline-tree find the git revisions of the hg revisions in hg-era
 # backout messages.  The history repos record the revisions they've processed
 # in git notes (refs/notes/mozsearch-source-mapping-$BRANCH), which are part of
-# the uploaded history.
-echo "Performing setup::build-syntax-token-tree step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
-BLAME_REF="refs/heads/$BRANCH" build-syntax-token-tree "$SHARED_BARE_GIT_ROOT" "$HISTORY_ROOT/syntax" "$HISTORY_CONFIG" "${OLD_REVISION_ARGS[@]}"
-
-echo "Performing setup::build-timeline-tree step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
-BLAME_REF="refs/heads/$BRANCH" build-timeline-tree "$SHARED_BARE_GIT_ROOT" "$HISTORY_ROOT/syntax" "$HISTORY_ROOT/timeline" "$HISTORY_ROOT/rev-summaries"
+# the uploaded history.  build-history.py runs build-syntax-token-tree and then
+# build-timeline-tree in chunks of revisions, repacking the history repos
+# after each chunk, which keeps the number of packs down.
+echo "Performing setup::build-history step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+BLAME_REF="refs/heads/$BRANCH" $MOZSEARCH_PATH/scripts/build-history.py "$SHARED_BARE_GIT_ROOT" "$HISTORY_ROOT" "$HISTORY_CONFIG" "${OLD_REVISION_ARGS[@]}"
