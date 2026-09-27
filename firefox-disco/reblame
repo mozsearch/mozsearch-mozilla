@@ -26,6 +26,8 @@ set -o pipefail # Check all commands in a pipeline
 #   (The indexer can only update a history whose start is history/config.toml's
 #   start, since build-syntax-token-tree refuses to continue a history derived
 #   with a different start.)
+# - HISTORY_UPLOAD_NAME=NAME: Upload the history as NAME instead, ex: to keep
+#   the histories of different runs apart.
 # - COMMIT_LIMIT, as for update-history.sh.
 #
 # Progress is recorded in the instance's status tag, which mozsearch's
@@ -109,6 +111,7 @@ if [[ "$UPLOAD" == "yes" ]]; then
     if [[ "${HISTORY_IN_PLACE:-}" == "1" ]]; then
         NAME=firefox-shared-history.tar.lz4
     fi
+    NAME=${HISTORY_UPLOAD_NAME:-$NAME}
     status "compressing the history for $NAME"
     git -C "$HISTORY_ROOT/syntax" gc
     git -C "$HISTORY_ROOT/timeline" gc
