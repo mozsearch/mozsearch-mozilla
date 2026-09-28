@@ -85,3 +85,10 @@ echo "Performing setup::build-history step for $TREE_NAME : $(date +"%Y-%m-%dT%H
 BLAME_REF="refs/heads/$BRANCH" $MOZSEARCH_PATH/scripts/build-history.py \
     ${HISTORY_STATUS_COMMAND:+--status-command "$HISTORY_STATUS_COMMAND"} \
     "$SHARED_BARE_GIT_ROOT" "$HISTORY_ROOT" "$HISTORY_CONFIG" "${OLD_REVISION_ARGS[@]}"
+
+# The commit index maps bugs and Phabricator revisions to the commits which
+# mention them (see mozsearch's tools/src/commit_index.rs).  It's kept (and
+# uploaded) with the history so that updating it only processes new commits,
+# but it covers the whole branch rather than the history's revisions.
+echo "Performing setup::build-commit-index step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+build-commit-index "$SHARED_BARE_GIT_ROOT" "$HISTORY_ROOT/commit-index" "refs/heads/$BRANCH"
