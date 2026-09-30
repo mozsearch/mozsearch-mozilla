@@ -112,16 +112,23 @@ if [[ "$UPLOAD" == "yes" ]]; then
         NAME=firefox-shared-history.tar.lz4
     fi
     NAME=${HISTORY_UPLOAD_NAME:-$NAME}
-    status "compressing the history for $NAME"
+    # Fully repacking the history makes it as small as possible to download.
+    # It needs about as much space again as the repo being repacked, which
+    # build-history.py leaves by fully repacking the repos as it goes when
+    # they need it (see mozsearch's scripts/build-history.py).
+    status "repacking the history for $NAME"
     git -C "$HISTORY_ROOT/syntax" gc
     git -C "$HISTORY_ROOT/timeline" gc
-    pushd $SHARED_ROOT
-    tar cf - "$(basename "$HISTORY_ROOT")" | lz4 -f - firefox-shared-history.tar.lz4
-    status "uploading the history ($(du -h firefox-shared-history.tar.lz4 | cut -f1)) as $NAME"
     if [[ "$NAME" == "firefox-shared-history.tar.lz4" ]]; then
         aws s3 cp "s3://searchfox.repositories/$NAME" "s3://searchfox.repositories/backups/$NAME" --acl public-read || true
     fi
-    aws s3 cp firefox-shared-history.tar.lz4 "s3://searchfox.repositories/$NAME" --acl public-read
-    rm firefox-shared-history.tar.lz4
+    # Stream the archive to S3 rather than writing it next to the history, which
+    # would need as much space again.  (aws needs to know about how big a stream
+    # over 50 GB is to choose the size of its parts; lz4 barely shrinks packs.)
+    pushd $SHARED_ROOT
+    SIZE=$(du -sb "$(basename "$HISTORY_ROOT")" | cut -f1)
+    status "uploading the history ($(numfmt --to=iec "$SIZE") before compression) as $NAME"
+    tar cf - "$(basename "$HISTORY_ROOT")" | lz4 -c |
+        aws s3 cp - "s3://searchfox.repositories/$NAME" --acl public-read --expected-size "$SIZE"
     popd
 fi
