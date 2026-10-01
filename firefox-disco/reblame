@@ -115,10 +115,16 @@ if [[ "$UPLOAD" == "yes" ]]; then
     # Fully repacking the history makes it as small as possible to download.
     # It needs about as much space again as the repo being repacked, which
     # build-history.py leaves by fully repacking the repos as it goes when
-    # they need it (see mozsearch's scripts/build-history.py).
+    # they need it (see mozsearch's scripts/build-history.py).  This is the
+    # repack git gc does (the rest of what it does doesn't matter for these
+    # repos), plus --path-walk: most of the time goes to finding every object
+    # reachable from every commit, which git's path walk did in half the time,
+    # for a slightly smaller pack, on 4,000 recent revisions' timeline.  (As of
+    # git 2.55, gc doesn't use the path walk even with pack.usePathWalk.)
     status "repacking the history for $NAME"
-    git -C "$HISTORY_ROOT/syntax" gc
-    git -C "$HISTORY_ROOT/timeline" gc
+    for repo in syntax timeline; do
+        git -C "$HISTORY_ROOT/$repo" repack -d -l --cruft --cruft-expiration=2.weeks.ago --path-walk
+    done
     if [[ "$NAME" == "firefox-shared-history.tar.lz4" ]]; then
         aws s3 cp "s3://searchfox.repositories/$NAME" "s3://searchfox.repositories/backups/$NAME" --acl public-read || true
     fi
