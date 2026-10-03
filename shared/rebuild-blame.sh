@@ -91,10 +91,12 @@ fi
 curl -sSfL "https://s3-us-west-2.amazonaws.com/searchfox.repositories/${TARBALL_BASE}.tar" -o "${TARBALL_BASE}.tar"
 tar xf "${TARBALL_BASE}.tar"
 
-# Init a new blame repo
+# Init a new blame repo.  (The blame repo's git commands use mozsearch-git, the
+# git build-blame writes it with (see mozsearch's nix/mozsearch/git.nix); the
+# source repo's would be the system's `git`, which detects SHA-1 collisions.)
 mkdir "${BLAME_REPO_DIR}"
 pushd "${BLAME_REPO_DIR}"
-git init .
+mozsearch-git init .
 popd
 
 # Build blame for HEAD, i.e. master branch
@@ -106,7 +108,7 @@ for BRANCH in $BRANCHES; do
     # branch as the starting point so as to maximally reuse previous
     # results.
     pushd "${BLAME_REPO_DIR}"
-    git branch "${BRANCH}" "${LASTBRANCH}"
+    mozsearch-git branch "${BRANCH}" "${LASTBRANCH}"
     popd
 
     echo "Generating blame information for ${BRANCH}..."
@@ -130,7 +132,7 @@ pushd "${BLAME_REPO_DIR}"
 # of faster/better repacking on repos that don't OOM with 3G, and falls
 # back to 2G if that fails. If we find repos that OOM even with 2G we can
 # reduce that further on the fallback call.
-git repack -f -a -d --depth=250 --window=250 --window-memory=3g || git repack -f -a -d --depth=250 --window=250 --window-memory=2g
+mozsearch-git repack -f -a -d --depth=250 --window=250 --window-memory=3g || mozsearch-git repack -f -a -d --depth=250 --window=250 --window-memory=2g
 popd
 
 tar cf "${TARBALL_BASE}-blame.tar" "${BLAME_REPO_DIR}"

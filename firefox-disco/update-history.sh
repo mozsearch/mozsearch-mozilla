@@ -51,8 +51,10 @@ popd
 for REPO in syntax timeline; do
     if [ ! -d "$HISTORY_ROOT/$REPO/.git" ]; then
         mkdir -p "$HISTORY_ROOT/$REPO"
-        # The tools write to refs/heads/$BRANCH, so make that HEAD.
-        git init -q -b "$BRANCH" "$HISTORY_ROOT/$REPO"
+        # The tools write to refs/heads/$BRANCH, so make that HEAD.  (With
+        # mozsearch-git, the git the tools write the history with; see
+        # mozsearch's nix/mozsearch/git.nix.)
+        mozsearch-git init -q -b "$BRANCH" "$HISTORY_ROOT/$REPO"
     fi
 done
 mkdir -p "$HISTORY_ROOT/rev-summaries"
