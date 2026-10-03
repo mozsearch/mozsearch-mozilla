@@ -12,8 +12,10 @@ echo "Performing upload::history step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%
 echo 'Uploading "history" archive: firefox-shared-history.tar.lz4'
 pushd $SHARED_ROOT
 if [[ $(date +%A) == "Saturday" ]]; then
-    git -C "$HISTORY_ROOT/syntax" gc
-    git -C "$HISTORY_ROOT/timeline" gc
+    # (With mozsearch-git, the git the tools write the history with; see
+    # mozsearch's nix/mozsearch/git.nix.)
+    mozsearch-git -C "$HISTORY_ROOT/syntax" gc
+    mozsearch-git -C "$HISTORY_ROOT/timeline" gc
 fi
 tar cf - "$(basename "$HISTORY_ROOT")" | lz4 -f - firefox-shared-history.tar.lz4
 # Note that we're using the "aws" command instead of $AWS_ROOT/upload.py for
