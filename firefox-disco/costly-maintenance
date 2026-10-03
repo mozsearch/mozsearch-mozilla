@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# Fully repack firefox-disco's token-centric history ("hyperblame", bug 1517978),
+# which the daily indexing (see update-history.sh) only repacks geometrically,
+# and upload it again (see repack-history.sh).  This is run on a big instance
+# by mozsearch's infrastructure/aws/trigger_costly_maintenance.py (via
+# costly-maintenance.sh and costly-maintenance-run.sh), monthly by a lambda job,
+# or by hand, ex:
+#
+#   ./trigger_costly_maintenance.py https://github.com/mozsearch/mozsearch \
+#     https://github.com/mozsearch/mozsearch-mozilla just-fd.json hyperblame \
+#     dev-history --config-rev firefox-disco
+#
+# The repacked history only replaces the uploaded one, which is copied to
+# backups/ first, if the daily indexing hasn't uploaded another in the
+# meantime (see mozsearch's infrastructure/aws/upload-if-unchanged.py), in
+# which case this fails.  (A daily indexing which downloaded the history before
+# this uploaded it still replaces it with its update of the old one, though.)
+#
+# Options come from the environment (--setenv for the trigger script):
+# - HISTORY_NAME=NAME: Repack the history uploaded as NAME rather than
+#   firefox-shared-history.tar.lz4 (ex: a copy, to try this out).
+#
+# Progress is recorded in the instance's status tag, which mozsearch's
+# infrastructure/aws/reblame-status.py shows.
+
+NAME=${HISTORY_NAME:-firefox-shared-history.tar.lz4}
+
+status() {
+    if [[ -n "${AWS_ROOT:-}" ]]; then
+        $AWS_ROOT/set-status.py "$*"
+    fi
+}
+
+if [[ -e "$HISTORY_ROOT" ]]; then
+    echo "$HISTORY_ROOT already exists, but costly-maintenance downloads the history." > /dev/stderr
+    exit 1
+fi
+
+# The ETag of the history we download, which we get first so that if the
+# daily indexing uploads another while we download it, we don't replace that.
+ETAG=$(aws s3api head-object --bucket searchfox.repositories --key "$NAME" --query ETag --output text)
+status "downloading the history ($NAME)"
+mkdir -p $SHARED_ROOT
+pushd $SHARED_ROOT
+# Stream the archive rather than writing it next to the history, which would
+# need as much space again.
+aws s3 cp "s3://searchfox.repositories/$NAME" - --no-sign-request | lz4 -dc | tar -x
+popd
+
+status "repacking the history ($NAME)"
+$CONFIG_REPO/firefox-disco/repack-history.sh
+
+status "uploading the history ($NAME)"
+aws s3 cp "s3://searchfox.repositories/$NAME" "s3://searchfox.repositories/backups/$NAME" --acl public-read
+pushd $SHARED_ROOT
+tar cf - "$(basename "$HISTORY_ROOT")" | lz4 -c |
+    $MOZSEARCH_PATH/infrastructure/aws/upload-if-unchanged.py searchfox.repositories "$NAME" "$ETAG"
+popd
