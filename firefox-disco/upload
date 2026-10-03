@@ -11,12 +11,10 @@ set -o pipefail # Check all commands in a pipeline
 echo "Performing upload::history step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 echo 'Uploading "history" archive: firefox-shared-history.tar.lz4'
 pushd $SHARED_ROOT
-if [[ $(date +%A) == "Saturday" ]]; then
-    # (With mozsearch-git, the git the tools write the history with; see
-    # mozsearch's nix/mozsearch/git.nix.)
-    mozsearch-git -C "$HISTORY_ROOT/syntax" gc
-    mozsearch-git -C "$HISTORY_ROOT/timeline" gc
-fi
+# No git gc: build-history.py already repacks the history geometrically after
+# each update, and fully repacking it (as git gc does) needs memory for every
+# object in it, ~50 GiB for the full firefox history's timeline, which is left
+# to reblame, on a big instance (or another such job).
 tar cf - "$(basename "$HISTORY_ROOT")" | lz4 -f - firefox-shared-history.tar.lz4
 # Note that we're using the "aws" command instead of $AWS_ROOT/upload.py for
 # parallelism reasons.
