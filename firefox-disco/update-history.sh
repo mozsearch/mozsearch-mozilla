@@ -11,10 +11,10 @@ set -o pipefail # Check all commands in a pipeline
 # - timeline/: git repo built by build-timeline-tree
 # - rev-summaries/: per-revision JSON summaries built by build-timeline-tree
 #
-# The history is derived starting from the revision in history/config.toml
-# because deriving it for all of firefox-main's history (back to 1998) isn't
-# practical yet.  Changing the start revision (or the history attributes of
-# revisions already processed) requires regenerating the history, which
+# The history is derived starting from the revision in history/config.toml, if
+# it has one (it doesn't, so the history covers all of firefox-main's, back to
+# 1998).  Changing the start revision (or the history attributes of revisions
+# already processed) requires regenerating the history, which
 # build-syntax-token-tree will refuse to do incrementally.
 #
 # For testing, the environment variable COMMIT_LIMIT (see mozsearch's
