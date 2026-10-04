@@ -3,6 +3,7 @@
   "config_repo": "$CONFIG_REPO",
   "default_tree": "firefox-disco",
   "instance_type": "m6id.2xlarge",
+  "index_volume_gb": 360,
 
   "trees": {
     "firefox-disco": {
