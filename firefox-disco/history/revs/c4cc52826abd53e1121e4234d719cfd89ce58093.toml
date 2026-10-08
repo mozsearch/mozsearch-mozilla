@@ -1,0 +1,40 @@
+# History attributes for all of firefox-main (from its first revision, "Free
+# the lizard", which every revision on its main line inherits; the histories
+# merged into it, ex: servo's and fenix's, have no .idl files these match);
+# see tools/src/hyperblame/history_config.rs in mozsearch.
+#
+# .idl files are XPIDL by default (tree-sitter-xpidl), but not all of
+# firefox-main's, in its history, are: these are the ones that aren't, found by
+# parsing every .idl file ever added on main with tree-sitter-xpidl.  (Very old
+# XPIDL, and the pre-2001 DOM IDL in dom/public/idl, are close enough to parse
+# as XPIDL, with errors.)
+#
+# Changing these needs the history regenerated: build-syntax-token-tree refuses
+# to build on revisions processed with other attributes.
+
+attributes = """
+# WebIDL: web-platform-tests' interfaces (and their resources), Khronos'
+# WebGL specs, and CLD2's.
+testing/web-platform/**/*.idl searchfox-lang=webidl
+third_party/rust/khronos_api/**/*.idl searchfox-lang=webidl
+browser/components/translation/cld2/*.idl searchfox-lang=webidl
+toolkit/components/translations/cld2/*.idl searchfox-lang=webidl
+
+# Pepper's (PPAPI) IDL, in the old PDF.js/Flash shims.
+browser/extensions/mortar/**/*.idl searchfox-lang=none
+
+# Microsoft MIDL (COM: IAccessible2, MSAA, ActiveX, gyp's tests).
+other-licenses/ia2/**/*.idl searchfox-lang=none
+accessible/interfaces/ia2/**/*.idl searchfox-lang=none
+accessible/interfaces/msaa/**/*.idl searchfox-lang=none
+accessible/interfaces/gecko/**/*.idl searchfox-lang=none
+accessible/ipc/win/**/*.idl searchfox-lang=none
+accessible/public/msaa/**/*.idl searchfox-lang=none
+widget/src/windows/expose/**/*.idl searchfox-lang=none
+widget/windows/winrt/**/*.idl searchfox-lang=none
+embedding/browser/activex/**/*.idl searchfox-lang=none
+webshell/embed/ActiveX/**/*.idl searchfox-lang=none
+js/src/xpconnect/tests/idispatch/**/*.idl searchfox-lang=none
+third_party/python/gyp/**/*.idl searchfox-lang=none
+media/webrtc/trunk/tools/gyp/**/*.idl searchfox-lang=none
+"""
