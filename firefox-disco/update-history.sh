@@ -91,6 +91,7 @@ BLAME_REF="refs/heads/$BRANCH" $MOZSEARCH_PATH/scripts/build-history.py \
 # The commit index maps bugs and Phabricator revisions to the commits which
 # mention them (see mozsearch's tools/src/commit_index.rs).  It's kept (and
 # uploaded) with the history so that updating it only processes new commits,
-# but it covers the whole branch rather than the history's revisions.
+# but it covers the whole branch rather than the history's revisions.  Each
+# branch has its own, in commit-index/$BRANCH, like the history repos' branches.
 echo "Performing setup::build-commit-index step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 build-commit-index "$SHARED_BARE_GIT_ROOT" "$HISTORY_ROOT/commit-index" "refs/heads/$BRANCH"
