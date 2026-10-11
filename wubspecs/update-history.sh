@@ -43,12 +43,15 @@ for REPO in syntax timeline; do
 done
 
 # In chunks of 500 revisions, with the history repos repacked between them
-# (see build-history.py), and with 4 compute threads rather than 15:
-# build-syntax-token-tree keeps 10 revisions in flight per thread, and the
-# HTML Standard's revisions until 2012 each rewrote 3 files of 2-8 MB (its
-# `source`, and the `index` and `complete.html` it generated), whose tokens
-# take ~0.8 GB per revision, so 15 threads took 77 GB.
-COMPUTE_THREADS=${COMPUTE_THREADS:-4} \
+# (see build-history.py), and with 4 compute threads for
+# build-syntax-token-tree rather than 15: it keeps 10 revisions in flight per
+# thread, and the HTML Standard's revisions until 2012 each rewrote 3 files of
+# 2-8 MB (its `source`, and the `index` and `complete.html` it generated),
+# whose tokens take ~0.8 GB per revision, so 15 threads took 77 GB.
+# (build-timeline-tree's threads, which the history's speed is limited by, are
+# as usual: with 4, the first reblame's timeline had its 4 threads busy and 77%
+# of an m8id.8xlarge idle.)
+SYNTAX_COMPUTE_THREADS=${SYNTAX_COMPUTE_THREADS:-4} \
     $MOZSEARCH_PATH/scripts/build-history.py --chunk-size 500 \
     ${HISTORY_STATUS_COMMAND:+--status-command "$HISTORY_STATUS_COMMAND"} \
     "$GIT_ROOT" "$HISTORY_ROOT"

@@ -19,7 +19,7 @@ set -o pipefail # Check all commands in a pipeline
 #   wubspecs-history.tar.lz4, which setup downloads (and the indexing
 #   updates), after copying any existing ones to backups/.  Otherwise they're
 #   uploaded as wubspecs-git-new.tar.lz4 and wubspecs-history-new.tar.lz4.
-# - COMMIT_LIMIT and COMPUTE_THREADS, as for update-history.sh.
+# - COMMIT_LIMIT and SYNTAX_COMPUTE_THREADS, as for update-history.sh.
 #
 # Progress is recorded in the instance's status tag, which mozsearch's
 # infrastructure/aws/reblame-status.py shows.
