@@ -6,6 +6,23 @@
   "index_volume_gb": 360,
 
   "trees": {
+    "wubspecs": {
+      "priority": 900,
+      "on_error": "continue",
+      "cache": "everything",
+      "index_path": "$WORKING/wubspecs",
+      "files_path": "$WORKING/wubspecs/git",
+      "git_path": "$WORKING/wubspecs/git",
+      "history_path": "$WORKING/wubspecs/history",
+      "objdir_path": "$WORKING/wubspecs/objdir",
+      "codesearch_path": "$WORKING/wubspecs/livegrep.idx",
+      "codesearch_port": 8082,
+      "scip_subtrees": {},
+      "group": "Other",
+      "group_order": 0,
+      "label": "Web specs",
+      "help_indexed_langs": []
+    },
     "firefox-disco": {
       "priority": 1000,
       "on_error": "halt",
