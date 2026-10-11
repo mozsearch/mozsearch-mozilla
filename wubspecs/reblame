@@ -5,9 +5,10 @@ set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
 # Build the wubspecs tree's forest and its token-centric history from scratch
-# (see update-history.sh), and upload them if passed --upload.  This is run on
-# a fresh instance by mozsearch's infrastructure/aws/trigger_blame_rebuild.py
-# (via rebuild-blame.sh and reblame-run.sh, which pass --upload), ex:
+# (see update-history.sh), or from the uploaded ones (HISTORY_FROM_ARCHIVES),
+# and upload them if passed --upload.  This is run on a fresh instance by
+# mozsearch's infrastructure/aws/trigger_blame_rebuild.py (via
+# rebuild-blame.sh and reblame-run.sh, which pass --upload), ex:
 #
 #   ./trigger_blame_rebuild.py https://github.com/mozsearch/mozsearch \
 #     https://github.com/mozsearch/mozsearch-mozilla just-wubspecs.json \
@@ -19,6 +20,12 @@ set -o pipefail # Check all commands in a pipeline
 #   wubspecs-history.tar.lz4, which setup downloads (and the indexing
 #   updates), after copying any existing ones to backups/.  Otherwise they're
 #   uploaded as wubspecs-git-new.tar.lz4 and wubspecs-history-new.tar.lz4.
+# - HISTORY_FROM_ARCHIVES=1: Start from the uploaded wubspecs-git.tar.lz4 and
+#   wubspecs-history.tar.lz4 (as setup does), and only build what's new, ex:
+#   after adding specs to specs.toml, whose histories the forest appends.  (So
+#   the forest isn't rebuilt from scratch, which interleaves all of the specs'
+#   histories, and the history isn't rebuilt either, which takes hours for the
+#   HTML Standard's.)
 # - COMMIT_LIMIT and SYNTAX_COMPUTE_THREADS, as for update-history.sh.
 #
 # Progress is recorded in the instance's status tag, which mozsearch's
@@ -44,8 +51,17 @@ status() {
 }
 
 if [[ -e "$GIT_ROOT" || -e "$HISTORY_ROOT" ]]; then
-    echo "$GIT_ROOT or $HISTORY_ROOT already exists, but reblame builds them from scratch." > /dev/stderr
+    echo "$GIT_ROOT or $HISTORY_ROOT already exists, but reblame builds them." > /dev/stderr
     exit 1
+fi
+
+if [[ "${HISTORY_FROM_ARCHIVES:-}" == "1" ]]; then
+    status "downloading the forest and its history"
+    pushd $INDEX_ROOT
+    for ARCHIVE in wubspecs-git.tar.lz4 wubspecs-history.tar.lz4; do
+        aws s3 cp "s3://searchfox.repositories/$ARCHIVE" - --no-sign-request | lz4 -dc | tar -x
+    done
+    popd
 fi
 
 status "generating the forest and its history"
