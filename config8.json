@@ -22,12 +22,14 @@
       "group": "Other",
       "group_order": 0,
       "label": "Web specs",
-      "help_indexed_langs": []
+      "help_indexed_langs": [],
+      "linked_trees": { "SPEC_": "firefox-disco" }
     },
     "firefox-disco": {
       "priority": 1000,
       "on_error": "halt",
       "cache": "everything",
+      "linked_trees": { "SPEC_": "wubspecs" },
       "shared_path": "$WORKING/firefox-shared",
       "index_path": "$WORKING/firefox-disco",
       "files_path": "$WORKING/firefox-disco/git",
