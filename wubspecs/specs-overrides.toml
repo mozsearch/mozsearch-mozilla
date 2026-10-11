@@ -1,0 +1,30 @@
+# Overrides for the wubspecs tree's specs.toml, which mozsearch's
+# scripts/browser-specs-to-toml.py generates from browser-specs' index:
+#
+#   scripts/browser-specs-to-toml.py config/wubspecs/specs-overrides.toml \
+#     config/wubspecs/specs.toml
+
+# The forest's root .gitattributes: specs' HTML-based sources are tokenized as
+# such for history (see tools/src/tree_sitter_support/spec_tokenizer.rs),
+# including the HTML Standard's `source` (and the `index` it generated, which
+# its repository had until 2012), TC39 proposals' `.emu` sources, and old
+# specs' XML and Anolis `.src` files, but for Bikeshed's `.src.html` sources.
+# (Bikeshed's `.bs` files are tokenized as Bikeshed by default.)
+attributes = """
+*.html searchfox-lang=spec-html
+*.htm searchfox-lang=spec-html
+*.xml searchfox-lang=spec-html
+*.src searchfox-lang=spec-html
+*.emu searchfox-lang=spec-html
+*.src.html searchfox-lang=bikeshed
+html/source searchfox-lang=spec-html
+html/index searchfox-lang=spec-html
+"""
+
+# The forest's directories of repositories whose names (lowercased) aren't
+# them, as the forest already has them.
+[directories]
+"https://github.com/w3c/ServiceWorker" = "service-workers"
+
+# Repositories (by URL) and specs (by shortname) to leave out.
+exclude = []
