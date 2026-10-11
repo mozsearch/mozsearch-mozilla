@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# The wubspecs tree: web specs (see specs.toml), as a forest repository of
+# their upstream repositories, with the token-centric history of all of them;
+# see update-history.sh.  reblame builds the forest and the history from
+# scratch and uploads them (wubspecs-git.tar.lz4 and
+# wubspecs-history.tar.lz4), and the daily indexing downloads them, updates
+# them, and uploads them again (see upload).
+
+echo "Performing setup::download-history step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+
+pushd $INDEX_ROOT
+# (Both or neither, since the history records the forest's commits.  They
+# won't exist until reblame's first upload, in which case we build them from
+# scratch, which takes hours.)
+if [ ! -d "$(basename "$GIT_ROOT")" ] && [ ! -d "$(basename "$HISTORY_ROOT")" ]; then
+    if aws s3 cp s3://searchfox.repositories/wubspecs-git.tar.lz4 . --no-sign-request &&
+        aws s3 cp s3://searchfox.repositories/wubspecs-history.tar.lz4 . --no-sign-request; then
+        for ARCHIVE in wubspecs-git.tar.lz4 wubspecs-history.tar.lz4; do
+            lz4 -dc $ARCHIVE | tar -x
+            rm $ARCHIVE
+        done
+    else
+        echo "No wubspecs-git.tar.lz4 and wubspecs-history.tar.lz4 are available; building them from scratch."
+        rm -f wubspecs-git.tar.lz4 wubspecs-history.tar.lz4
+    fi
+fi
+popd
+
+$CONFIG_REPO/$TREE_NAME/update-history.sh

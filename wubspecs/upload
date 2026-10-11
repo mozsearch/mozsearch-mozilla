@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# Upload the forest and its history, as updated by setup (see
+# update-history.sh), for the next indexing.  (No git gc, as for
+# firefox-disco's history: build-history.py repacks the history
+# geometrically, and reblame fully.)
+
+echo "Performing upload::history step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+
+pushd $INDEX_ROOT
+for DIR in "$(basename "$GIT_ROOT")" "$(basename "$HISTORY_ROOT")"; do
+    NAME=wubspecs-$DIR.tar.lz4
+    tar cf - "$DIR" | lz4 -f - $NAME
+    aws s3 cp $NAME s3://searchfox.repositories/$NAME --acl public-read
+    rm $NAME
+done
+popd

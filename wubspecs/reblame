@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# Build the wubspecs tree's forest and its token-centric history from scratch
+# (see update-history.sh), and upload them if passed --upload.  This is run on
+# a fresh instance by mozsearch's infrastructure/aws/trigger_blame_rebuild.py
+# (via rebuild-blame.sh and reblame-run.sh, which pass --upload), ex:
+#
+#   ./trigger_blame_rebuild.py https://github.com/mozsearch/mozsearch \
+#     https://github.com/mozsearch/mozsearch-mozilla just-wubspecs.json \
+#     hyperblame dev-history --config-rev firefox-disco \
+#     --instance-type m8id.8xlarge --setenv HISTORY_IN_PLACE=1
+#
+# Options come from the environment (--setenv for the trigger script):
+# - HISTORY_IN_PLACE=1: Upload them as wubspecs-git.tar.lz4 and
+#   wubspecs-history.tar.lz4, which setup downloads (and the indexing
+#   updates), after copying any existing ones to backups/.  Otherwise they're
+#   uploaded as wubspecs-git-new.tar.lz4 and wubspecs-history-new.tar.lz4.
+# - COMMIT_LIMIT and COMPUTE_THREADS, as for update-history.sh.
+#
+# Progress is recorded in the instance's status tag, which mozsearch's
+# infrastructure/aws/reblame-status.py shows.
+
+UPLOAD=no
+for ARG in "$@"; do
+    case "$ARG" in
+        --upload)
+            UPLOAD=yes
+            ;;
+        *)
+            echo "Unknown argument $ARG" > /dev/stderr
+            exit 1
+            ;;
+    esac
+done
+
+status() {
+    if [[ -n "${AWS_ROOT:-}" ]]; then
+        $AWS_ROOT/set-status.py "$*"
+    fi
+}
+
+if [[ -e "$GIT_ROOT" || -e "$HISTORY_ROOT" ]]; then
+    echo "$GIT_ROOT or $HISTORY_ROOT already exists, but reblame builds them from scratch." > /dev/stderr
+    exit 1
+fi
+
+status "generating the forest and its history"
+HISTORY_STATUS_COMMAND=${AWS_ROOT:+$AWS_ROOT/set-status.py} \
+    $CONFIG_REPO/$TREE_NAME/update-history.sh
+
+if [[ "$UPLOAD" == "yes" ]]; then
+    # Fully repack the history, as ../firefox-disco/repack-history.sh does
+    # (see it for why), so that it's as small as possible to download.
+    status "repacking the history"
+    for REPO in syntax timeline; do
+        du -sh "$HISTORY_ROOT/$REPO/.git/objects"
+        mozsearch-git -C "$HISTORY_ROOT/$REPO" repack -d -l --cruft --cruft-expiration=2.weeks.ago --path-walk
+        du -sh "$HISTORY_ROOT/$REPO/.git/objects"
+    done
+
+    SUFFIX=-new
+    if [[ "${HISTORY_IN_PLACE:-}" == "1" ]]; then
+        SUFFIX=
+    fi
+    pushd $INDEX_ROOT
+    for DIR in "$(basename "$GIT_ROOT")" "$(basename "$HISTORY_ROOT")"; do
+        NAME=wubspecs-$DIR$SUFFIX.tar.lz4
+        if [[ -z "$SUFFIX" ]]; then
+            aws s3 cp "s3://searchfox.repositories/$NAME" "s3://searchfox.repositories/backups/$NAME" --acl public-read || true
+        fi
+        # (Streamed, rather than written next to what it archives; see
+        # ../firefox-disco/reblame.)
+        SIZE=$(du -sb "$DIR" | cut -f1)
+        status "uploading $DIR ($(numfmt --to=iec "$SIZE") before compression) as $NAME"
+        tar cf - "$DIR" | lz4 -c |
+            aws s3 cp - "s3://searchfox.repositories/$NAME" --acl public-read --expected-size "$SIZE"
+    done
+    popd
+fi
