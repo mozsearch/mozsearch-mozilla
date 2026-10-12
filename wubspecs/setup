@@ -32,3 +32,7 @@ fi
 popd
 
 $CONFIG_REPO/$TREE_NAME/update-history.sh
+
+# (And MDN's browser-compat-data, for spec-analyze; see
+# ../shared/fetch-bcd.sh.)
+$CONFIG_REPO/shared/fetch-bcd.sh

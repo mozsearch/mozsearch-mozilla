@@ -21,3 +21,7 @@ $CONFIG_REPO/firefox-shared/checkout-gecko-repos.sh $BUILD_REVISION_TREE "main" 
 $CONFIG_REPO/firefox-shared/fetch-tc-artifacts.sh $BUILD_REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV"
 
 $CONFIG_REPO/firefox-disco/update-history.sh "main"
+
+# (And MDN's browser-compat-data, for spec-analyze; see
+# ../shared/fetch-bcd.sh.)
+$CONFIG_REPO/shared/fetch-bcd.sh
