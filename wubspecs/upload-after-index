@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# What the indexing found which the next history update uses: the anchors this
+# tree's files cite which the specs no longer define (see
+# ../shared/upload-stale-anchors-cited.sh).
+$CONFIG_REPO/shared/upload-stale-anchors-cited.sh

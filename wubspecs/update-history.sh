@@ -18,6 +18,8 @@ set -o pipefail # Check all commands in a pipeline
 #   rev-summaries/, as for firefox-disco (see ../firefox-disco/update-history.sh),
 #   back to each spec's start (the HTML Standard's in 2006), and the commit
 #   index.
+# - The stale anchors' cache, history/stale-anchors.json (see the stale-anchors
+#   step).
 #
 # HISTORY_STATUS_COMMAND can name a command to report progress to (see
 # build-history.py's --status-command), ex: reblame's.  COMMIT_LIMIT (see
@@ -60,3 +62,26 @@ echo "Performing setup::build-commit-index step for $TREE_NAME : $(date +"%Y-%m-
 
 # (Of HEAD, since the tree has no `git_branch`.)
 build-commit-index "$GIT_ROOT" "$HISTORY_ROOT/commit-index"
+
+echo "Performing setup::stale-anchors step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+
+# The anchors which the trees citing the specs (this one, and firefox-disco on
+# config8) cited but the specs no longer define, as of their last indexing (see
+# ../shared/upload-stale-anchors-cited.sh), looked up in the history, in its
+# cache (history/stale-anchors.json, uploaded with it), which spec-analyze
+# marks their citations with; see mozsearch's tools/src/spec_analyze/stale.rs.
+# Only anchors not yet in the cache are looked up (by analyzing old revisions,
+# with Bikeshed for Bikeshed specs), so this is quick after the first time.
+if [ -n "${HISTORY_STATUS_COMMAND:-}" ]; then
+    $HISTORY_STATUS_COMMAND "looking up stale anchors in the history"
+fi
+CITED_DIR=$(mktemp -d)
+CITED=()
+for CITING_TREE in wubspecs firefox-disco; do
+    if aws s3 cp s3://searchfox.repositories/$CITING_TREE-stale-anchors-cited.json \
+        $CITED_DIR/$CITING_TREE.json --no-sign-request; then
+        CITED+=("$CITED_DIR/$CITING_TREE.json")
+    fi
+done
+stale-anchors $CONFIG_REPO/$TREE_NAME/specs.toml "$GIT_ROOT" "$HISTORY_ROOT" ${CITED[@]+"${CITED[@]}"}
+rm -rf "$CITED_DIR"
