@@ -28,3 +28,52 @@ html/index searchfox-lang=spec-html
 
 # Repositories (by URL) and specs (by shortname) to leave out.
 exclude = []
+
+# Outdated URLs which code still cites for specs' anchors (by the specs'
+# names): old hosts' (drafts.fxtf.org's and dev.w3.org/csswg's, which
+# drafts.csswg.org has now, some renamed) and the obsolete specs' they
+# superseded (the W3C's HTML5 drafts', the old webapi drafts'), from
+# Gecko's citations.  Citations by them are of the specs' anchors, but say
+# they're by outdated URLs (see tools/src/spec_analyze/citations.rs).
+[old_urls]
+clipboard-apis = ["https://dev.w3.org/2006/webapi/clipops/"]
+compositing-1 = ["https://dev.w3.org/fxtf/compositing-1/", "https://drafts.fxtf.org/compositing-1/"]
+compositing-2 = ["https://drafts.fxtf.org/compositing/"]
+css-animations-1 = ["https://dev.w3.org/csswg/css3-animations/"]
+css-animations-2 = ["https://dev.w3.org/csswg/css-animations-2/"]
+css-backgrounds-3 = ["https://dev.w3.org/csswg/css-backgrounds/", "https://dev.w3.org/csswg/css3-background/"]
+css-break-3 = ["https://dev.w3.org/csswg/css-break/"]
+css-counter-styles-3 = ["https://dev.w3.org/csswg/css-counter-styles-3/"]
+css-display-3 = ["https://dev.w3.org/csswg/css-display/"]
+css-flexbox-1 = ["https://dev.w3.org/csswg/css-flexbox-1/"]
+css-font-loading-3 = ["https://dev.w3.org/csswg/css-font-loading/"]
+css-grid-2 = ["https://dev.w3.org/csswg/css-grid/"]
+css-images-3 = ["https://dev.w3.org/csswg/css-images-3/", "https://dev.w3.org/csswg/css-images/", "https://dev.w3.org/csswg/css3-images/"]
+css-images-4 = ["https://dev.w3.org/csswg/css-images-4/"]
+css-masking-1 = ["https://drafts.fxtf.org/css-masking-1/", "https://drafts.fxtf.org/css-masking/"]
+css-position-3 = ["https://dev.w3.org/csswg/css-position/"]
+css-ruby-1 = ["https://dev.w3.org/csswg/css-ruby/"]
+css-syntax-3 = ["https://dev.w3.org/csswg/css-syntax/"]
+css-text-3 = ["https://dev.w3.org/csswg/css-text/"]
+css-transforms-1 = ["https://dev.w3.org/csswg/css-transforms/"]
+css-transitions-1 = ["https://dev.w3.org/csswg/css3-transitions/"]
+css-transitions-2 = ["https://dev.w3.org/csswg/css-transitions-2/"]
+css-ui-4 = ["https://dev.w3.org/csswg/css-ui/"]
+css-writing-modes-3 = ["https://dev.w3.org/csswg/css-writing-modes-3/"]
+cssom-1 = ["https://dev.w3.org/csswg/cssom/"]
+cssom-view-1 = ["https://dev.w3.org/csswg/cssom-view/"]
+fileapi = ["https://dev.w3.org/2006/webapi/FileAPI/"]
+filter-effects-1 = ["https://dev.w3.org/fxtf/filters/", "https://drafts.fxtf.org/filter-effects-1/", "https://drafts.fxtf.org/filter-effects/", "https://drafts.fxtf.org/filters/"]
+filter-effects-2 = ["https://drafts.fxtf.org/filter-effects-2/"]
+geometry-1 = ["https://drafts.fxtf.org/geometry/"]
+html = ["https://dev.w3.org/html5/2dcontext/", "https://dev.w3.org/html5/spec/", "https://dev.w3.org/html5/webstorage/"]
+mediacapture-main = ["https://dev.w3.org/2011/webrtc/editor/getusermedia.html"]
+mediaqueries-3 = ["https://dev.w3.org/csswg/mediaqueries-3/"]
+motion-1 = ["https://drafts.fxtf.org/motion-1/", "https://drafts.fxtf.org/motion/"]
+notifications = ["https://dev.w3.org/2006/webapi/WebNotifications/publish/"]
+selectors-3 = ["https://dev.w3.org/csswg/selectors-3/"]
+web-animations-1 = ["https://dev.w3.org/fxtf/web-animations/"]
+webrtc-pc = ["https://dev.w3.org/2011/webrtc/editor/webrtc.html"]
+websockets = ["https://dev.w3.org/html5/websockets/"]
+webvtt = ["https://dev.w3.org/html5/webvtt/"]
+xhr = ["https://dev.w3.org/2006/webapi/XMLHttpRequest-2/"]

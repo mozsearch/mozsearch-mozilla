@@ -314,6 +314,7 @@ url = "https://github.com/w3c/clipboard-apis.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/clipboard-apis/"
 aliases = ["https://www.w3.org/TR/clipboard-apis/"]
+old_urls = ["https://dev.w3.org/2006/webapi/clipops/"]
 
 [[spec]]
 name = "close-watcher"
@@ -449,6 +450,7 @@ format = "bikeshed"
 source = "compositing-1/Overview.bs"
 rendered = "https://drafts.csswg.org/compositing-1/"
 aliases = ["https://www.w3.org/TR/compositing-1/"]
+old_urls = ["https://dev.w3.org/fxtf/compositing-1/", "https://drafts.fxtf.org/compositing-1/"]
 series = "compositing"
 
 [[spec]]
@@ -459,6 +461,7 @@ format = "bikeshed"
 source = "compositing-2/Overview.bs"
 rendered = "https://drafts.csswg.org/compositing-2/"
 aliases = ["https://drafts.csswg.org/compositing/", "https://www.w3.org/TR/compositing/"]
+old_urls = ["https://drafts.fxtf.org/compositing/"]
 
 [[spec]]
 name = "css-2022"
@@ -540,6 +543,7 @@ format = "bikeshed"
 source = "css-animations-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-animations-1/"
 aliases = ["https://drafts.csswg.org/css-animations/", "https://www.w3.org/TR/css-animations-1/", "https://www.w3.org/TR/css-animations/"]
+old_urls = ["https://dev.w3.org/csswg/css3-animations/"]
 
 [[spec]]
 name = "css-animations-2"
@@ -548,6 +552,7 @@ format = "bikeshed"
 source = "css-animations-2/Overview.bs"
 rendered = "https://drafts.csswg.org/css-animations-2/"
 aliases = ["https://www.w3.org/TR/css-animations-2/"]
+old_urls = ["https://dev.w3.org/csswg/css-animations-2/"]
 series = "css-animations"
 
 [[spec]]
@@ -558,6 +563,7 @@ format = "bikeshed"
 source = "css-backgrounds-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-backgrounds-3/"
 aliases = ["https://drafts.csswg.org/css-backgrounds/", "https://www.w3.org/TR/css-backgrounds-3/", "https://www.w3.org/TR/css-backgrounds/"]
+old_urls = ["https://dev.w3.org/csswg/css-backgrounds/", "https://dev.w3.org/csswg/css3-background/"]
 
 [[spec]]
 name = "css-backgrounds-4"
@@ -603,6 +609,7 @@ format = "bikeshed"
 source = "css-break-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-break-3/"
 aliases = ["https://drafts.csswg.org/css-break/", "https://www.w3.org/TR/css-break-3/", "https://www.w3.org/TR/css-break/"]
+old_urls = ["https://dev.w3.org/csswg/css-break/"]
 
 [[spec]]
 name = "css-break-4"
@@ -782,6 +789,7 @@ format = "bikeshed"
 source = "css-counter-styles-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-counter-styles-3/"
 aliases = ["https://drafts.csswg.org/css-counter-styles/", "https://www.w3.org/TR/css-counter-styles-3/", "https://www.w3.org/TR/css-counter-styles/"]
+old_urls = ["https://dev.w3.org/csswg/css-counter-styles-3/"]
 
 [[spec]]
 name = "css-display-3"
@@ -791,6 +799,7 @@ format = "bikeshed"
 source = "css-display-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-display-3/"
 aliases = ["https://drafts.csswg.org/css-display/", "https://www.w3.org/TR/css-display-3/", "https://www.w3.org/TR/css-display/"]
+old_urls = ["https://dev.w3.org/csswg/css-display/"]
 
 [[spec]]
 name = "css-display-4"
@@ -845,6 +854,7 @@ format = "bikeshed"
 source = "css-flexbox-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-flexbox-1/"
 aliases = ["https://drafts.csswg.org/css-flexbox/", "https://www.w3.org/TR/css-flexbox-1/", "https://www.w3.org/TR/css-flexbox/"]
+old_urls = ["https://dev.w3.org/csswg/css-flexbox-1/"]
 
 [[spec]]
 name = "css-flexbox-2"
@@ -862,6 +872,7 @@ format = "bikeshed"
 source = "css-font-loading-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-font-loading-3/"
 aliases = ["https://drafts.csswg.org/css-font-loading/", "https://www.w3.org/TR/css-font-loading-3/", "https://www.w3.org/TR/css-font-loading/"]
+old_urls = ["https://dev.w3.org/csswg/css-font-loading/"]
 
 [[spec]]
 name = "css-fonts-4"
@@ -933,6 +944,7 @@ format = "bikeshed"
 source = "css-grid-2/Overview.bs"
 rendered = "https://drafts.csswg.org/css-grid-2/"
 aliases = ["https://drafts.csswg.org/css-grid/", "https://www.w3.org/TR/css-grid-2/", "https://www.w3.org/TR/css-grid/"]
+old_urls = ["https://dev.w3.org/csswg/css-grid/"]
 
 [[spec]]
 name = "css-grid-3"
@@ -969,6 +981,7 @@ format = "bikeshed"
 source = "css-images-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-images-3/"
 aliases = ["https://drafts.csswg.org/css-images/", "https://www.w3.org/TR/css-images-3/", "https://www.w3.org/TR/css-images/"]
+old_urls = ["https://dev.w3.org/csswg/css-images-3/", "https://dev.w3.org/csswg/css-images/", "https://dev.w3.org/csswg/css3-images/"]
 
 [[spec]]
 name = "css-images-4"
@@ -977,6 +990,7 @@ format = "bikeshed"
 source = "css-images-4/Overview.bs"
 rendered = "https://drafts.csswg.org/css-images-4/"
 aliases = ["https://www.w3.org/TR/css-images-4/"]
+old_urls = ["https://dev.w3.org/csswg/css-images-4/"]
 series = "css-images"
 
 [[spec]]
@@ -1040,6 +1054,7 @@ format = "bikeshed"
 source = "css-masking-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-masking-1/"
 aliases = ["https://drafts.csswg.org/css-masking/", "https://www.w3.org/TR/css-masking-1/", "https://www.w3.org/TR/css-masking/"]
+old_urls = ["https://drafts.fxtf.org/css-masking-1/", "https://drafts.fxtf.org/css-masking/"]
 
 [[spec]]
 name = "css-mixins-1"
@@ -1174,6 +1189,7 @@ format = "bikeshed"
 source = "css-position-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-position-3/"
 aliases = ["https://drafts.csswg.org/css-position/", "https://www.w3.org/TR/css-position-3/", "https://www.w3.org/TR/css-position/"]
+old_urls = ["https://dev.w3.org/csswg/css-position/"]
 
 [[spec]]
 name = "css-position-4"
@@ -1228,6 +1244,7 @@ format = "bikeshed"
 source = "css-ruby-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-ruby-1/"
 aliases = ["https://drafts.csswg.org/css-ruby/", "https://www.w3.org/TR/css-ruby-1/", "https://www.w3.org/TR/css-ruby/"]
+old_urls = ["https://dev.w3.org/csswg/css-ruby/"]
 
 [[spec]]
 name = "css-scroll-anchoring-1"
@@ -1343,6 +1360,7 @@ format = "bikeshed"
 source = "css-syntax-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-syntax-3/"
 aliases = ["https://drafts.csswg.org/css-syntax/", "https://www.w3.org/TR/css-syntax-3/", "https://www.w3.org/TR/css-syntax/"]
+old_urls = ["https://dev.w3.org/csswg/css-syntax/"]
 
 [[spec]]
 name = "css-tables-3"
@@ -1361,6 +1379,7 @@ format = "bikeshed"
 source = "css-text-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-text-3/"
 aliases = ["https://drafts.csswg.org/css-text/", "https://www.w3.org/TR/css-text-3/", "https://www.w3.org/TR/css-text/"]
+old_urls = ["https://dev.w3.org/csswg/css-text/"]
 
 [[spec]]
 name = "css-text-4"
@@ -1405,6 +1424,7 @@ format = "bikeshed"
 source = "css-transforms-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-transforms-1/"
 aliases = ["https://drafts.csswg.org/css-transforms/", "https://www.w3.org/TR/css-transforms-1/", "https://www.w3.org/TR/css-transforms/"]
+old_urls = ["https://dev.w3.org/csswg/css-transforms/"]
 
 [[spec]]
 name = "css-transforms-2"
@@ -1423,6 +1443,7 @@ format = "bikeshed"
 source = "css-transitions-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-transitions-1/"
 aliases = ["https://drafts.csswg.org/css-transitions/", "https://www.w3.org/TR/css-transitions-1/", "https://www.w3.org/TR/css-transitions/"]
+old_urls = ["https://dev.w3.org/csswg/css3-transitions/"]
 
 [[spec]]
 name = "css-transitions-2"
@@ -1431,6 +1452,7 @@ format = "bikeshed"
 source = "css-transitions-2/Overview.bs"
 rendered = "https://drafts.csswg.org/css-transitions-2/"
 aliases = ["https://www.w3.org/TR/css-transitions-2/"]
+old_urls = ["https://dev.w3.org/csswg/css-transitions-2/"]
 series = "css-transitions"
 
 [[spec]]
@@ -1450,6 +1472,7 @@ format = "bikeshed"
 source = "css-ui-4/Overview.bs"
 rendered = "https://drafts.csswg.org/css-ui-4/"
 aliases = ["https://drafts.csswg.org/css-ui/", "https://www.w3.org/TR/css-ui-4/", "https://www.w3.org/TR/css-ui/"]
+old_urls = ["https://dev.w3.org/csswg/css-ui/"]
 
 [[spec]]
 name = "css-values-3"
@@ -1538,6 +1561,7 @@ format = "bikeshed"
 source = "css-writing-modes-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-writing-modes-3/"
 aliases = ["https://www.w3.org/TR/css-writing-modes-3/"]
+old_urls = ["https://dev.w3.org/csswg/css-writing-modes-3/"]
 series = "css-writing-modes"
 
 [[spec]]
@@ -1566,6 +1590,7 @@ format = "bikeshed"
 source = "cssom-1/Overview.bs"
 rendered = "https://drafts.csswg.org/cssom-1/"
 aliases = ["https://drafts.csswg.org/cssom/", "https://www.w3.org/TR/cssom-1/", "https://www.w3.org/TR/cssom/"]
+old_urls = ["https://dev.w3.org/csswg/cssom/"]
 
 [[spec]]
 name = "cssom-view-1"
@@ -1575,6 +1600,7 @@ format = "bikeshed"
 source = "cssom-view-1/Overview.bs"
 rendered = "https://drafts.csswg.org/cssom-view-1/"
 aliases = ["https://drafts.csswg.org/cssom-view/", "https://www.w3.org/TR/cssom-view-1/", "https://www.w3.org/TR/cssom-view/"]
+old_urls = ["https://dev.w3.org/csswg/cssom-view/"]
 
 [[spec]]
 name = "fill-stroke-3"
@@ -1593,6 +1619,7 @@ format = "bikeshed"
 source = "filter-effects-1/Overview.bs"
 rendered = "https://drafts.csswg.org/filter-effects-1/"
 aliases = ["https://drafts.csswg.org/filter-effects/", "https://www.w3.org/TR/filter-effects-1/", "https://www.w3.org/TR/filter-effects/"]
+old_urls = ["https://dev.w3.org/fxtf/filters/", "https://drafts.fxtf.org/filter-effects-1/", "https://drafts.fxtf.org/filter-effects/", "https://drafts.fxtf.org/filters/"]
 
 [[spec]]
 name = "filter-effects-2"
@@ -1600,6 +1627,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "filter-effects-2/Overview.bs"
 rendered = "https://drafts.csswg.org/filter-effects-2/"
+old_urls = ["https://drafts.fxtf.org/filter-effects-2/"]
 series = "filter-effects"
 
 [[spec]]
@@ -1610,6 +1638,7 @@ format = "bikeshed"
 source = "geometry-1/Overview.bs"
 rendered = "https://drafts.csswg.org/geometry-1/"
 aliases = ["https://drafts.csswg.org/geometry/", "https://www.w3.org/TR/geometry-1/", "https://www.w3.org/TR/geometry/"]
+old_urls = ["https://drafts.fxtf.org/geometry/"]
 
 [[spec]]
 name = "mediaqueries-3"
@@ -1618,6 +1647,7 @@ format = "respec"
 source = "mediaqueries-3/Overview.html"
 rendered = "https://drafts.csswg.org/mediaqueries-3/"
 aliases = ["https://www.w3.org/TR/mediaqueries-3/"]
+old_urls = ["https://dev.w3.org/csswg/mediaqueries-3/"]
 series = "mediaqueries"
 
 [[spec]]
@@ -1646,6 +1676,7 @@ format = "bikeshed"
 source = "motion-1/Overview.bs"
 rendered = "https://drafts.csswg.org/motion-1/"
 aliases = ["https://drafts.csswg.org/motion/", "https://www.w3.org/TR/motion-1/", "https://www.w3.org/TR/motion/"]
+old_urls = ["https://drafts.fxtf.org/motion-1/", "https://drafts.fxtf.org/motion/"]
 
 [[spec]]
 name = "pointer-animations-1"
@@ -1681,6 +1712,7 @@ format = "bikeshed"
 source = "selectors-3/Overview.src.html"
 rendered = "https://drafts.csswg.org/selectors-3/"
 aliases = ["https://www.w3.org/TR/selectors-3/"]
+old_urls = ["https://dev.w3.org/csswg/selectors-3/"]
 series = "selectors"
 
 [[spec]]
@@ -1718,6 +1750,7 @@ format = "bikeshed"
 source = "web-animations-1/Overview.bs"
 rendered = "https://drafts.csswg.org/web-animations-1/"
 aliases = ["https://drafts.csswg.org/web-animations/", "https://www.w3.org/TR/web-animations-1/", "https://www.w3.org/TR/web-animations/"]
+old_urls = ["https://dev.w3.org/fxtf/web-animations/"]
 
 [[spec]]
 name = "web-animations-2"
@@ -2168,6 +2201,7 @@ shortname = "FileAPI"
 format = "bikeshed"
 rendered = "https://w3c.github.io/FileAPI/"
 aliases = ["https://www.w3.org/TR/FileAPI/"]
+old_urls = ["https://dev.w3.org/2006/webapi/FileAPI/"]
 
 [[spec]]
 name = "fingerprinting-guidance"
@@ -2270,6 +2304,7 @@ name = "html"
 url = "https://github.com/whatwg/html.git"
 format = "wattsi"
 rendered = "https://html.spec.whatwg.org/"
+old_urls = ["https://dev.w3.org/html5/2dcontext/", "https://dev.w3.org/html5/spec/", "https://dev.w3.org/html5/webstorage/"]
 
 [[spec]]
 name = "html-aria"
@@ -2618,6 +2653,7 @@ format = "respec"
 source = "getusermedia.html"
 rendered = "https://w3c.github.io/mediacapture-main/"
 aliases = ["https://www.w3.org/TR/mediacapture-streams/"]
+old_urls = ["https://dev.w3.org/2011/webrtc/editor/getusermedia.html"]
 
 [[spec]]
 name = "mediacapture-output"
@@ -2807,6 +2843,7 @@ url = "https://github.com/whatwg/notifications.git"
 format = "bikeshed"
 source = "notifications.bs"
 rendered = "https://notifications.spec.whatwg.org/"
+old_urls = ["https://dev.w3.org/2006/webapi/WebNotifications/publish/"]
 
 [[spec]]
 name = "observable"
@@ -4601,6 +4638,7 @@ format = "respec"
 source = "webrtc.html"
 rendered = "https://w3c.github.io/webrtc-pc/"
 aliases = ["https://www.w3.org/TR/webrtc/"]
+old_urls = ["https://dev.w3.org/2011/webrtc/editor/webrtc.html"]
 
 [[spec]]
 name = "webrtc-priority"
@@ -4629,6 +4667,7 @@ name = "websockets"
 url = "https://github.com/whatwg/websockets.git"
 format = "bikeshed"
 rendered = "https://websockets.spec.whatwg.org/"
+old_urls = ["https://dev.w3.org/html5/websockets/"]
 
 [[spec]]
 name = "webtransport"
@@ -4643,6 +4682,7 @@ url = "https://github.com/w3c/webvtt.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/webvtt/"
 aliases = ["https://www.w3.org/TR/webvtt1/", "https://www.w3.org/TR/webvtt/"]
+old_urls = ["https://dev.w3.org/html5/webvtt/"]
 
 [[spec]]
 name = "window-controls-overlay"
@@ -4746,6 +4786,7 @@ url = "https://github.com/whatwg/xhr.git"
 format = "bikeshed"
 source = "xhr.bs"
 rendered = "https://xhr.spec.whatwg.org/"
+old_urls = ["https://dev.w3.org/2006/webapi/XMLHttpRequest-2/"]
 
 [[spec]]
 name = "yaml-ld"
