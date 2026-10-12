@@ -2,7 +2,7 @@
 # scripts/browser-specs-to-toml.py generates from browser-specs' index:
 #
 #   scripts/browser-specs-to-toml.py config/wubspecs/specs-overrides.toml \
-#     config/wubspecs/specs.toml
+#     config/wubspecs/specs.toml --respec
 
 # The forest's root .gitattributes: specs' HTML-based sources are tokenized as
 # such for history (see tools/src/tree_sitter_support/spec_tokenizer.rs),

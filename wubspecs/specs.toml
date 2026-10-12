@@ -26,22 +26,151 @@ html/index searchfox-lang=spec-html
 """
 
 [[spec]]
+name = "aac-registry"
+url = "https://github.com/w3c/aac-registry.git"
+format = "respec"
+rendered = "https://w3c.github.io/aac-registry/"
+aliases = ["https://www.w3.org/TR/aac-registry/"]
+
+[[spec]]
 name = "accelerometer"
 url = "https://github.com/w3c/accelerometer.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/accelerometer/"
+aliases = ["https://www.w3.org/TR/accelerometer/"]
 
 [[spec]]
 name = "ambient-light"
 url = "https://github.com/w3c/ambient-light.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/ambient-light/"
+aliases = ["https://www.w3.org/TR/ambient-light/"]
 
 [[spec]]
 name = "anonymous-iframe"
 url = "https://github.com/WICG/anonymous-iframe.git"
 format = "bikeshed"
 rendered = "https://wicg.github.io/anonymous-iframe/"
+
+[[spec]]
+name = "aom"
+url = "https://github.com/WICG/aom.git"
+format = "respec"
+source = "spec/index.html"
+rendered = "https://wicg.github.io/aom/spec/"
+
+[[spec]]
+name = "aria"
+url = "https://github.com/w3c/aria.git"
+
+[[spec]]
+name = "accname-1.2"
+path = "aria"
+shortname = "accname"
+format = "respec"
+source = "accname/index.html"
+rendered = "https://w3c.github.io/aria/accname/"
+aliases = ["https://www.w3.org/TR/accname-1.2/", "https://www.w3.org/TR/accname/"]
+
+[[spec]]
+name = "core-aam-1.2"
+path = "aria"
+shortname = "core-aam"
+format = "respec"
+source = "core-aam/index.html"
+rendered = "https://w3c.github.io/aria/core-aam/"
+aliases = ["https://www.w3.org/TR/core-aam-1.2/", "https://www.w3.org/TR/core-aam/"]
+
+[[spec]]
+name = "css-aam"
+path = "aria"
+format = "respec"
+source = "css-aam/index.html"
+rendered = "https://w3c.github.io/aria/css-aam/"
+
+[[spec]]
+name = "dpub-aam-1.1"
+path = "aria"
+shortname = "dpub-aam"
+format = "respec"
+source = "dpub-aam/index.html"
+rendered = "https://w3c.github.io/aria/dpub-aam/"
+aliases = ["https://www.w3.org/TR/dpub-aam-1.1/", "https://www.w3.org/TR/dpub-aam/"]
+
+[[spec]]
+name = "dpub-aria-1.1"
+path = "aria"
+shortname = "dpub-aria"
+format = "respec"
+source = "dpub-aria/index.html"
+rendered = "https://w3c.github.io/aria/dpub-aria/"
+aliases = ["https://www.w3.org/TR/dpub-aria-1.1/", "https://www.w3.org/TR/dpub-aria/"]
+
+[[spec]]
+name = "graphics-aam-1.0"
+path = "aria"
+shortname = "graphics-aam"
+format = "respec"
+source = "graphics-aam/index.html"
+rendered = "https://w3c.github.io/aria/graphics-aam/"
+aliases = ["https://www.w3.org/TR/graphics-aam-1.0/", "https://www.w3.org/TR/graphics-aam/"]
+
+[[spec]]
+name = "graphics-aria-1.0"
+path = "aria"
+shortname = "graphics-aria"
+format = "respec"
+source = "graphics-aria/index.html"
+rendered = "https://w3c.github.io/aria/graphics-aria/"
+aliases = ["https://www.w3.org/TR/graphics-aria-1.0/", "https://www.w3.org/TR/graphics-aria/"]
+
+[[spec]]
+name = "html-aam-1.0"
+path = "aria"
+shortname = "html-aam"
+format = "respec"
+source = "html-aam/index.html"
+rendered = "https://w3c.github.io/aria/html-aam/"
+aliases = ["https://www.w3.org/TR/html-aam-1.0/", "https://www.w3.org/TR/html-aam/"]
+
+[[spec]]
+name = "mathml-aam"
+path = "aria"
+format = "respec"
+source = "mathml-aam/index.html"
+rendered = "https://w3c.github.io/aria/mathml-aam/"
+
+[[spec]]
+name = "pdf-aam"
+path = "aria"
+format = "respec"
+source = "pdf-aam/index.html"
+rendered = "https://w3c.github.io/aria/pdf-aam/"
+
+[[spec]]
+name = "svg-aam-1.0"
+path = "aria"
+shortname = "svg-aam"
+format = "respec"
+source = "svg-aam/index.html"
+rendered = "https://w3c.github.io/aria/svg-aam/"
+aliases = ["https://www.w3.org/TR/svg-aam-1.0/", "https://www.w3.org/TR/svg-aam/"]
+
+[[spec]]
+name = "wai-aria-1.2"
+path = "aria"
+shortname = "wai-aria"
+format = "respec"
+rendered = "https://w3c.github.io/aria/"
+aliases = ["https://www.w3.org/TR/wai-aria-1.2/", "https://www.w3.org/TR/wai-aria/"]
+
+[[spec]]
+name = "wai-aria-1.3"
+path = "aria"
+format = "respec"
+rendered = "https://w3c.github.io/aria/"
+aliases = ["https://www.w3.org/TR/wai-aria-1.3/"]
+series = "wai-aria"
 
 [[spec]]
 name = "at-driver"
@@ -55,6 +184,7 @@ url = "https://github.com/w3c/attribution.git"
 format = "bikeshed"
 source = "api.bs"
 rendered = "https://w3c.github.io/attribution/"
+aliases = ["https://www.w3.org/TR/attribution/"]
 
 [[spec]]
 name = "attribution-reporting-api"
@@ -63,10 +193,24 @@ format = "bikeshed"
 rendered = "https://wicg.github.io/attribution-reporting-api/"
 
 [[spec]]
+name = "audio-context-playout-stats"
+url = "https://github.com/WICG/audio-context-playout-stats.git"
+format = "respec"
+rendered = "https://wicg.github.io/audio-context-playout-stats/"
+
+[[spec]]
 name = "audio-session"
 url = "https://github.com/w3c/audio-session.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/audio-session/"
+aliases = ["https://www.w3.org/TR/audio-session/"]
+
+[[spec]]
+name = "audiobooks"
+url = "https://github.com/w3c/audiobooks.git"
+format = "respec"
+rendered = "https://w3c.github.io/audiobooks/"
+aliases = ["https://www.w3.org/TR/audiobooks/"]
 
 [[spec]]
 name = "autofill-event"
@@ -80,6 +224,7 @@ url = "https://github.com/w3c/autoplay.git"
 shortname = "autoplay-detection"
 format = "bikeshed"
 rendered = "https://w3c.github.io/autoplay/"
+aliases = ["https://www.w3.org/TR/autoplay-detection/"]
 
 [[spec]]
 name = "background-fetch"
@@ -95,10 +240,33 @@ source = "spec/index.bs"
 rendered = "https://wicg.github.io/background-sync/spec/"
 
 [[spec]]
+name = "badging"
+url = "https://github.com/w3c/badging.git"
+format = "respec"
+rendered = "https://w3c.github.io/badging/"
+aliases = ["https://www.w3.org/TR/badging/"]
+
+[[spec]]
+name = "baggage"
+url = "https://github.com/w3c/baggage.git"
+format = "respec"
+rendered = "https://w3c.github.io/baggage/"
+aliases = ["https://www.w3.org/TR/baggage/"]
+
+[[spec]]
+name = "battery"
+url = "https://github.com/w3c/battery.git"
+shortname = "battery-status"
+format = "respec"
+rendered = "https://w3c.github.io/battery/"
+aliases = ["https://www.w3.org/TR/battery-status/"]
+
+[[spec]]
 name = "beacon"
 url = "https://github.com/w3c/beacon.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/beacon/"
+aliases = ["https://www.w3.org/TR/beacon/"]
 
 [[spec]]
 name = "bluetooth"
@@ -121,6 +289,20 @@ source = "spec.bs"
 rendered = "https://wicg.github.io/capability-delegation/spec.html"
 
 [[spec]]
+name = "cbor-ld"
+url = "https://github.com/w3c/cbor-ld.git"
+format = "respec"
+rendered = "https://w3c.github.io/cbor-ld/"
+aliases = ["https://www.w3.org/TR/cbor-ld-10/", "https://www.w3.org/TR/cbor-ld/"]
+
+[[spec]]
+name = "cid"
+url = "https://github.com/w3c/cid.git"
+format = "respec"
+rendered = "https://w3c.github.io/cid/"
+aliases = ["https://www.w3.org/TR/cid-1.0/", "https://www.w3.org/TR/cid/"]
+
+[[spec]]
 name = "client-hints-infrastructure"
 url = "https://github.com/WICG/client-hints-infrastructure.git"
 format = "bikeshed"
@@ -131,6 +313,15 @@ name = "clipboard-apis"
 url = "https://github.com/w3c/clipboard-apis.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/clipboard-apis/"
+aliases = ["https://www.w3.org/TR/clipboard-apis/"]
+
+[[spec]]
+name = "close-watcher"
+url = "https://github.com/WICG/close-watcher.git"
+format = "respec"
+source = "spec.html"
+rendered = "https://wicg.github.io/close-watcher/"
+successors = ["html"]
 
 [[spec]]
 name = "compat"
@@ -144,6 +335,13 @@ name = "compression"
 url = "https://github.com/whatwg/compression.git"
 format = "bikeshed"
 rendered = "https://compression.spec.whatwg.org/"
+
+[[spec]]
+name = "compute-pressure"
+url = "https://github.com/w3c/compute-pressure.git"
+format = "respec"
+rendered = "https://w3c.github.io/compute-pressure/"
+aliases = ["https://www.w3.org/TR/compute-pressure/"]
 
 [[spec]]
 name = "connection-allowlists"
@@ -162,12 +360,13 @@ name = "contact-picker"
 url = "https://github.com/w3c/contact-picker.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/contact-picker/"
+aliases = ["https://www.w3.org/TR/contact-picker/"]
 
 [[spec]]
 name = "container-timing"
-url = "https://github.com/WICG/container-timing.git"
+url = "https://github.com/w3c/container-timing.git"
 format = "bikeshed"
-rendered = "https://wicg.github.io/container-timing/"
+rendered = "https://w3c.github.io/container-timing/"
 
 [[spec]]
 name = "content-index"
@@ -175,6 +374,14 @@ url = "https://github.com/WICG/content-index.git"
 format = "bikeshed"
 source = "spec/index.bs"
 rendered = "https://wicg.github.io/content-index/spec/"
+
+[[spec]]
+name = "contenteditable"
+url = "https://github.com/w3c/contentEditable.git"
+shortname = "content-editable"
+format = "respec"
+rendered = "https://w3c.github.io/contentEditable/"
+aliases = ["https://www.w3.org/TR/content-editable/"]
 
 [[spec]]
 name = "cookiestore"
@@ -224,6 +431,7 @@ shortname = "CSS"
 format = "bikeshed"
 source = "css2/Overview.bs"
 rendered = "https://drafts.csswg.org/css2/"
+aliases = ["https://www.w3.org/TR/CSS2/"]
 
 [[spec]]
 name = "animation-triggers-1"
@@ -240,6 +448,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "compositing-1/Overview.bs"
 rendered = "https://drafts.csswg.org/compositing-1/"
+aliases = ["https://www.w3.org/TR/compositing-1/"]
 series = "compositing"
 
 [[spec]]
@@ -249,7 +458,7 @@ shortname = "compositing"
 format = "bikeshed"
 source = "compositing-2/Overview.bs"
 rendered = "https://drafts.csswg.org/compositing-2/"
-aliases = ["https://drafts.csswg.org/compositing/"]
+aliases = ["https://drafts.csswg.org/compositing/", "https://www.w3.org/TR/compositing/"]
 
 [[spec]]
 name = "css-2022"
@@ -257,6 +466,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-2022/Overview.bs"
 rendered = "https://drafts.csswg.org/css-2022/"
+aliases = ["https://www.w3.org/TR/css-2022/"]
 series = "css"
 
 [[spec]]
@@ -265,6 +475,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-2023/Overview.bs"
 rendered = "https://drafts.csswg.org/css-2023/"
+aliases = ["https://www.w3.org/TR/css-2023/"]
 series = "css"
 
 [[spec]]
@@ -273,6 +484,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-2024/Overview.bs"
 rendered = "https://drafts.csswg.org/css-2024/"
+aliases = ["https://www.w3.org/TR/css-2024/"]
 series = "css"
 
 [[spec]]
@@ -281,6 +493,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-2025/Overview.bs"
 rendered = "https://drafts.csswg.org/css-2025/"
+aliases = ["https://www.w3.org/TR/css-2025/"]
 series = "css"
 
 [[spec]]
@@ -290,7 +503,7 @@ shortname = "css"
 format = "bikeshed"
 source = "css-2026/Overview.bs"
 rendered = "https://drafts.csswg.org/css-2026/"
-aliases = ["https://drafts.csswg.org/css/"]
+aliases = ["https://drafts.csswg.org/css/", "https://www.w3.org/TR/css-2026/", "https://www.w3.org/TR/css/"]
 
 [[spec]]
 name = "css-align-3"
@@ -299,7 +512,7 @@ shortname = "css-align"
 format = "bikeshed"
 source = "css-align-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-align-3/"
-aliases = ["https://drafts.csswg.org/css-align/"]
+aliases = ["https://drafts.csswg.org/css-align/", "https://www.w3.org/TR/css-align-3/", "https://www.w3.org/TR/css-align/"]
 
 [[spec]]
 name = "css-anchor-position-1"
@@ -308,7 +521,7 @@ shortname = "css-anchor-position"
 format = "bikeshed"
 source = "css-anchor-position-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-anchor-position-1/"
-aliases = ["https://drafts.csswg.org/css-anchor-position/"]
+aliases = ["https://drafts.csswg.org/css-anchor-position/", "https://www.w3.org/TR/css-anchor-position-1/", "https://www.w3.org/TR/css-anchor-position/"]
 
 [[spec]]
 name = "css-anchor-position-2"
@@ -316,6 +529,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-anchor-position-2/Overview.bs"
 rendered = "https://drafts.csswg.org/css-anchor-position-2/"
+aliases = ["https://www.w3.org/TR/css-anchor-position-2/"]
 series = "css-anchor-position"
 
 [[spec]]
@@ -325,7 +539,7 @@ shortname = "css-animations"
 format = "bikeshed"
 source = "css-animations-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-animations-1/"
-aliases = ["https://drafts.csswg.org/css-animations/"]
+aliases = ["https://drafts.csswg.org/css-animations/", "https://www.w3.org/TR/css-animations-1/", "https://www.w3.org/TR/css-animations/"]
 
 [[spec]]
 name = "css-animations-2"
@@ -333,6 +547,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-animations-2/Overview.bs"
 rendered = "https://drafts.csswg.org/css-animations-2/"
+aliases = ["https://www.w3.org/TR/css-animations-2/"]
 series = "css-animations"
 
 [[spec]]
@@ -342,7 +557,7 @@ shortname = "css-backgrounds"
 format = "bikeshed"
 source = "css-backgrounds-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-backgrounds-3/"
-aliases = ["https://drafts.csswg.org/css-backgrounds/"]
+aliases = ["https://drafts.csswg.org/css-backgrounds/", "https://www.w3.org/TR/css-backgrounds-3/", "https://www.w3.org/TR/css-backgrounds/"]
 
 [[spec]]
 name = "css-backgrounds-4"
@@ -350,6 +565,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-backgrounds-4/Overview.bs"
 rendered = "https://drafts.csswg.org/css-backgrounds-4/"
+aliases = ["https://www.w3.org/TR/css-backgrounds-4/"]
 series = "css-backgrounds"
 
 [[spec]]
@@ -359,7 +575,7 @@ shortname = "css-borders"
 format = "bikeshed"
 source = "css-borders-4/Overview.bs"
 rendered = "https://drafts.csswg.org/css-borders-4/"
-aliases = ["https://drafts.csswg.org/css-borders/"]
+aliases = ["https://drafts.csswg.org/css-borders/", "https://www.w3.org/TR/css-borders-4/", "https://www.w3.org/TR/css-borders/"]
 
 [[spec]]
 name = "css-box-3"
@@ -368,7 +584,7 @@ shortname = "css-box"
 format = "bikeshed"
 source = "css-box-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-box-3/"
-aliases = ["https://drafts.csswg.org/css-box/"]
+aliases = ["https://drafts.csswg.org/css-box/", "https://www.w3.org/TR/css-box-3/", "https://www.w3.org/TR/css-box/"]
 
 [[spec]]
 name = "css-box-4"
@@ -376,6 +592,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-box-4/Overview.bs"
 rendered = "https://drafts.csswg.org/css-box-4/"
+aliases = ["https://www.w3.org/TR/css-box-4/"]
 series = "css-box"
 
 [[spec]]
@@ -385,7 +602,7 @@ shortname = "css-break"
 format = "bikeshed"
 source = "css-break-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-break-3/"
-aliases = ["https://drafts.csswg.org/css-break/"]
+aliases = ["https://drafts.csswg.org/css-break/", "https://www.w3.org/TR/css-break-3/", "https://www.w3.org/TR/css-break/"]
 
 [[spec]]
 name = "css-break-4"
@@ -393,6 +610,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-break-4/Overview.bs"
 rendered = "https://drafts.csswg.org/css-break-4/"
+aliases = ["https://www.w3.org/TR/css-break-4/"]
 series = "css-break"
 
 [[spec]]
@@ -401,6 +619,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-cascade-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-cascade-3/"
+aliases = ["https://www.w3.org/TR/css-cascade-3/"]
 series = "css-cascade"
 
 [[spec]]
@@ -410,7 +629,7 @@ shortname = "css-cascade"
 format = "bikeshed"
 source = "css-cascade-4/Overview.bs"
 rendered = "https://drafts.csswg.org/css-cascade-4/"
-aliases = ["https://drafts.csswg.org/css-cascade/"]
+aliases = ["https://drafts.csswg.org/css-cascade/", "https://www.w3.org/TR/css-cascade-4/", "https://www.w3.org/TR/css-cascade/"]
 
 [[spec]]
 name = "css-cascade-5"
@@ -418,6 +637,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-cascade-5/Overview.bs"
 rendered = "https://drafts.csswg.org/css-cascade-5/"
+aliases = ["https://www.w3.org/TR/css-cascade-5/"]
 series = "css-cascade"
 
 [[spec]]
@@ -426,7 +646,17 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-cascade-6/Overview.bs"
 rendered = "https://drafts.csswg.org/css-cascade-6/"
+aliases = ["https://www.w3.org/TR/css-cascade-6/"]
 series = "css-cascade"
+
+[[spec]]
+name = "css-color-3"
+path = "csswg-drafts"
+format = "respec"
+source = "css-color-3/Overview.html"
+rendered = "https://drafts.csswg.org/css-color-3/"
+aliases = ["https://www.w3.org/TR/css-color-3/"]
+series = "css-color"
 
 [[spec]]
 name = "css-color-4"
@@ -435,7 +665,7 @@ shortname = "css-color"
 format = "bikeshed"
 source = "css-color-4/Overview.bs"
 rendered = "https://drafts.csswg.org/css-color-4/"
-aliases = ["https://drafts.csswg.org/css-color/"]
+aliases = ["https://drafts.csswg.org/css-color/", "https://www.w3.org/TR/css-color-4/", "https://www.w3.org/TR/css-color/"]
 
 [[spec]]
 name = "css-color-5"
@@ -443,6 +673,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-color-5/Overview.bs"
 rendered = "https://drafts.csswg.org/css-color-5/"
+aliases = ["https://www.w3.org/TR/css-color-5/"]
 series = "css-color"
 
 [[spec]]
@@ -460,7 +691,7 @@ shortname = "css-color-adjust"
 format = "bikeshed"
 source = "css-color-adjust-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-color-adjust-1/"
-aliases = ["https://drafts.csswg.org/css-color-adjust/"]
+aliases = ["https://drafts.csswg.org/css-color-adjust/", "https://www.w3.org/TR/css-color-adjust-1/", "https://www.w3.org/TR/css-color-adjust/"]
 
 [[spec]]
 name = "css-color-hdr-1"
@@ -469,7 +700,7 @@ shortname = "css-color-hdr"
 format = "bikeshed"
 source = "css-color-hdr-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-color-hdr-1/"
-aliases = ["https://drafts.csswg.org/css-color-hdr/"]
+aliases = ["https://drafts.csswg.org/css-color-hdr/", "https://www.w3.org/TR/css-color-hdr-1/", "https://www.w3.org/TR/css-color-hdr/"]
 
 [[spec]]
 name = "css-conditional-3"
@@ -478,7 +709,7 @@ shortname = "css-conditional"
 format = "bikeshed"
 source = "css-conditional-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-conditional-3/"
-aliases = ["https://drafts.csswg.org/css-conditional/"]
+aliases = ["https://drafts.csswg.org/css-conditional/", "https://www.w3.org/TR/css-conditional-3/", "https://www.w3.org/TR/css-conditional/"]
 
 [[spec]]
 name = "css-conditional-4"
@@ -486,6 +717,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-conditional-4/Overview.bs"
 rendered = "https://drafts.csswg.org/css-conditional-4/"
+aliases = ["https://www.w3.org/TR/css-conditional-4/"]
 series = "css-conditional"
 
 [[spec]]
@@ -494,6 +726,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-conditional-5/Overview.bs"
 rendered = "https://drafts.csswg.org/css-conditional-5/"
+aliases = ["https://www.w3.org/TR/css-conditional-5/"]
 series = "css-conditional"
 
 [[spec]]
@@ -511,6 +744,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-contain-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-contain-1/"
+aliases = ["https://www.w3.org/TR/css-contain-1/"]
 series = "css-contain"
 
 [[spec]]
@@ -520,7 +754,7 @@ shortname = "css-contain"
 format = "bikeshed"
 source = "css-contain-2/Overview.bs"
 rendered = "https://drafts.csswg.org/css-contain-2/"
-aliases = ["https://drafts.csswg.org/css-contain/"]
+aliases = ["https://drafts.csswg.org/css-contain/", "https://www.w3.org/TR/css-contain-2/", "https://www.w3.org/TR/css-contain/"]
 
 [[spec]]
 name = "css-contain-3"
@@ -528,6 +762,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-contain-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-contain-3/"
+aliases = ["https://www.w3.org/TR/css-contain-3/"]
 series = "css-contain"
 
 [[spec]]
@@ -537,7 +772,7 @@ shortname = "css-content"
 format = "bikeshed"
 source = "css-content-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-content-3/"
-aliases = ["https://drafts.csswg.org/css-content/"]
+aliases = ["https://drafts.csswg.org/css-content/", "https://www.w3.org/TR/css-content-3/", "https://www.w3.org/TR/css-content/"]
 
 [[spec]]
 name = "css-counter-styles-3"
@@ -546,7 +781,7 @@ shortname = "css-counter-styles"
 format = "bikeshed"
 source = "css-counter-styles-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-counter-styles-3/"
-aliases = ["https://drafts.csswg.org/css-counter-styles/"]
+aliases = ["https://drafts.csswg.org/css-counter-styles/", "https://www.w3.org/TR/css-counter-styles-3/", "https://www.w3.org/TR/css-counter-styles/"]
 
 [[spec]]
 name = "css-display-3"
@@ -555,7 +790,7 @@ shortname = "css-display"
 format = "bikeshed"
 source = "css-display-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-display-3/"
-aliases = ["https://drafts.csswg.org/css-display/"]
+aliases = ["https://drafts.csswg.org/css-display/", "https://www.w3.org/TR/css-display-3/", "https://www.w3.org/TR/css-display/"]
 
 [[spec]]
 name = "css-display-4"
@@ -563,6 +798,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-display-4/Overview.bs"
 rendered = "https://drafts.csswg.org/css-display-4/"
+aliases = ["https://www.w3.org/TR/css-display-4/"]
 series = "css-display"
 
 [[spec]]
@@ -572,7 +808,7 @@ shortname = "css-easing"
 format = "bikeshed"
 source = "css-easing-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-easing-1/"
-aliases = ["https://drafts.csswg.org/css-easing/"]
+aliases = ["https://drafts.csswg.org/css-easing/", "https://www.w3.org/TR/css-easing-1/", "https://www.w3.org/TR/css-easing/"]
 
 [[spec]]
 name = "css-easing-2"
@@ -580,6 +816,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-easing-2/Overview.bs"
 rendered = "https://drafts.csswg.org/css-easing-2/"
+aliases = ["https://www.w3.org/TR/css-easing-2/"]
 series = "css-easing"
 
 [[spec]]
@@ -589,7 +826,7 @@ shortname = "css-env"
 format = "bikeshed"
 source = "css-env-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-env-1/"
-aliases = ["https://drafts.csswg.org/css-env/"]
+aliases = ["https://drafts.csswg.org/css-env/", "https://www.w3.org/TR/css-env-1/", "https://www.w3.org/TR/css-env/"]
 
 [[spec]]
 name = "css-extensions-1"
@@ -607,7 +844,7 @@ shortname = "css-flexbox"
 format = "bikeshed"
 source = "css-flexbox-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-flexbox-1/"
-aliases = ["https://drafts.csswg.org/css-flexbox/"]
+aliases = ["https://drafts.csswg.org/css-flexbox/", "https://www.w3.org/TR/css-flexbox-1/", "https://www.w3.org/TR/css-flexbox/"]
 
 [[spec]]
 name = "css-flexbox-2"
@@ -624,7 +861,7 @@ shortname = "css-font-loading"
 format = "bikeshed"
 source = "css-font-loading-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-font-loading-3/"
-aliases = ["https://drafts.csswg.org/css-font-loading/"]
+aliases = ["https://drafts.csswg.org/css-font-loading/", "https://www.w3.org/TR/css-font-loading-3/", "https://www.w3.org/TR/css-font-loading/"]
 
 [[spec]]
 name = "css-fonts-4"
@@ -633,7 +870,7 @@ shortname = "css-fonts"
 format = "bikeshed"
 source = "css-fonts-4/Overview.bs"
 rendered = "https://drafts.csswg.org/css-fonts-4/"
-aliases = ["https://drafts.csswg.org/css-fonts/"]
+aliases = ["https://drafts.csswg.org/css-fonts/", "https://www.w3.org/TR/css-fonts-4/", "https://www.w3.org/TR/css-fonts/"]
 
 [[spec]]
 name = "css-fonts-5"
@@ -641,6 +878,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-fonts-5/Overview.bs"
 rendered = "https://drafts.csswg.org/css-fonts-5/"
+aliases = ["https://www.w3.org/TR/css-fonts-5/"]
 series = "css-fonts"
 
 [[spec]]
@@ -650,7 +888,7 @@ shortname = "css-forms"
 format = "bikeshed"
 source = "css-forms-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-forms-1/"
-aliases = ["https://drafts.csswg.org/css-forms/"]
+aliases = ["https://drafts.csswg.org/css-forms/", "https://www.w3.org/TR/css-forms-1/", "https://www.w3.org/TR/css-forms/"]
 
 [[spec]]
 name = "css-gaps-1"
@@ -659,7 +897,7 @@ shortname = "css-gaps"
 format = "bikeshed"
 source = "css-gaps-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-gaps-1/"
-aliases = ["https://drafts.csswg.org/css-gaps/"]
+aliases = ["https://drafts.csswg.org/css-gaps/", "https://www.w3.org/TR/css-gaps-1/", "https://www.w3.org/TR/css-gaps/"]
 
 [[spec]]
 name = "css-gcpm-3"
@@ -668,7 +906,7 @@ shortname = "css-gcpm"
 format = "bikeshed"
 source = "css-gcpm-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-gcpm-3/"
-aliases = ["https://drafts.csswg.org/css-gcpm/"]
+aliases = ["https://drafts.csswg.org/css-gcpm/", "https://www.w3.org/TR/css-gcpm-3/", "https://www.w3.org/TR/css-gcpm/"]
 
 [[spec]]
 name = "css-gcpm-4"
@@ -684,6 +922,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-grid-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-grid-1/"
+aliases = ["https://www.w3.org/TR/css-grid-1/"]
 series = "css-grid"
 
 [[spec]]
@@ -693,7 +932,7 @@ shortname = "css-grid"
 format = "bikeshed"
 source = "css-grid-2/Overview.bs"
 rendered = "https://drafts.csswg.org/css-grid-2/"
-aliases = ["https://drafts.csswg.org/css-grid/"]
+aliases = ["https://drafts.csswg.org/css-grid/", "https://www.w3.org/TR/css-grid-2/", "https://www.w3.org/TR/css-grid/"]
 
 [[spec]]
 name = "css-grid-3"
@@ -701,6 +940,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-grid-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-grid-3/"
+aliases = ["https://www.w3.org/TR/css-grid-3/"]
 series = "css-grid"
 
 [[spec]]
@@ -710,7 +950,7 @@ shortname = "css-highlight-api"
 format = "bikeshed"
 source = "css-highlight-api-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-highlight-api-1/"
-aliases = ["https://drafts.csswg.org/css-highlight-api/"]
+aliases = ["https://drafts.csswg.org/css-highlight-api/", "https://www.w3.org/TR/css-highlight-api-1/", "https://www.w3.org/TR/css-highlight-api/"]
 
 [[spec]]
 name = "css-image-animation-1"
@@ -719,7 +959,7 @@ shortname = "css-image-animation"
 format = "bikeshed"
 source = "css-image-animation-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-image-animation-1/"
-aliases = ["https://drafts.csswg.org/css-image-animation/"]
+aliases = ["https://drafts.csswg.org/css-image-animation/", "https://www.w3.org/TR/css-image-animation-1/", "https://www.w3.org/TR/css-image-animation/"]
 
 [[spec]]
 name = "css-images-3"
@@ -728,7 +968,7 @@ shortname = "css-images"
 format = "bikeshed"
 source = "css-images-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-images-3/"
-aliases = ["https://drafts.csswg.org/css-images/"]
+aliases = ["https://drafts.csswg.org/css-images/", "https://www.w3.org/TR/css-images-3/", "https://www.w3.org/TR/css-images/"]
 
 [[spec]]
 name = "css-images-4"
@@ -736,6 +976,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-images-4/Overview.bs"
 rendered = "https://drafts.csswg.org/css-images-4/"
+aliases = ["https://www.w3.org/TR/css-images-4/"]
 series = "css-images"
 
 [[spec]]
@@ -753,7 +994,7 @@ shortname = "css-inline"
 format = "bikeshed"
 source = "css-inline-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-inline-3/"
-aliases = ["https://drafts.csswg.org/css-inline/"]
+aliases = ["https://drafts.csswg.org/css-inline/", "https://www.w3.org/TR/css-inline-3/", "https://www.w3.org/TR/css-inline/"]
 
 [[spec]]
 name = "css-line-grid-1"
@@ -762,7 +1003,7 @@ shortname = "css-line-grid"
 format = "bikeshed"
 source = "css-line-grid-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-line-grid-1/"
-aliases = ["https://drafts.csswg.org/css-line-grid/"]
+aliases = ["https://drafts.csswg.org/css-line-grid/", "https://www.w3.org/TR/css-line-grid-1/", "https://www.w3.org/TR/css-line-grid/"]
 
 [[spec]]
 name = "css-link-params-1"
@@ -771,7 +1012,7 @@ shortname = "css-link-params"
 format = "bikeshed"
 source = "css-link-params-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-link-params-1/"
-aliases = ["https://drafts.csswg.org/css-link-params/"]
+aliases = ["https://drafts.csswg.org/css-link-params/", "https://www.w3.org/TR/css-link-params-1/", "https://www.w3.org/TR/css-link-params/"]
 
 [[spec]]
 name = "css-lists-3"
@@ -780,7 +1021,7 @@ shortname = "css-lists"
 format = "bikeshed"
 source = "css-lists-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-lists-3/"
-aliases = ["https://drafts.csswg.org/css-lists/"]
+aliases = ["https://drafts.csswg.org/css-lists/", "https://www.w3.org/TR/css-lists-3/", "https://www.w3.org/TR/css-lists/"]
 
 [[spec]]
 name = "css-logical-1"
@@ -789,7 +1030,7 @@ shortname = "css-logical"
 format = "bikeshed"
 source = "css-logical-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-logical-1/"
-aliases = ["https://drafts.csswg.org/css-logical/"]
+aliases = ["https://drafts.csswg.org/css-logical/", "https://www.w3.org/TR/css-logical-1/", "https://www.w3.org/TR/css-logical/"]
 
 [[spec]]
 name = "css-masking-1"
@@ -798,7 +1039,7 @@ shortname = "css-masking"
 format = "bikeshed"
 source = "css-masking-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-masking-1/"
-aliases = ["https://drafts.csswg.org/css-masking/"]
+aliases = ["https://drafts.csswg.org/css-masking/", "https://www.w3.org/TR/css-masking-1/", "https://www.w3.org/TR/css-masking/"]
 
 [[spec]]
 name = "css-mixins-1"
@@ -807,7 +1048,7 @@ shortname = "css-mixins"
 format = "bikeshed"
 source = "css-mixins-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-mixins-1/"
-aliases = ["https://drafts.csswg.org/css-mixins/"]
+aliases = ["https://drafts.csswg.org/css-mixins/", "https://www.w3.org/TR/css-mixins-1/", "https://www.w3.org/TR/css-mixins/"]
 
 [[spec]]
 name = "css-multicol-1"
@@ -816,7 +1057,7 @@ shortname = "css-multicol"
 format = "bikeshed"
 source = "css-multicol-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-multicol-1/"
-aliases = ["https://drafts.csswg.org/css-multicol/"]
+aliases = ["https://drafts.csswg.org/css-multicol/", "https://www.w3.org/TR/css-multicol-1/", "https://www.w3.org/TR/css-multicol/"]
 
 [[spec]]
 name = "css-multicol-2"
@@ -824,6 +1065,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-multicol-2/Overview.bs"
 rendered = "https://drafts.csswg.org/css-multicol-2/"
+aliases = ["https://www.w3.org/TR/css-multicol-2/"]
 series = "css-multicol"
 
 [[spec]]
@@ -833,7 +1075,7 @@ shortname = "css-namespaces"
 format = "bikeshed"
 source = "css-namespaces-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-namespaces-3/"
-aliases = ["https://drafts.csswg.org/css-namespaces/"]
+aliases = ["https://drafts.csswg.org/css-namespaces/", "https://www.w3.org/TR/css-namespaces-3/", "https://www.w3.org/TR/css-namespaces/"]
 
 [[spec]]
 name = "css-nav-1"
@@ -842,6 +1084,7 @@ shortname = "css-nav"
 format = "bikeshed"
 source = "css-spatial-nav-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-spatial-nav-1/"
+aliases = ["https://www.w3.org/TR/css-nav-1/", "https://www.w3.org/TR/css-nav/"]
 
 [[spec]]
 name = "css-navigation-1"
@@ -859,7 +1102,7 @@ shortname = "css-nesting"
 format = "bikeshed"
 source = "css-nesting-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-nesting-1/"
-aliases = ["https://drafts.csswg.org/css-nesting/"]
+aliases = ["https://drafts.csswg.org/css-nesting/", "https://www.w3.org/TR/css-nesting-1/", "https://www.w3.org/TR/css-nesting/"]
 
 [[spec]]
 name = "css-overflow-3"
@@ -868,7 +1111,7 @@ shortname = "css-overflow"
 format = "bikeshed"
 source = "css-overflow-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-overflow-3/"
-aliases = ["https://drafts.csswg.org/css-overflow/"]
+aliases = ["https://drafts.csswg.org/css-overflow/", "https://www.w3.org/TR/css-overflow-3/", "https://www.w3.org/TR/css-overflow/"]
 
 [[spec]]
 name = "css-overflow-4"
@@ -876,6 +1119,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-overflow-4/Overview.bs"
 rendered = "https://drafts.csswg.org/css-overflow-4/"
+aliases = ["https://www.w3.org/TR/css-overflow-4/"]
 series = "css-overflow"
 
 [[spec]]
@@ -884,6 +1128,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-overflow-5/Overview.bs"
 rendered = "https://drafts.csswg.org/css-overflow-5/"
+aliases = ["https://www.w3.org/TR/css-overflow-5/"]
 series = "css-overflow"
 
 [[spec]]
@@ -893,7 +1138,7 @@ shortname = "css-overscroll"
 format = "bikeshed"
 source = "css-overscroll-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-overscroll-1/"
-aliases = ["https://drafts.csswg.org/css-overscroll/"]
+aliases = ["https://drafts.csswg.org/css-overscroll/", "https://www.w3.org/TR/css-overscroll-1/", "https://www.w3.org/TR/css-overscroll/"]
 
 [[spec]]
 name = "css-page-3"
@@ -902,7 +1147,7 @@ shortname = "css-page"
 format = "bikeshed"
 source = "css-page-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-page-3/"
-aliases = ["https://drafts.csswg.org/css-page/"]
+aliases = ["https://drafts.csswg.org/css-page/", "https://www.w3.org/TR/css-page-3/", "https://www.w3.org/TR/css-page/"]
 
 [[spec]]
 name = "css-page-4"
@@ -919,7 +1164,7 @@ shortname = "css-page-floats"
 format = "bikeshed"
 source = "css-page-floats-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-page-floats-3/"
-aliases = ["https://drafts.csswg.org/css-page-floats/"]
+aliases = ["https://drafts.csswg.org/css-page-floats/", "https://www.w3.org/TR/css-page-floats-3/", "https://www.w3.org/TR/css-page-floats/"]
 
 [[spec]]
 name = "css-position-3"
@@ -928,7 +1173,7 @@ shortname = "css-position"
 format = "bikeshed"
 source = "css-position-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-position-3/"
-aliases = ["https://drafts.csswg.org/css-position/"]
+aliases = ["https://drafts.csswg.org/css-position/", "https://www.w3.org/TR/css-position-3/", "https://www.w3.org/TR/css-position/"]
 
 [[spec]]
 name = "css-position-4"
@@ -936,6 +1181,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-position-4/Overview.bs"
 rendered = "https://drafts.csswg.org/css-position-4/"
+aliases = ["https://www.w3.org/TR/css-position-4/"]
 series = "css-position"
 
 [[spec]]
@@ -945,7 +1191,7 @@ shortname = "css-pseudo"
 format = "bikeshed"
 source = "css-pseudo-4/Overview.bs"
 rendered = "https://drafts.csswg.org/css-pseudo-4/"
-aliases = ["https://drafts.csswg.org/css-pseudo/"]
+aliases = ["https://drafts.csswg.org/css-pseudo/", "https://www.w3.org/TR/css-pseudo-4/", "https://www.w3.org/TR/css-pseudo/"]
 
 [[spec]]
 name = "css-regions-1"
@@ -954,7 +1200,7 @@ shortname = "css-regions"
 format = "bikeshed"
 source = "css-regions-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-regions-1/"
-aliases = ["https://drafts.csswg.org/css-regions/"]
+aliases = ["https://drafts.csswg.org/css-regions/", "https://www.w3.org/TR/css-regions-1/", "https://www.w3.org/TR/css-regions/"]
 
 [[spec]]
 name = "css-rhythm-1"
@@ -963,7 +1209,7 @@ shortname = "css-rhythm"
 format = "bikeshed"
 source = "css-rhythm-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-rhythm-1/"
-aliases = ["https://drafts.csswg.org/css-rhythm/"]
+aliases = ["https://drafts.csswg.org/css-rhythm/", "https://www.w3.org/TR/css-rhythm-1/", "https://www.w3.org/TR/css-rhythm/"]
 
 [[spec]]
 name = "css-round-display-1"
@@ -972,7 +1218,7 @@ shortname = "css-round-display"
 format = "bikeshed"
 source = "css-round-display-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-round-display-1/"
-aliases = ["https://drafts.csswg.org/css-round-display/"]
+aliases = ["https://drafts.csswg.org/css-round-display/", "https://www.w3.org/TR/css-round-display-1/", "https://www.w3.org/TR/css-round-display/"]
 
 [[spec]]
 name = "css-ruby-1"
@@ -981,7 +1227,7 @@ shortname = "css-ruby"
 format = "bikeshed"
 source = "css-ruby-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-ruby-1/"
-aliases = ["https://drafts.csswg.org/css-ruby/"]
+aliases = ["https://drafts.csswg.org/css-ruby/", "https://www.w3.org/TR/css-ruby-1/", "https://www.w3.org/TR/css-ruby/"]
 
 [[spec]]
 name = "css-scroll-anchoring-1"
@@ -990,7 +1236,7 @@ shortname = "css-scroll-anchoring"
 format = "bikeshed"
 source = "css-scroll-anchoring-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-scroll-anchoring-1/"
-aliases = ["https://drafts.csswg.org/css-scroll-anchoring/"]
+aliases = ["https://drafts.csswg.org/css-scroll-anchoring/", "https://www.w3.org/TR/css-scroll-anchoring-1/", "https://www.w3.org/TR/css-scroll-anchoring/"]
 
 [[spec]]
 name = "css-scroll-snap-1"
@@ -999,7 +1245,7 @@ shortname = "css-scroll-snap"
 format = "bikeshed"
 source = "css-scroll-snap-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-scroll-snap-1/"
-aliases = ["https://drafts.csswg.org/css-scroll-snap/"]
+aliases = ["https://drafts.csswg.org/css-scroll-snap/", "https://www.w3.org/TR/css-scroll-snap-1/", "https://www.w3.org/TR/css-scroll-snap/"]
 
 [[spec]]
 name = "css-scroll-snap-2"
@@ -1007,6 +1253,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-scroll-snap-2/Overview.bs"
 rendered = "https://drafts.csswg.org/css-scroll-snap-2/"
+aliases = ["https://www.w3.org/TR/css-scroll-snap-2/"]
 series = "css-scroll-snap"
 
 [[spec]]
@@ -1016,7 +1263,7 @@ shortname = "css-scrollbars"
 format = "bikeshed"
 source = "css-scrollbars-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-scrollbars-1/"
-aliases = ["https://drafts.csswg.org/css-scrollbars/"]
+aliases = ["https://drafts.csswg.org/css-scrollbars/", "https://www.w3.org/TR/css-scrollbars-1/", "https://www.w3.org/TR/css-scrollbars/"]
 
 [[spec]]
 name = "css-shadow-1"
@@ -1034,7 +1281,7 @@ shortname = "css-shapes"
 format = "bikeshed"
 source = "css-shapes-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-shapes-1/"
-aliases = ["https://drafts.csswg.org/css-shapes/"]
+aliases = ["https://drafts.csswg.org/css-shapes/", "https://www.w3.org/TR/css-shapes-1/", "https://www.w3.org/TR/css-shapes/"]
 
 [[spec]]
 name = "css-shapes-2"
@@ -1060,7 +1307,7 @@ shortname = "css-sizing"
 format = "bikeshed"
 source = "css-sizing-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-sizing-3/"
-aliases = ["https://drafts.csswg.org/css-sizing/"]
+aliases = ["https://drafts.csswg.org/css-sizing/", "https://www.w3.org/TR/css-sizing-3/", "https://www.w3.org/TR/css-sizing/"]
 
 [[spec]]
 name = "css-sizing-4"
@@ -1068,6 +1315,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-sizing-4/Overview.bs"
 rendered = "https://drafts.csswg.org/css-sizing-4/"
+aliases = ["https://www.w3.org/TR/css-sizing-4/"]
 series = "css-sizing"
 
 [[spec]]
@@ -1077,7 +1325,7 @@ shortname = "css-speech"
 format = "bikeshed"
 source = "css-speech-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-speech-1/"
-aliases = ["https://drafts.csswg.org/css-speech/"]
+aliases = ["https://drafts.csswg.org/css-speech/", "https://www.w3.org/TR/css-speech-1/", "https://www.w3.org/TR/css-speech/"]
 
 [[spec]]
 name = "css-style-attr"
@@ -1085,6 +1333,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-style-attr-1/Overview.src.html"
 rendered = "https://drafts.csswg.org/css-style-attr/"
+aliases = ["https://www.w3.org/TR/css-style-attr/"]
 
 [[spec]]
 name = "css-syntax-3"
@@ -1093,7 +1342,7 @@ shortname = "css-syntax"
 format = "bikeshed"
 source = "css-syntax-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-syntax-3/"
-aliases = ["https://drafts.csswg.org/css-syntax/"]
+aliases = ["https://drafts.csswg.org/css-syntax/", "https://www.w3.org/TR/css-syntax-3/", "https://www.w3.org/TR/css-syntax/"]
 
 [[spec]]
 name = "css-tables-3"
@@ -1102,7 +1351,7 @@ shortname = "css-tables"
 format = "bikeshed"
 source = "css-tables-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-tables-3/"
-aliases = ["https://drafts.csswg.org/css-tables/"]
+aliases = ["https://drafts.csswg.org/css-tables/", "https://www.w3.org/TR/css-tables-3/", "https://www.w3.org/TR/css-tables/"]
 
 [[spec]]
 name = "css-text-3"
@@ -1111,7 +1360,7 @@ shortname = "css-text"
 format = "bikeshed"
 source = "css-text-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-text-3/"
-aliases = ["https://drafts.csswg.org/css-text/"]
+aliases = ["https://drafts.csswg.org/css-text/", "https://www.w3.org/TR/css-text-3/", "https://www.w3.org/TR/css-text/"]
 
 [[spec]]
 name = "css-text-4"
@@ -1119,6 +1368,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-text-4/Overview.bs"
 rendered = "https://drafts.csswg.org/css-text-4/"
+aliases = ["https://www.w3.org/TR/css-text-4/"]
 series = "css-text"
 
 [[spec]]
@@ -1136,7 +1386,7 @@ shortname = "css-text-decor"
 format = "bikeshed"
 source = "css-text-decor-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-text-decor-3/"
-aliases = ["https://drafts.csswg.org/css-text-decor/"]
+aliases = ["https://drafts.csswg.org/css-text-decor/", "https://www.w3.org/TR/css-text-decor-3/", "https://www.w3.org/TR/css-text-decor/"]
 
 [[spec]]
 name = "css-text-decor-4"
@@ -1144,6 +1394,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-text-decor-4/Overview.bs"
 rendered = "https://drafts.csswg.org/css-text-decor-4/"
+aliases = ["https://www.w3.org/TR/css-text-decor-4/"]
 series = "css-text-decor"
 
 [[spec]]
@@ -1153,7 +1404,7 @@ shortname = "css-transforms"
 format = "bikeshed"
 source = "css-transforms-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-transforms-1/"
-aliases = ["https://drafts.csswg.org/css-transforms/"]
+aliases = ["https://drafts.csswg.org/css-transforms/", "https://www.w3.org/TR/css-transforms-1/", "https://www.w3.org/TR/css-transforms/"]
 
 [[spec]]
 name = "css-transforms-2"
@@ -1161,6 +1412,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-transforms-2/Overview.bs"
 rendered = "https://drafts.csswg.org/css-transforms-2/"
+aliases = ["https://www.w3.org/TR/css-transforms-2/"]
 series = "css-transforms"
 
 [[spec]]
@@ -1170,7 +1422,7 @@ shortname = "css-transitions"
 format = "bikeshed"
 source = "css-transitions-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-transitions-1/"
-aliases = ["https://drafts.csswg.org/css-transitions/"]
+aliases = ["https://drafts.csswg.org/css-transitions/", "https://www.w3.org/TR/css-transitions-1/", "https://www.w3.org/TR/css-transitions/"]
 
 [[spec]]
 name = "css-transitions-2"
@@ -1178,6 +1430,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-transitions-2/Overview.bs"
 rendered = "https://drafts.csswg.org/css-transitions-2/"
+aliases = ["https://www.w3.org/TR/css-transitions-2/"]
 series = "css-transitions"
 
 [[spec]]
@@ -1186,6 +1439,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-ui-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-ui-3/"
+aliases = ["https://www.w3.org/TR/css-ui-3/"]
 series = "css-ui"
 
 [[spec]]
@@ -1195,7 +1449,7 @@ shortname = "css-ui"
 format = "bikeshed"
 source = "css-ui-4/Overview.bs"
 rendered = "https://drafts.csswg.org/css-ui-4/"
-aliases = ["https://drafts.csswg.org/css-ui/"]
+aliases = ["https://drafts.csswg.org/css-ui/", "https://www.w3.org/TR/css-ui-4/", "https://www.w3.org/TR/css-ui/"]
 
 [[spec]]
 name = "css-values-3"
@@ -1203,6 +1457,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-values-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-values-3/"
+aliases = ["https://www.w3.org/TR/css-values-3/"]
 series = "css-values"
 
 [[spec]]
@@ -1212,7 +1467,7 @@ shortname = "css-values"
 format = "bikeshed"
 source = "css-values-4/Overview.bs"
 rendered = "https://drafts.csswg.org/css-values-4/"
-aliases = ["https://drafts.csswg.org/css-values/"]
+aliases = ["https://drafts.csswg.org/css-values/", "https://www.w3.org/TR/css-values-4/", "https://www.w3.org/TR/css-values/"]
 
 [[spec]]
 name = "css-values-5"
@@ -1220,6 +1475,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-values-5/Overview.bs"
 rendered = "https://drafts.csswg.org/css-values-5/"
+aliases = ["https://www.w3.org/TR/css-values-5/"]
 series = "css-values"
 
 [[spec]]
@@ -1229,7 +1485,7 @@ shortname = "css-variables"
 format = "bikeshed"
 source = "css-variables-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-variables-1/"
-aliases = ["https://drafts.csswg.org/css-variables/"]
+aliases = ["https://drafts.csswg.org/css-variables/", "https://www.w3.org/TR/css-variables-1/", "https://www.w3.org/TR/css-variables/"]
 
 [[spec]]
 name = "css-variables-2"
@@ -1246,7 +1502,7 @@ shortname = "css-view-transitions"
 format = "bikeshed"
 source = "css-view-transitions-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-view-transitions-1/"
-aliases = ["https://drafts.csswg.org/css-view-transitions/"]
+aliases = ["https://drafts.csswg.org/css-view-transitions/", "https://www.w3.org/TR/css-view-transitions-1/", "https://www.w3.org/TR/css-view-transitions/"]
 
 [[spec]]
 name = "css-view-transitions-2"
@@ -1254,6 +1510,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-view-transitions-2/Overview.bs"
 rendered = "https://drafts.csswg.org/css-view-transitions-2/"
+aliases = ["https://www.w3.org/TR/css-view-transitions-2/"]
 series = "css-view-transitions"
 
 [[spec]]
@@ -1263,6 +1520,7 @@ shortname = "css-viewport"
 format = "bikeshed"
 source = "css-viewport-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-viewport/"
+aliases = ["https://www.w3.org/TR/css-viewport-1/", "https://www.w3.org/TR/css-viewport/"]
 
 [[spec]]
 name = "css-will-change-1"
@@ -1271,7 +1529,7 @@ shortname = "css-will-change"
 format = "bikeshed"
 source = "css-will-change-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-will-change-1/"
-aliases = ["https://drafts.csswg.org/css-will-change/"]
+aliases = ["https://drafts.csswg.org/css-will-change/", "https://www.w3.org/TR/css-will-change-1/", "https://www.w3.org/TR/css-will-change/"]
 
 [[spec]]
 name = "css-writing-modes-3"
@@ -1279,6 +1537,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "css-writing-modes-3/Overview.bs"
 rendered = "https://drafts.csswg.org/css-writing-modes-3/"
+aliases = ["https://www.w3.org/TR/css-writing-modes-3/"]
 series = "css-writing-modes"
 
 [[spec]]
@@ -1288,7 +1547,7 @@ shortname = "css-writing-modes"
 format = "bikeshed"
 source = "css-writing-modes-4/Overview.bs"
 rendered = "https://drafts.csswg.org/css-writing-modes-4/"
-aliases = ["https://drafts.csswg.org/css-writing-modes/"]
+aliases = ["https://drafts.csswg.org/css-writing-modes/", "https://www.w3.org/TR/css-writing-modes-4/", "https://www.w3.org/TR/css-writing-modes/"]
 
 [[spec]]
 name = "css3-exclusions"
@@ -1297,6 +1556,7 @@ shortname = "css-exclusions"
 format = "bikeshed"
 source = "css-exclusions-1/Overview.bs"
 rendered = "https://drafts.csswg.org/css-exclusions-1/"
+aliases = ["https://www.w3.org/TR/css3-exclusions/", "https://www.w3.org/TR/css-exclusions/"]
 
 [[spec]]
 name = "cssom-1"
@@ -1305,7 +1565,7 @@ shortname = "cssom"
 format = "bikeshed"
 source = "cssom-1/Overview.bs"
 rendered = "https://drafts.csswg.org/cssom-1/"
-aliases = ["https://drafts.csswg.org/cssom/"]
+aliases = ["https://drafts.csswg.org/cssom/", "https://www.w3.org/TR/cssom-1/", "https://www.w3.org/TR/cssom/"]
 
 [[spec]]
 name = "cssom-view-1"
@@ -1314,7 +1574,7 @@ shortname = "cssom-view"
 format = "bikeshed"
 source = "cssom-view-1/Overview.bs"
 rendered = "https://drafts.csswg.org/cssom-view-1/"
-aliases = ["https://drafts.csswg.org/cssom-view/"]
+aliases = ["https://drafts.csswg.org/cssom-view/", "https://www.w3.org/TR/cssom-view-1/", "https://www.w3.org/TR/cssom-view/"]
 
 [[spec]]
 name = "fill-stroke-3"
@@ -1323,7 +1583,7 @@ shortname = "fill-stroke"
 format = "bikeshed"
 source = "fill-stroke-3/Overview.bs"
 rendered = "https://drafts.csswg.org/fill-stroke-3/"
-aliases = ["https://drafts.csswg.org/fill-stroke/"]
+aliases = ["https://drafts.csswg.org/fill-stroke/", "https://www.w3.org/TR/fill-stroke-3/", "https://www.w3.org/TR/fill-stroke/"]
 
 [[spec]]
 name = "filter-effects-1"
@@ -1332,7 +1592,7 @@ shortname = "filter-effects"
 format = "bikeshed"
 source = "filter-effects-1/Overview.bs"
 rendered = "https://drafts.csswg.org/filter-effects-1/"
-aliases = ["https://drafts.csswg.org/filter-effects/"]
+aliases = ["https://drafts.csswg.org/filter-effects/", "https://www.w3.org/TR/filter-effects-1/", "https://www.w3.org/TR/filter-effects/"]
 
 [[spec]]
 name = "filter-effects-2"
@@ -1349,7 +1609,16 @@ shortname = "geometry"
 format = "bikeshed"
 source = "geometry-1/Overview.bs"
 rendered = "https://drafts.csswg.org/geometry-1/"
-aliases = ["https://drafts.csswg.org/geometry/"]
+aliases = ["https://drafts.csswg.org/geometry/", "https://www.w3.org/TR/geometry-1/", "https://www.w3.org/TR/geometry/"]
+
+[[spec]]
+name = "mediaqueries-3"
+path = "csswg-drafts"
+format = "respec"
+source = "mediaqueries-3/Overview.html"
+rendered = "https://drafts.csswg.org/mediaqueries-3/"
+aliases = ["https://www.w3.org/TR/mediaqueries-3/"]
+series = "mediaqueries"
 
 [[spec]]
 name = "mediaqueries-4"
@@ -1358,7 +1627,7 @@ shortname = "mediaqueries"
 format = "bikeshed"
 source = "mediaqueries-4/Overview.bs"
 rendered = "https://drafts.csswg.org/mediaqueries-4/"
-aliases = ["https://drafts.csswg.org/mediaqueries/"]
+aliases = ["https://drafts.csswg.org/mediaqueries/", "https://www.w3.org/TR/mediaqueries-4/", "https://www.w3.org/TR/mediaqueries/"]
 
 [[spec]]
 name = "mediaqueries-5"
@@ -1366,6 +1635,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "mediaqueries-5/Overview.bs"
 rendered = "https://drafts.csswg.org/mediaqueries-5/"
+aliases = ["https://www.w3.org/TR/mediaqueries-5/"]
 series = "mediaqueries"
 
 [[spec]]
@@ -1375,7 +1645,7 @@ shortname = "motion"
 format = "bikeshed"
 source = "motion-1/Overview.bs"
 rendered = "https://drafts.csswg.org/motion-1/"
-aliases = ["https://drafts.csswg.org/motion/"]
+aliases = ["https://drafts.csswg.org/motion/", "https://www.w3.org/TR/motion-1/", "https://www.w3.org/TR/motion/"]
 
 [[spec]]
 name = "pointer-animations-1"
@@ -1393,7 +1663,7 @@ shortname = "resize-observer"
 format = "bikeshed"
 source = "resize-observer-1/Overview.bs"
 rendered = "https://drafts.csswg.org/resize-observer-1/"
-aliases = ["https://drafts.csswg.org/resize-observer/"]
+aliases = ["https://drafts.csswg.org/resize-observer/", "https://www.w3.org/TR/resize-observer-1/", "https://www.w3.org/TR/resize-observer/"]
 
 [[spec]]
 name = "scroll-animations-1"
@@ -1402,7 +1672,7 @@ shortname = "scroll-animations"
 format = "bikeshed"
 source = "scroll-animations-1/Overview.bs"
 rendered = "https://drafts.csswg.org/scroll-animations-1/"
-aliases = ["https://drafts.csswg.org/scroll-animations/"]
+aliases = ["https://drafts.csswg.org/scroll-animations/", "https://www.w3.org/TR/scroll-animations-1/", "https://www.w3.org/TR/scroll-animations/"]
 
 [[spec]]
 name = "selectors-3"
@@ -1410,6 +1680,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "selectors-3/Overview.src.html"
 rendered = "https://drafts.csswg.org/selectors-3/"
+aliases = ["https://www.w3.org/TR/selectors-3/"]
 series = "selectors"
 
 [[spec]]
@@ -1419,7 +1690,7 @@ shortname = "selectors"
 format = "bikeshed"
 source = "selectors-4/Overview.bs"
 rendered = "https://drafts.csswg.org/selectors-4/"
-aliases = ["https://drafts.csswg.org/selectors/"]
+aliases = ["https://drafts.csswg.org/selectors/", "https://www.w3.org/TR/selectors-4/", "https://www.w3.org/TR/selectors/"]
 
 [[spec]]
 name = "selectors-5"
@@ -1427,6 +1698,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "selectors-5/Overview.bs"
 rendered = "https://drafts.csswg.org/selectors-5/"
+aliases = ["https://www.w3.org/TR/selectors-5/"]
 series = "selectors"
 
 [[spec]]
@@ -1436,7 +1708,7 @@ shortname = "selectors-nonelement"
 format = "bikeshed"
 source = "selectors-nonelement-1/Overview.bs"
 rendered = "https://drafts.csswg.org/selectors-nonelement-1/"
-aliases = ["https://drafts.csswg.org/selectors-nonelement/"]
+aliases = ["https://drafts.csswg.org/selectors-nonelement/", "https://www.w3.org/TR/selectors-nonelement-1/", "https://www.w3.org/TR/selectors-nonelement/"]
 
 [[spec]]
 name = "web-animations-1"
@@ -1445,7 +1717,7 @@ shortname = "web-animations"
 format = "bikeshed"
 source = "web-animations-1/Overview.bs"
 rendered = "https://drafts.csswg.org/web-animations-1/"
-aliases = ["https://drafts.csswg.org/web-animations/"]
+aliases = ["https://drafts.csswg.org/web-animations/", "https://www.w3.org/TR/web-animations-1/", "https://www.w3.org/TR/web-animations/"]
 
 [[spec]]
 name = "web-animations-2"
@@ -1453,6 +1725,7 @@ path = "csswg-drafts"
 format = "bikeshed"
 source = "web-animations-2/Overview.bs"
 rendered = "https://drafts.csswg.org/web-animations-2/"
+aliases = ["https://www.w3.org/TR/web-animations-2/"]
 series = "web-animations"
 
 [[spec]]
@@ -1461,6 +1734,89 @@ url = "https://github.com/WICG/custom-state-pseudo-class.git"
 format = "bikeshed"
 rendered = "https://wicg.github.io/custom-state-pseudo-class/"
 successors = ["html", "selectors-5"]
+
+[[spec]]
+name = "dapt"
+url = "https://github.com/w3c/dapt.git"
+format = "respec"
+rendered = "https://w3c.github.io/dapt/"
+aliases = ["https://www.w3.org/TR/dapt/"]
+
+[[spec]]
+name = "data-shapes"
+url = "https://github.com/w3c/data-shapes.git"
+
+[[spec]]
+name = "shacl12-core"
+path = "data-shapes"
+shortname = "shacl-core"
+format = "respec"
+source = "shacl12-core/index.html"
+rendered = "https://w3c.github.io/data-shapes/shacl12-core/"
+aliases = ["https://w3c.github.io/data-shapes/shacl-core/", "https://www.w3.org/TR/shacl12-core/", "https://www.w3.org/TR/shacl-core/"]
+
+[[spec]]
+name = "shacl12-cs"
+path = "data-shapes"
+shortname = "shacl-cs"
+format = "respec"
+source = "shacl12-cs/index.html"
+rendered = "https://w3c.github.io/data-shapes/shacl12-cs/"
+aliases = ["https://w3c.github.io/data-shapes/shacl-cs/"]
+
+[[spec]]
+name = "shacl12-inference-rules"
+path = "data-shapes"
+shortname = "shacl-inference-rules"
+format = "respec"
+source = "shacl12-inference-rules/index.html"
+rendered = "https://w3c.github.io/data-shapes/shacl12-inference-rules/"
+aliases = ["https://w3c.github.io/data-shapes/shacl-inference-rules/", "https://www.w3.org/TR/shacl12-inference-rules/", "https://www.w3.org/TR/shacl-inference-rules/"]
+
+[[spec]]
+name = "shacl12-node-expr"
+path = "data-shapes"
+shortname = "shacl-node-expr"
+format = "respec"
+source = "shacl12-node-expr/index.html"
+rendered = "https://w3c.github.io/data-shapes/shacl12-node-expr/"
+aliases = ["https://w3c.github.io/data-shapes/shacl-node-expr/", "https://www.w3.org/TR/shacl12-node-expr/", "https://www.w3.org/TR/shacl-node-expr/"]
+
+[[spec]]
+name = "shacl12-profiling"
+path = "data-shapes"
+shortname = "shacl-profiling"
+format = "respec"
+source = "shacl12-profiling/index.html"
+rendered = "https://w3c.github.io/data-shapes/shacl12-profiling/"
+aliases = ["https://w3c.github.io/data-shapes/shacl-profiling/", "https://www.w3.org/TR/shacl12-profiling/", "https://www.w3.org/TR/shacl-profiling/"]
+
+[[spec]]
+name = "shacl12-sparql"
+path = "data-shapes"
+shortname = "shacl-sparql"
+format = "respec"
+source = "shacl12-sparql/index.html"
+rendered = "https://w3c.github.io/data-shapes/shacl12-sparql/"
+aliases = ["https://w3c.github.io/data-shapes/shacl-sparql/", "https://www.w3.org/TR/shacl12-sparql/", "https://www.w3.org/TR/shacl-sparql/"]
+
+[[spec]]
+name = "shacl12-ui"
+path = "data-shapes"
+shortname = "shacl-ui"
+format = "respec"
+source = "shacl12-ui/index.html"
+rendered = "https://w3c.github.io/data-shapes/shacl12-ui/"
+aliases = ["https://w3c.github.io/data-shapes/shacl-ui/", "https://www.w3.org/TR/shacl12-ui/", "https://www.w3.org/TR/shacl-ui/"]
+
+[[spec]]
+name = "sparql12-rl"
+path = "data-shapes"
+shortname = "sparql-rl"
+format = "respec"
+source = "sparql12-rl/index.html"
+rendered = "https://w3c.github.io/data-shapes/sparql12-rl/"
+aliases = ["https://w3c.github.io/data-shapes/sparql-rl/", "https://www.w3.org/TR/sparql12-rl/", "https://www.w3.org/TR/sparql-rl/"]
 
 [[spec]]
 name = "datacue"
@@ -1475,11 +1831,33 @@ format = "bikeshed"
 rendered = "https://wicg.github.io/deprecation-reporting/"
 
 [[spec]]
+name = "device-posture"
+url = "https://github.com/w3c/device-posture.git"
+format = "respec"
+rendered = "https://w3c.github.io/device-posture/"
+aliases = ["https://www.w3.org/TR/device-posture/"]
+
+[[spec]]
 name = "deviceorientation"
 url = "https://github.com/w3c/deviceorientation.git"
 shortname = "orientation-event"
 format = "bikeshed"
 rendered = "https://w3c.github.io/deviceorientation/"
+aliases = ["https://www.w3.org/TR/orientation-event/"]
+
+[[spec]]
+name = "did"
+url = "https://github.com/w3c/did.git"
+format = "respec"
+rendered = "https://w3c.github.io/did/"
+aliases = ["https://www.w3.org/TR/did-1.1/", "https://www.w3.org/TR/did/"]
+
+[[spec]]
+name = "did-resolution"
+url = "https://github.com/w3c/did-resolution.git"
+format = "respec"
+rendered = "https://w3c.github.io/did-resolution/"
+aliases = ["https://www.w3.org/TR/did-resolution-1.0/", "https://www.w3.org/TR/did-resolution/"]
 
 [[spec]]
 name = "digital-goods"
@@ -1487,6 +1865,21 @@ url = "https://github.com/WICG/digital-goods.git"
 format = "bikeshed"
 source = "spec.bs"
 rendered = "https://wicg.github.io/digital-goods/"
+
+[[spec]]
+name = "direct-sockets"
+url = "https://github.com/WICG/direct-sockets.git"
+format = "respec"
+rendered = "https://wicg.github.io/direct-sockets/"
+
+[[spec]]
+name = "dnt"
+url = "https://github.com/w3c/dnt.git"
+shortname = "tracking-dnt"
+format = "respec"
+source = "drafts/tracking-dnt.html"
+rendered = "https://w3c.github.io/dnt/drafts/tracking-dnt.html"
+aliases = ["https://www.w3.org/TR/tracking-dnt/"]
 
 [[spec]]
 name = "document-isolation-policy"
@@ -1515,6 +1908,40 @@ source = "dom.bs"
 rendered = "https://dom.spec.whatwg.org/"
 
 [[spec]]
+name = "dom-parsing"
+url = "https://github.com/w3c/DOM-Parsing.git"
+shortname = "DOM-Parsing"
+format = "respec"
+rendered = "https://w3c.github.io/DOM-Parsing/"
+aliases = ["https://www.w3.org/TR/DOM-Parsing/"]
+
+[[spec]]
+name = "dx-connegp"
+url = "https://github.com/w3c/dx-connegp.git"
+shortname = "dx-prof-conneg"
+format = "respec"
+source = "connegp/index.html"
+rendered = "https://w3c.github.io/dx-connegp/connegp/"
+aliases = ["https://www.w3.org/TR/dx-prof-conneg/"]
+
+[[spec]]
+name = "dx-dcat"
+url = "https://github.com/w3c/dx-dcat.git"
+shortname = "vocab-dcat"
+format = "respec"
+source = "dcat/index.html"
+rendered = "https://w3c.github.io/dx-dcat/TR/"
+aliases = ["https://www.w3.org/TR/vocab-dcat-3/", "https://www.w3.org/TR/vocab-dcat/"]
+
+[[spec]]
+name = "dx-prof"
+url = "https://github.com/w3c/dx-prof.git"
+format = "respec"
+source = "prof/index.html"
+rendered = "https://w3c.github.io/dx-prof/prof/"
+aliases = ["https://www.w3.org/TR/dx-prof-1.0/", "https://www.w3.org/TR/dx-prof/"]
+
+[[spec]]
 name = "ecma262"
 url = "https://github.com/tc39/ecma262.git"
 shortname = "ecmascript"
@@ -1528,6 +1955,21 @@ shortname = "ecma-402"
 format = "ecmarkup"
 source = "spec/index.html"
 rendered = "https://tc39.es/ecma402/"
+
+[[spec]]
+name = "edit-context"
+url = "https://github.com/w3c/edit-context.git"
+format = "respec"
+rendered = "https://w3c.github.io/edit-context/"
+aliases = ["https://www.w3.org/TR/edit-context/"]
+
+[[spec]]
+name = "editing"
+url = "https://github.com/w3c/editing.git"
+shortname = "execCommand"
+format = "respec"
+source = "docs/execCommand/index.html"
+rendered = "https://w3c.github.io/editing/docs/execCommand/"
 
 [[spec]]
 name = "element-timing"
@@ -1549,22 +1991,155 @@ source = "encoding.bs"
 rendered = "https://encoding.spec.whatwg.org/"
 
 [[spec]]
+name = "encrypted-media"
+url = "https://github.com/w3c/encrypted-media.git"
+
+[[spec]]
+name = "eme-hdcp-version-registry"
+path = "encrypted-media"
+format = "respec"
+source = "hdcp-version-registry-respec.html"
+rendered = "https://w3c.github.io/encrypted-media/hdcp-version-registry.html"
+aliases = ["https://www.w3.org/TR/eme-hdcp-version-registry/"]
+
+[[spec]]
+name = "eme-initdata-cenc"
+path = "encrypted-media"
+format = "respec"
+source = "format-registry/initdata/cenc-respec.html"
+rendered = "https://w3c.github.io/encrypted-media/format-registry/initdata/cenc.html"
+aliases = ["https://www.w3.org/TR/eme-initdata-cenc/"]
+
+[[spec]]
+name = "eme-initdata-keyids"
+path = "encrypted-media"
+format = "respec"
+source = "format-registry/initdata/keyids-respec.html"
+rendered = "https://w3c.github.io/encrypted-media/format-registry/initdata/keyids.html"
+aliases = ["https://www.w3.org/TR/eme-initdata-keyids/"]
+
+[[spec]]
+name = "eme-initdata-registry"
+path = "encrypted-media"
+format = "respec"
+source = "format-registry/initdata/index-respec.html"
+rendered = "https://w3c.github.io/encrypted-media/format-registry/initdata/"
+aliases = ["https://www.w3.org/TR/eme-initdata-registry/"]
+
+[[spec]]
+name = "eme-initdata-webm"
+path = "encrypted-media"
+format = "respec"
+source = "format-registry/initdata/webm-respec.html"
+rendered = "https://w3c.github.io/encrypted-media/format-registry/initdata/webm.html"
+aliases = ["https://www.w3.org/TR/eme-initdata-webm/"]
+
+[[spec]]
+name = "eme-stream-mp4"
+path = "encrypted-media"
+format = "respec"
+source = "format-registry/stream/mp4-respec.html"
+rendered = "https://w3c.github.io/encrypted-media/format-registry/stream/mp4.html"
+aliases = ["https://www.w3.org/TR/eme-stream-mp4/"]
+
+[[spec]]
+name = "eme-stream-registry"
+path = "encrypted-media"
+format = "respec"
+source = "format-registry/stream/index-respec.html"
+rendered = "https://w3c.github.io/encrypted-media/format-registry/stream/"
+aliases = ["https://www.w3.org/TR/eme-stream-registry/"]
+
+[[spec]]
+name = "eme-stream-webm"
+path = "encrypted-media"
+format = "respec"
+source = "format-registry/stream/webm-respec.html"
+rendered = "https://w3c.github.io/encrypted-media/format-registry/stream/webm.html"
+aliases = ["https://www.w3.org/TR/eme-stream-webm/"]
+
+[[spec]]
+name = "encrypted-media-2"
+path = "encrypted-media"
+shortname = "encrypted-media"
+format = "respec"
+source = "encrypted-media-respec.html"
+rendered = "https://w3c.github.io/encrypted-media/"
+aliases = ["https://www.w3.org/TR/encrypted-media-2/", "https://www.w3.org/TR/encrypted-media/"]
+
+[[spec]]
 name = "entries-api"
 url = "https://github.com/WICG/entries-api.git"
 format = "bikeshed"
 rendered = "https://wicg.github.io/entries-api/"
 
 [[spec]]
+name = "epub-specs"
+url = "https://github.com/w3c/epub-specs.git"
+
+[[spec]]
+name = "epub-33"
+path = "epub-specs"
+shortname = "epub"
+format = "respec"
+source = "epub33/core/index.html"
+rendered = "https://w3c.github.io/epub-specs/epub33/core/"
+aliases = ["https://www.w3.org/TR/epub-33/", "https://www.w3.org/TR/epub/"]
+
+[[spec]]
+name = "epub-34"
+path = "epub-specs"
+format = "respec"
+source = "epub34/authoring/index.html"
+rendered = "https://w3c.github.io/epub-specs/epub34/authoring/"
+aliases = ["https://www.w3.org/TR/epub-34/"]
+series = "epub"
+
+[[spec]]
+name = "epub-a11y-12"
+path = "epub-specs"
+shortname = "epub-a11y"
+format = "respec"
+source = "epub34/a11y/index.html"
+rendered = "https://w3c.github.io/epub-specs/epub34/a11y/"
+aliases = ["https://www.w3.org/TR/epub-a11y-12/", "https://www.w3.org/TR/epub-a11y/"]
+
+[[spec]]
+name = "epub-rs-33"
+path = "epub-specs"
+shortname = "epub-rs"
+format = "respec"
+source = "epub33/rs/index.html"
+rendered = "https://w3c.github.io/epub-specs/epub33/rs/"
+aliases = ["https://www.w3.org/TR/epub-rs-33/", "https://www.w3.org/TR/epub-rs/"]
+
+[[spec]]
+name = "epub-rs-34"
+path = "epub-specs"
+format = "respec"
+source = "epub34/rs/index.html"
+rendered = "https://w3c.github.io/epub-specs/epub34/rs/"
+aliases = ["https://www.w3.org/TR/epub-rs-34/"]
+series = "epub-rs"
+
+[[spec]]
 name = "event-timing"
 url = "https://github.com/w3c/event-timing.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/event-timing/"
+aliases = ["https://www.w3.org/TR/event-timing/"]
 
 [[spec]]
 name = "explicit-javascript-compile-hints-file-based"
 url = "https://github.com/WICG/explicit-javascript-compile-hints-file-based.git"
 format = "bikeshed"
 rendered = "https://wicg.github.io/explicit-javascript-compile-hints-file-based/"
+
+[[spec]]
+name = "eyedropper-api"
+url = "https://github.com/WICG/eyedropper-api.git"
+format = "respec"
+rendered = "https://wicg.github.io/eyedropper-api/"
 
 [[spec]]
 name = "fenced-frame"
@@ -1592,6 +2167,14 @@ url = "https://github.com/w3c/FileAPI.git"
 shortname = "FileAPI"
 format = "bikeshed"
 rendered = "https://w3c.github.io/FileAPI/"
+aliases = ["https://www.w3.org/TR/FileAPI/"]
+
+[[spec]]
+name = "fingerprinting-guidance"
+url = "https://github.com/w3c/fingerprinting-guidance.git"
+format = "respec"
+rendered = "https://w3c.github.io/fingerprinting-guidance/"
+aliases = ["https://www.w3.org/TR/fingerprinting-guidance/"]
 
 [[spec]]
 name = "first-party-sets"
@@ -1614,10 +2197,32 @@ source = "fullscreen.bs"
 rendered = "https://fullscreen.spec.whatwg.org/"
 
 [[spec]]
+name = "gamepad"
+url = "https://github.com/w3c/gamepad.git"
+format = "respec"
+rendered = "https://w3c.github.io/gamepad/"
+aliases = ["https://www.w3.org/TR/gamepad/"]
+
+[[spec]]
+name = "gamepad-extensions"
+path = "gamepad"
+format = "respec"
+source = "extensions.html"
+rendered = "https://w3c.github.io/gamepad/extensions.html"
+
+[[spec]]
+name = "geolocation"
+url = "https://github.com/w3c/geolocation.git"
+format = "respec"
+rendered = "https://w3c.github.io/geolocation/"
+aliases = ["https://www.w3.org/TR/geolocation/"]
+
+[[spec]]
 name = "geolocation-sensor"
 url = "https://github.com/w3c/geolocation-sensor.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/geolocation-sensor/"
+aliases = ["https://www.w3.org/TR/geolocation-sensor/"]
 
 [[spec]]
 name = "get-installed-related-apps"
@@ -1627,10 +2232,18 @@ source = "spec/index.bs"
 rendered = "https://wicg.github.io/get-installed-related-apps/spec/"
 
 [[spec]]
+name = "gpc"
+url = "https://github.com/w3c/gpc.git"
+format = "respec"
+rendered = "https://w3c.github.io/gpc/"
+aliases = ["https://www.w3.org/TR/gpc/"]
+
+[[spec]]
 name = "gyroscope"
 url = "https://github.com/w3c/gyroscope.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/gyroscope/"
+aliases = ["https://www.w3.org/TR/gyroscope/"]
 
 [[spec]]
 name = "handwriting-recognition"
@@ -1640,10 +2253,17 @@ source = "spec.bs"
 rendered = "https://wicg.github.io/handwriting-recognition/"
 
 [[spec]]
+name = "hid"
+url = "https://github.com/whatwg/hid.git"
+format = "respec"
+rendered = "https://hid.spec.whatwg.org/"
+
+[[spec]]
 name = "hr-time"
 url = "https://github.com/w3c/hr-time.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/hr-time/"
+aliases = ["https://www.w3.org/TR/hr-time-3/", "https://www.w3.org/TR/hr-time/"]
 
 [[spec]]
 name = "html"
@@ -1652,12 +2272,34 @@ format = "wattsi"
 rendered = "https://html.spec.whatwg.org/"
 
 [[spec]]
+name = "html-aria"
+url = "https://github.com/w3c/html-aria.git"
+format = "respec"
+rendered = "https://w3c.github.io/html-aria/"
+aliases = ["https://www.w3.org/TR/html-aria/"]
+
+[[spec]]
+name = "html-media-capture"
+url = "https://github.com/w3c/html-media-capture.git"
+format = "respec"
+rendered = "https://w3c.github.io/html-media-capture/"
+aliases = ["https://www.w3.org/TR/html-media-capture/"]
+
+[[spec]]
 name = "html-ruby"
 url = "https://github.com/w3c/html-ruby.git"
 shortname = "html-ruby-extensions"
 format = "bikeshed"
 source = "Overview.bs"
 rendered = "https://w3c.github.io/html-ruby/"
+aliases = ["https://www.w3.org/TR/html-ruby-extensions/"]
+
+[[spec]]
+name = "i18n-glossary"
+url = "https://github.com/w3c/i18n-glossary.git"
+format = "respec"
+rendered = "https://w3c.github.io/i18n-glossary/"
+aliases = ["https://www.w3.org/TR/i18n-glossary/"]
 
 [[spec]]
 name = "idle-detection"
@@ -1678,6 +2320,31 @@ shortname = "IFT"
 format = "bikeshed"
 source = "Overview.bs"
 rendered = "https://w3c.github.io/IFT/Overview.html"
+aliases = ["https://www.w3.org/TR/IFT/"]
+
+[[spec]]
+name = "image-resource"
+url = "https://github.com/w3c/image-resource.git"
+format = "respec"
+rendered = "https://w3c.github.io/image-resource/"
+aliases = ["https://www.w3.org/TR/image-resource/"]
+
+[[spec]]
+name = "imsc"
+url = "https://github.com/w3c/imsc.git"
+shortname = "ttml-imsc"
+format = "respec"
+source = "imsc1/spec/ttml-ww-profiles.html"
+rendered = "https://w3c.github.io/imsc/imsc1/spec/ttml-ww-profiles.html"
+aliases = ["https://www.w3.org/TR/ttml-imsc1.3/", "https://www.w3.org/TR/ttml-imsc/"]
+
+[[spec]]
+name = "imsc-hrm"
+url = "https://github.com/w3c/imsc-hrm.git"
+format = "respec"
+source = "spec/imsc-hrm.html"
+rendered = "https://w3c.github.io/imsc-hrm/spec/imsc-hrm.html"
+aliases = ["https://www.w3.org/TR/imsc-hrm/"]
 
 [[spec]]
 name = "indexeddb"
@@ -1685,6 +2352,7 @@ url = "https://github.com/w3c/IndexedDB.git"
 shortname = "IndexedDB"
 format = "bikeshed"
 rendered = "https://w3c.github.io/IndexedDB/"
+aliases = ["https://www.w3.org/TR/IndexedDB-3/", "https://www.w3.org/TR/IndexedDB/"]
 
 [[spec]]
 name = "infra"
@@ -1700,11 +2368,31 @@ format = "bikeshed"
 rendered = "https://wicg.github.io/ink-enhancement/"
 
 [[spec]]
+name = "input-device-capabilities"
+url = "https://github.com/WICG/input-device-capabilities.git"
+format = "respec"
+rendered = "https://wicg.github.io/input-device-capabilities/"
+
+[[spec]]
+name = "input-events"
+url = "https://github.com/w3c/input-events.git"
+format = "respec"
+rendered = "https://w3c.github.io/input-events/"
+aliases = ["https://www.w3.org/TR/input-events-2/", "https://www.w3.org/TR/input-events/"]
+
+[[spec]]
+name = "install-element"
+url = "https://github.com/WICG/install-element.git"
+format = "respec"
+rendered = "https://wicg.github.io/install-element/"
+
+[[spec]]
 name = "intersectionobserver"
 url = "https://github.com/w3c/IntersectionObserver.git"
 shortname = "intersection-observer"
 format = "bikeshed"
 rendered = "https://w3c.github.io/IntersectionObserver/"
+aliases = ["https://www.w3.org/TR/intersection-observer/"]
 
 [[spec]]
 name = "intervention-reporting"
@@ -1713,12 +2401,46 @@ format = "bikeshed"
 rendered = "https://wicg.github.io/intervention-reporting/"
 
 [[spec]]
+name = "is-input-pending"
+url = "https://github.com/WICG/is-input-pending.git"
+format = "respec"
+rendered = "https://wicg.github.io/is-input-pending/"
+
+[[spec]]
 name = "isolated-web-apps"
 url = "https://github.com/WICG/isolated-web-apps.git"
 shortname = "isolated-contexts"
 format = "bikeshed"
 source = "isolated-contexts.bs"
 rendered = "https://wicg.github.io/isolated-web-apps/isolated-contexts.html"
+
+[[spec]]
+name = "js-self-profiling"
+url = "https://github.com/WICG/js-self-profiling.git"
+format = "respec"
+rendered = "https://wicg.github.io/js-self-profiling/"
+
+[[spec]]
+name = "json-ld-api"
+url = "https://github.com/w3c/json-ld-api.git"
+format = "respec"
+rendered = "https://w3c.github.io/json-ld-api/"
+aliases = ["https://www.w3.org/TR/json-ld11-api/", "https://www.w3.org/TR/json-ld-api/"]
+
+[[spec]]
+name = "json-ld-framing"
+url = "https://github.com/w3c/json-ld-framing.git"
+format = "respec"
+rendered = "https://w3c.github.io/json-ld-framing/"
+aliases = ["https://www.w3.org/TR/json-ld11-framing/", "https://www.w3.org/TR/json-ld-framing/"]
+
+[[spec]]
+name = "json-ld-syntax"
+url = "https://github.com/w3c/json-ld-syntax.git"
+shortname = "json-ld"
+format = "respec"
+rendered = "https://w3c.github.io/json-ld-syntax/"
+aliases = ["https://www.w3.org/TR/json-ld11/", "https://www.w3.org/TR/json-ld/"]
 
 [[spec]]
 name = "keyboard-lock"
@@ -1737,6 +2459,7 @@ name = "largest-contentful-paint"
 url = "https://github.com/w3c/largest-contentful-paint.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/largest-contentful-paint/"
+aliases = ["https://www.w3.org/TR/largest-contentful-paint/"]
 
 [[spec]]
 name = "layout-instability"
@@ -1761,24 +2484,123 @@ name = "long-animation-frames"
 url = "https://github.com/w3c/long-animation-frames.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/long-animation-frames/"
+aliases = ["https://www.w3.org/TR/long-animation-frames/"]
 
 [[spec]]
 name = "longtasks"
 url = "https://github.com/w3c/longtasks.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/longtasks/"
+aliases = ["https://www.w3.org/TR/longtasks-1/", "https://www.w3.org/TR/longtasks/"]
 
 [[spec]]
 name = "magnetometer"
 url = "https://github.com/w3c/magnetometer.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/magnetometer/"
+aliases = ["https://www.w3.org/TR/magnetometer/"]
+
+[[spec]]
+name = "manifest"
+url = "https://github.com/w3c/manifest.git"
+shortname = "appmanifest"
+format = "respec"
+rendered = "https://w3c.github.io/manifest/"
+aliases = ["https://www.w3.org/TR/appmanifest/"]
+
+[[spec]]
+name = "manifest-app-info"
+url = "https://github.com/w3c/manifest-app-info.git"
+format = "respec"
+rendered = "https://w3c.github.io/manifest-app-info/"
+aliases = ["https://www.w3.org/TR/manifest-app-info/"]
+
+[[spec]]
+name = "manifest-incubations"
+url = "https://github.com/WICG/manifest-incubations.git"
+format = "respec"
+rendered = "https://wicg.github.io/manifest-incubations/"
+
+[[spec]]
+name = "mathml"
+url = "https://github.com/w3c/mathml.git"
+format = "respec"
+source = "spec.html"
+rendered = "https://w3c.github.io/mathml/"
+aliases = ["https://www.w3.org/TR/mathml4/", "https://www.w3.org/TR/mathml/"]
+
+[[spec]]
+name = "mathml-core"
+url = "https://github.com/w3c/mathml-core.git"
+format = "respec"
+source = "spec.html"
+rendered = "https://w3c.github.io/mathml-core/"
+aliases = ["https://www.w3.org/TR/mathml-core/"]
 
 [[spec]]
 name = "media-capabilities"
 url = "https://github.com/w3c/media-capabilities.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/media-capabilities/"
+aliases = ["https://www.w3.org/TR/media-capabilities/"]
+
+[[spec]]
+name = "media-feeds"
+url = "https://github.com/WICG/media-feeds.git"
+format = "respec"
+rendered = "https://wicg.github.io/media-feeds/"
+
+[[spec]]
+name = "media-playback-quality"
+url = "https://github.com/w3c/media-playback-quality.git"
+format = "respec"
+rendered = "https://w3c.github.io/media-playback-quality/"
+
+[[spec]]
+name = "media-source"
+url = "https://github.com/w3c/media-source.git"
+format = "respec"
+source = "media-source-respec.html"
+rendered = "https://w3c.github.io/media-source/"
+aliases = ["https://www.w3.org/TR/media-source-2/", "https://www.w3.org/TR/media-source/"]
+
+[[spec]]
+name = "mediacapture-automation"
+url = "https://github.com/w3c/mediacapture-automation.git"
+format = "respec"
+rendered = "https://w3c.github.io/mediacapture-automation/"
+
+[[spec]]
+name = "mediacapture-extensions"
+url = "https://github.com/w3c/mediacapture-extensions.git"
+format = "respec"
+rendered = "https://w3c.github.io/mediacapture-extensions/"
+
+[[spec]]
+name = "mediacapture-fromelement"
+url = "https://github.com/w3c/mediacapture-fromelement.git"
+format = "respec"
+rendered = "https://w3c.github.io/mediacapture-fromelement/"
+aliases = ["https://www.w3.org/TR/mediacapture-fromelement/"]
+
+[[spec]]
+name = "mediacapture-handle"
+url = "https://github.com/w3c/mediacapture-handle.git"
+
+[[spec]]
+name = "capture-handle-identity"
+path = "mediacapture-handle"
+format = "respec"
+source = "identity/index.html"
+rendered = "https://w3c.github.io/mediacapture-handle/identity/"
+aliases = ["https://www.w3.org/TR/capture-handle-identity/"]
+
+[[spec]]
+name = "mediacapture-handle-actions"
+path = "mediacapture-handle"
+format = "respec"
+source = "actions/index.html"
+rendered = "https://w3c.github.io/mediacapture-handle/actions/"
 
 [[spec]]
 name = "mediacapture-image"
@@ -1786,6 +2608,24 @@ url = "https://github.com/w3c/mediacapture-image.git"
 shortname = "image-capture"
 format = "bikeshed"
 rendered = "https://w3c.github.io/mediacapture-image/"
+aliases = ["https://www.w3.org/TR/image-capture/"]
+
+[[spec]]
+name = "mediacapture-main"
+url = "https://github.com/w3c/mediacapture-main.git"
+shortname = "mediacapture-streams"
+format = "respec"
+source = "getusermedia.html"
+rendered = "https://w3c.github.io/mediacapture-main/"
+aliases = ["https://www.w3.org/TR/mediacapture-streams/"]
+
+[[spec]]
+name = "mediacapture-output"
+url = "https://github.com/w3c/mediacapture-output.git"
+shortname = "audio-output"
+format = "respec"
+rendered = "https://w3c.github.io/mediacapture-output/"
+aliases = ["https://www.w3.org/TR/audio-output/"]
 
 [[spec]]
 name = "mediacapture-record"
@@ -1794,18 +2634,56 @@ shortname = "mediastream-recording"
 format = "bikeshed"
 source = "MediaRecorder.bs"
 rendered = "https://w3c.github.io/mediacapture-record/"
+aliases = ["https://www.w3.org/TR/mediastream-recording/"]
+
+[[spec]]
+name = "mediacapture-region"
+url = "https://github.com/w3c/mediacapture-region.git"
+format = "respec"
+rendered = "https://w3c.github.io/mediacapture-region/"
+aliases = ["https://www.w3.org/TR/mediacapture-region/"]
+
+[[spec]]
+name = "mediacapture-screen-share"
+url = "https://github.com/w3c/mediacapture-screen-share.git"
+shortname = "screen-capture"
+format = "respec"
+rendered = "https://w3c.github.io/mediacapture-screen-share/"
+aliases = ["https://www.w3.org/TR/screen-capture/"]
+
+[[spec]]
+name = "mediacapture-surface-control"
+url = "https://github.com/w3c/mediacapture-surface-control.git"
+format = "respec"
+rendered = "https://w3c.github.io/mediacapture-surface-control/"
 
 [[spec]]
 name = "mediacapture-transform"
 url = "https://github.com/w3c/mediacapture-transform.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/mediacapture-transform/"
+aliases = ["https://www.w3.org/TR/mediacapture-transform/"]
+
+[[spec]]
+name = "mediacapture-viewport"
+url = "https://github.com/w3c/mediacapture-viewport.git"
+format = "respec"
+rendered = "https://w3c.github.io/mediacapture-viewport/"
+aliases = ["https://www.w3.org/TR/mediacapture-viewport/"]
 
 [[spec]]
 name = "mediasession"
 url = "https://github.com/w3c/mediasession.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/mediasession/"
+aliases = ["https://www.w3.org/TR/mediasession/"]
+
+[[spec]]
+name = "merchant-validation"
+url = "https://github.com/w3c/merchant-validation.git"
+format = "respec"
+rendered = "https://w3c.github.io/merchant-validation/"
+aliases = ["https://www.w3.org/TR/merchant-validation/"]
 
 [[spec]]
 name = "mimesniff"
@@ -1813,6 +2691,69 @@ url = "https://github.com/whatwg/mimesniff.git"
 format = "bikeshed"
 source = "mimesniff.bs"
 rendered = "https://mimesniff.spec.whatwg.org/"
+
+[[spec]]
+name = "miniapp-lifecycle"
+url = "https://github.com/w3c/miniapp-lifecycle.git"
+format = "respec"
+rendered = "https://w3c.github.io/miniapp-lifecycle/"
+aliases = ["https://www.w3.org/TR/miniapp-lifecycle/"]
+
+[[spec]]
+name = "miniapp-manifest"
+url = "https://github.com/w3c/miniapp-manifest.git"
+format = "respec"
+rendered = "https://w3c.github.io/miniapp-manifest/"
+aliases = ["https://www.w3.org/TR/miniapp-manifest/"]
+
+[[spec]]
+name = "miniapp-packaging"
+url = "https://github.com/w3c/miniapp-packaging.git"
+format = "respec"
+rendered = "https://w3c.github.io/miniapp-packaging/"
+aliases = ["https://www.w3.org/TR/miniapp-packaging/"]
+
+[[spec]]
+name = "mse-byte-stream-format-isobmff"
+url = "https://github.com/w3c/mse-byte-stream-format-isobmff.git"
+format = "respec"
+rendered = "https://w3c.github.io/mse-byte-stream-format-isobmff/"
+aliases = ["https://www.w3.org/TR/mse-byte-stream-format-isobmff/"]
+
+[[spec]]
+name = "mse-byte-stream-format-mp2t"
+url = "https://github.com/w3c/mse-byte-stream-format-mp2t.git"
+format = "respec"
+rendered = "https://w3c.github.io/mse-byte-stream-format-mp2t/"
+aliases = ["https://www.w3.org/TR/mse-byte-stream-format-mp2t/"]
+
+[[spec]]
+name = "mse-byte-stream-format-mpeg-audio"
+url = "https://github.com/w3c/mse-byte-stream-format-mpeg-audio.git"
+format = "respec"
+rendered = "https://w3c.github.io/mse-byte-stream-format-mpeg-audio/"
+aliases = ["https://www.w3.org/TR/mse-byte-stream-format-mpeg-audio/"]
+
+[[spec]]
+name = "mse-byte-stream-format-registry"
+url = "https://github.com/w3c/mse-byte-stream-format-registry.git"
+format = "respec"
+rendered = "https://w3c.github.io/mse-byte-stream-format-registry/"
+aliases = ["https://www.w3.org/TR/mse-byte-stream-format-registry/"]
+
+[[spec]]
+name = "mse-byte-stream-format-webm"
+url = "https://github.com/w3c/mse-byte-stream-format-webm.git"
+format = "respec"
+rendered = "https://w3c.github.io/mse-byte-stream-format-webm/"
+aliases = ["https://www.w3.org/TR/mse-byte-stream-format-webm/"]
+
+[[spec]]
+name = "mst-content-hint"
+url = "https://github.com/w3c/mst-content-hint.git"
+format = "respec"
+rendered = "https://w3c.github.io/mst-content-hint/"
+aliases = ["https://www.w3.org/TR/mst-content-hint/"]
 
 [[spec]]
 name = "nav-speculation"
@@ -1833,16 +2774,32 @@ source = "prerendering.bs"
 rendered = "https://wicg.github.io/nav-speculation/prerendering.html"
 
 [[spec]]
+name = "speculation-rules"
+path = "nav-speculation"
+format = "respec"
+source = "speculation-rules.html"
+rendered = "https://wicg.github.io/nav-speculation/speculation-rules.html"
+successors = ["html", "prerendering-revamped"]
+
+[[spec]]
 name = "navigation-timing"
 url = "https://github.com/w3c/navigation-timing.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/navigation-timing/"
+aliases = ["https://www.w3.org/TR/navigation-timing-2/", "https://www.w3.org/TR/navigation-timing/"]
+
+[[spec]]
+name = "netinfo"
+url = "https://github.com/WICG/netinfo.git"
+format = "respec"
+rendered = "https://wicg.github.io/netinfo/"
 
 [[spec]]
 name = "network-error-logging"
 url = "https://github.com/w3c/network-error-logging.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/network-error-logging/"
+aliases = ["https://www.w3.org/TR/network-error-logging/"]
 
 [[spec]]
 name = "notifications"
@@ -1863,6 +2820,7 @@ name = "openscreenprotocol"
 url = "https://github.com/w3c/openscreenprotocol.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/openscreenprotocol/"
+aliases = ["https://www.w3.org/TR/openscreenprotocol/"]
 successors = ["openscreen-application", "openscreen-network"]
 
 [[spec]]
@@ -1871,6 +2829,7 @@ path = "openscreenprotocol"
 format = "bikeshed"
 source = "application.bs"
 rendered = "https://w3c.github.io/openscreenprotocol/application.html"
+aliases = ["https://www.w3.org/TR/openscreen-application/"]
 
 [[spec]]
 name = "openscreen-network"
@@ -1878,12 +2837,20 @@ path = "openscreenprotocol"
 format = "bikeshed"
 source = "network.bs"
 rendered = "https://w3c.github.io/openscreenprotocol/network.html"
+aliases = ["https://www.w3.org/TR/openscreen-network/"]
 
 [[spec]]
 name = "orientation-sensor"
 url = "https://github.com/w3c/orientation-sensor.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/orientation-sensor/"
+aliases = ["https://www.w3.org/TR/orientation-sensor/"]
+
+[[spec]]
+name = "overscroll-scrollend-events"
+url = "https://github.com/WICG/overscroll-scrollend-events.git"
+format = "respec"
+rendered = "https://wicg.github.io/overscroll-scrollend-events/"
 
 [[spec]]
 name = "page-lifecycle"
@@ -1897,12 +2864,28 @@ name = "paint-timing"
 url = "https://github.com/w3c/paint-timing.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/paint-timing/"
+aliases = ["https://www.w3.org/TR/paint-timing/"]
+
+[[spec]]
+name = "payment-method-id"
+url = "https://github.com/w3c/payment-method-id.git"
+format = "respec"
+rendered = "https://w3c.github.io/payment-method-id/"
+aliases = ["https://www.w3.org/TR/payment-method-id/"]
 
 [[spec]]
 name = "payment-method-manifest"
 url = "https://github.com/w3c/payment-method-manifest.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/payment-method-manifest/"
+aliases = ["https://www.w3.org/TR/payment-method-manifest/"]
+
+[[spec]]
+name = "payment-request"
+url = "https://github.com/w3c/payment-request.git"
+format = "respec"
+rendered = "https://w3c.github.io/payment-request/"
+aliases = ["https://www.w3.org/TR/payment-request/"]
 
 [[spec]]
 name = "paymentlink"
@@ -1930,12 +2913,26 @@ name = "performance-timeline"
 url = "https://github.com/w3c/performance-timeline.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/performance-timeline/"
+aliases = ["https://www.w3.org/TR/performance-timeline/"]
 
 [[spec]]
 name = "periodic-background-sync"
 url = "https://github.com/WICG/periodic-background-sync.git"
 format = "bikeshed"
 rendered = "https://wicg.github.io/periodic-background-sync/"
+
+[[spec]]
+name = "permissions"
+url = "https://github.com/w3c/permissions.git"
+format = "respec"
+rendered = "https://w3c.github.io/permissions/"
+aliases = ["https://www.w3.org/TR/permissions/"]
+
+[[spec]]
+name = "permissions-registry"
+url = "https://github.com/w3c/permissions-registry.git"
+format = "respec"
+rendered = "https://w3c.github.io/permissions-registry/"
 
 [[spec]]
 name = "permissions-request"
@@ -1954,12 +2951,61 @@ name = "picture-in-picture"
 url = "https://github.com/w3c/picture-in-picture.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/picture-in-picture/"
+aliases = ["https://www.w3.org/TR/picture-in-picture/"]
+
+[[spec]]
+name = "png"
+url = "https://github.com/w3c/png.git"
+shortname = "png-4"
+format = "respec"
+rendered = "https://w3c.github.io/png/"
+series = "png"
+
+[[spec]]
+name = "pointerevents"
+url = "https://github.com/w3c/pointerevents.git"
+
+[[spec]]
+name = "pointerevents3"
+path = "pointerevents"
+format = "respec"
+rendered = "https://w3c.github.io/pointerevents/"
+aliases = ["https://www.w3.org/TR/pointerevents3/"]
+series = "pointerevents"
+
+[[spec]]
+name = "pointerevents4"
+path = "pointerevents"
+shortname = "pointerevents"
+format = "respec"
+rendered = "https://w3c.github.io/pointerevents/"
+aliases = ["https://www.w3.org/TR/pointerevents4/", "https://www.w3.org/TR/pointerevents/"]
+
+[[spec]]
+name = "pointerlock"
+url = "https://github.com/w3c/pointerlock.git"
+format = "respec"
+rendered = "https://w3c.github.io/pointerlock/"
+aliases = ["https://www.w3.org/TR/pointerlock-2/", "https://www.w3.org/TR/pointerlock/"]
 
 [[spec]]
 name = "portals"
 url = "https://github.com/WICG/portals.git"
 format = "bikeshed"
 rendered = "https://wicg.github.io/portals/"
+
+[[spec]]
+name = "prefer-current-tab"
+url = "https://github.com/WICG/prefer-current-tab.git"
+format = "respec"
+rendered = "https://wicg.github.io/prefer-current-tab/"
+
+[[spec]]
+name = "presentation-api"
+url = "https://github.com/w3c/presentation-api.git"
+format = "respec"
+rendered = "https://w3c.github.io/presentation-api/"
+aliases = ["https://www.w3.org/TR/presentation-api/"]
 
 [[spec]]
 name = "private-network-access"
@@ -2026,6 +3072,7 @@ shortname = "tc39-atomics-microwait"
 format = "ecmarkup"
 source = "spec/index.html"
 rendered = "https://tc39.es/proposal-atomics-microwait/"
+successors = ["ecmascript"]
 
 [[spec]]
 name = "proposal-atomics-wait-async"
@@ -2089,6 +3136,7 @@ shortname = "tc39-explicit-resource-management"
 format = "ecmarkup"
 source = "spec.emu"
 rendered = "https://tc39.es/proposal-explicit-resource-management/"
+successors = ["ecmascript"]
 
 [[spec]]
 name = "proposal-float16array"
@@ -2248,6 +3296,7 @@ url = "https://github.com/tc39/proposal-iterator-join.git"
 shortname = "tc39-iterator-join"
 format = "ecmarkup"
 rendered = "https://tc39.es/proposal-iterator-join/"
+successors = ["ecmascript"]
 
 [[spec]]
 name = "proposal-iterator-sequencing"
@@ -2265,6 +3314,7 @@ shortname = "tc39-joint-iteration"
 format = "ecmarkup"
 source = "spec.emu"
 rendered = "https://tc39.es/proposal-joint-iteration/"
+successors = ["ecmascript"]
 
 [[spec]]
 name = "proposal-json-modules"
@@ -2281,6 +3331,7 @@ url = "https://github.com/tc39/proposal-json-parse-with-source.git"
 shortname = "tc39-json-parse-with-source"
 format = "ecmarkup"
 rendered = "https://tc39.es/proposal-json-parse-with-source/"
+successors = ["ecmascript"]
 
 [[spec]]
 name = "proposal-math-sum"
@@ -2411,6 +3462,21 @@ name = "proximity"
 url = "https://github.com/w3c/proximity.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/proximity/"
+aliases = ["https://www.w3.org/TR/proximity/"]
+
+[[spec]]
+name = "pub-manifest"
+url = "https://github.com/w3c/pub-manifest.git"
+format = "respec"
+rendered = "https://w3c.github.io/pub-manifest/"
+aliases = ["https://www.w3.org/TR/pub-manifest/"]
+
+[[spec]]
+name = "push-api"
+url = "https://github.com/w3c/push-api.git"
+format = "respec"
+rendered = "https://w3c.github.io/push-api/"
+aliases = ["https://www.w3.org/TR/push-api/"]
 
 [[spec]]
 name = "quirks"
@@ -2418,6 +3484,87 @@ url = "https://github.com/whatwg/quirks.git"
 format = "bikeshed"
 source = "quirks.bs"
 rendered = "https://quirks.spec.whatwg.org/"
+
+[[spec]]
+name = "rdf-canon"
+url = "https://github.com/w3c/rdf-canon.git"
+format = "respec"
+source = "spec/index.html"
+rendered = "https://w3c.github.io/rdf-canon/spec/"
+aliases = ["https://www.w3.org/TR/rdf-canon/"]
+
+[[spec]]
+name = "rdf-concepts"
+url = "https://github.com/w3c/rdf-concepts.git"
+format = "respec"
+source = "spec/index.html"
+rendered = "https://w3c.github.io/rdf-concepts/spec/"
+aliases = ["https://www.w3.org/TR/rdf12-concepts/", "https://www.w3.org/TR/rdf-concepts/"]
+
+[[spec]]
+name = "rdf-n-quads"
+url = "https://github.com/w3c/rdf-n-quads.git"
+shortname = "rdf12-n-quads"
+format = "respec"
+source = "spec/index.html"
+rendered = "https://w3c.github.io/rdf-n-quads/spec/"
+aliases = ["https://www.w3.org/TR/rdf12-n-quads/"]
+series = "rdf-n-quads"
+
+[[spec]]
+name = "rdf-n-triples"
+url = "https://github.com/w3c/rdf-n-triples.git"
+format = "respec"
+source = "spec/index.html"
+rendered = "https://w3c.github.io/rdf-n-triples/spec/"
+aliases = ["https://www.w3.org/TR/rdf12-n-triples/", "https://www.w3.org/TR/rdf-n-triples/"]
+
+[[spec]]
+name = "rdf-schema"
+url = "https://github.com/w3c/rdf-schema.git"
+format = "respec"
+source = "spec/index.html"
+rendered = "https://w3c.github.io/rdf-schema/spec/"
+aliases = ["https://www.w3.org/TR/rdf12-schema/", "https://www.w3.org/TR/rdf-schema/"]
+
+[[spec]]
+name = "rdf-semantics"
+url = "https://github.com/w3c/rdf-semantics.git"
+format = "respec"
+source = "spec/index.html"
+rendered = "https://w3c.github.io/rdf-semantics/spec/"
+aliases = ["https://www.w3.org/TR/rdf12-semantics/", "https://www.w3.org/TR/rdf-semantics/"]
+
+[[spec]]
+name = "rdf-trig"
+url = "https://github.com/w3c/rdf-trig.git"
+format = "respec"
+source = "spec/index.html"
+rendered = "https://w3c.github.io/rdf-trig/spec/"
+aliases = ["https://www.w3.org/TR/rdf12-trig/", "https://www.w3.org/TR/rdf-trig/"]
+
+[[spec]]
+name = "rdf-turtle"
+url = "https://github.com/w3c/rdf-turtle.git"
+format = "respec"
+source = "spec/index.html"
+rendered = "https://w3c.github.io/rdf-turtle/spec/"
+aliases = ["https://www.w3.org/TR/rdf12-turtle/", "https://www.w3.org/TR/rdf-turtle/"]
+
+[[spec]]
+name = "rdf-xml"
+url = "https://github.com/w3c/rdf-xml.git"
+format = "respec"
+source = "spec/index.html"
+rendered = "https://w3c.github.io/rdf-xml/spec/"
+aliases = ["https://www.w3.org/TR/rdf12-xml/", "https://www.w3.org/TR/rdf-xml/"]
+
+[[spec]]
+name = "remote-playback"
+url = "https://github.com/w3c/remote-playback.git"
+format = "respec"
+rendered = "https://w3c.github.io/remote-playback/"
+aliases = ["https://www.w3.org/TR/remote-playback/"]
 
 [[spec]]
 name = "reporting"
@@ -2436,12 +3583,21 @@ path = "reporting"
 shortname = "reporting"
 format = "bikeshed"
 rendered = "https://w3c.github.io/reporting/"
+aliases = ["https://www.w3.org/TR/reporting-1/", "https://www.w3.org/TR/reporting/"]
+
+[[spec]]
+name = "requestidlecallback"
+url = "https://github.com/w3c/requestidlecallback.git"
+format = "respec"
+rendered = "https://w3c.github.io/requestidlecallback/"
+aliases = ["https://www.w3.org/TR/requestidlecallback/"]
 
 [[spec]]
 name = "resource-timing"
 url = "https://github.com/w3c/resource-timing.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/resource-timing/"
+aliases = ["https://www.w3.org/TR/resource-timing/"]
 
 [[spec]]
 name = "responsive-image-client-hints"
@@ -2457,11 +3613,31 @@ rendered = "https://wicg.github.io/sanitizer-api/"
 successors = ["html"]
 
 [[spec]]
+name = "savedata"
+url = "https://github.com/WICG/savedata.git"
+format = "respec"
+rendered = "https://wicg.github.io/savedata/"
+
+[[spec]]
 name = "scheduling-apis"
 url = "https://github.com/WICG/scheduling-apis.git"
 format = "bikeshed"
 source = "spec/index.bs"
 rendered = "https://wicg.github.io/scheduling-apis/"
+
+[[spec]]
+name = "screen-orientation"
+url = "https://github.com/w3c/screen-orientation.git"
+format = "respec"
+rendered = "https://w3c.github.io/screen-orientation/"
+aliases = ["https://www.w3.org/TR/screen-orientation/"]
+
+[[spec]]
+name = "screen-wake-lock"
+url = "https://github.com/w3c/screen-wake-lock.git"
+format = "respec"
+rendered = "https://w3c.github.io/screen-wake-lock/"
+aliases = ["https://www.w3.org/TR/screen-wake-lock/"]
 
 [[spec]]
 name = "scroll-to-text-fragment"
@@ -2470,11 +3646,83 @@ format = "bikeshed"
 rendered = "https://wicg.github.io/scroll-to-text-fragment/"
 
 [[spec]]
+name = "sdw"
+url = "https://github.com/w3c/sdw.git"
+
+[[spec]]
+name = "qb4st"
+path = "sdw"
+format = "respec"
+source = "qb4st/index.html"
+rendered = "https://w3c.github.io/sdw/qb4st/"
+aliases = ["https://www.w3.org/TR/qb4st/"]
+
+[[spec]]
+name = "vocab-owl-time-agg"
+path = "sdw"
+format = "respec"
+source = "time-aggregates/index.html"
+rendered = "https://w3c.github.io/sdw/time-aggregates/"
+aliases = ["https://www.w3.org/TR/vocab-owl-time-agg/"]
+
+[[spec]]
+name = "vocab-owl-time-rel"
+path = "sdw"
+format = "respec"
+source = "time-entity-relations/index.html"
+rendered = "https://w3c.github.io/sdw/time-entity-relations/"
+aliases = ["https://www.w3.org/TR/vocab-owl-time-rel/"]
+
+[[spec]]
+name = "vocab-ssn-2017"
+path = "sdw"
+shortname = "vocab-ssn"
+format = "respec"
+source = "ssn/index.html"
+rendered = "https://w3c.github.io/sdw/ssn/"
+aliases = ["https://www.w3.org/TR/vocab-ssn-2017/", "https://www.w3.org/TR/vocab-ssn/"]
+
+[[spec]]
+name = "vocab-ssn-ext"
+path = "sdw"
+format = "respec"
+source = "ssn-extensions/index.html"
+rendered = "https://w3c.github.io/sdw/ssn-extensions/"
+aliases = ["https://www.w3.org/TR/vocab-ssn-ext/"]
+
+[[spec]]
+name = "sdw-sosa-ssn"
+url = "https://github.com/w3c/sdw-sosa-ssn.git"
+shortname = "vocab-ssn-2023"
+format = "respec"
+source = "ssn/index.html"
+rendered = "https://w3c.github.io/sdw-sosa-ssn/ssn/"
+aliases = ["https://www.w3.org/TR/vocab-ssn-2023/"]
+series = "vocab-ssn"
+
+[[spec]]
+name = "sdw-time"
+url = "https://github.com/w3c/sdw-time.git"
+shortname = "owl-time"
+format = "respec"
+source = "time/index.html"
+rendered = "https://w3c.github.io/sdw-time/"
+aliases = ["https://www.w3.org/TR/owl-time/"]
+
+[[spec]]
 name = "secure-payment-confirmation"
 url = "https://github.com/w3c/secure-payment-confirmation.git"
 format = "bikeshed"
 source = "spec.bs"
 rendered = "https://w3c.github.io/secure-payment-confirmation/"
+aliases = ["https://www.w3.org/TR/secure-payment-confirmation/"]
+
+[[spec]]
+name = "selection-api"
+url = "https://github.com/w3c/selection-api.git"
+format = "respec"
+rendered = "https://w3c.github.io/selection-api/"
+aliases = ["https://www.w3.org/TR/selection-api/"]
 
 [[spec]]
 name = "sensors"
@@ -2482,18 +3730,27 @@ url = "https://github.com/w3c/sensors.git"
 shortname = "generic-sensor"
 format = "bikeshed"
 rendered = "https://w3c.github.io/sensors/"
+aliases = ["https://www.w3.org/TR/generic-sensor/"]
+
+[[spec]]
+name = "serial"
+url = "https://github.com/whatwg/serial.git"
+format = "bikeshed"
+rendered = "https://serial.spec.whatwg.org/"
 
 [[spec]]
 name = "server-timing"
 url = "https://github.com/w3c/server-timing.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/server-timing/"
+aliases = ["https://www.w3.org/TR/server-timing/"]
 
 [[spec]]
 name = "service-workers"
 url = "https://github.com/w3c/ServiceWorker.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/ServiceWorker/"
+aliases = ["https://www.w3.org/TR/service-workers/"]
 
 [[spec]]
 name = "shape-detection-api"
@@ -2534,6 +3791,93 @@ format = "bikeshed"
 rendered = "https://wicg.github.io/soft-navigations/"
 
 [[spec]]
+name = "sparql-concepts"
+url = "https://github.com/w3c/sparql-concepts.git"
+format = "respec"
+source = "spec/index.html"
+rendered = "https://w3c.github.io/sparql-concepts/spec/"
+
+[[spec]]
+name = "sparql-entailment"
+url = "https://github.com/w3c/sparql-entailment.git"
+format = "respec"
+source = "spec/index.html"
+rendered = "https://w3c.github.io/sparql-entailment/spec/"
+aliases = ["https://www.w3.org/TR/sparql12-entailment/", "https://www.w3.org/TR/sparql-entailment/"]
+
+[[spec]]
+name = "sparql-federated-query"
+url = "https://github.com/w3c/sparql-federated-query.git"
+format = "respec"
+source = "spec/index.html"
+rendered = "https://w3c.github.io/sparql-federated-query/spec/"
+aliases = ["https://www.w3.org/TR/sparql12-federated-query/", "https://www.w3.org/TR/sparql-federated-query/"]
+
+[[spec]]
+name = "sparql-graph-store-protocol"
+url = "https://github.com/w3c/sparql-graph-store-protocol.git"
+format = "respec"
+source = "spec/index.html"
+rendered = "https://w3c.github.io/sparql-graph-store-protocol/spec/"
+aliases = ["https://www.w3.org/TR/sparql12-graph-store-protocol/", "https://www.w3.org/TR/sparql-graph-store-protocol/"]
+
+[[spec]]
+name = "sparql-protocol"
+url = "https://github.com/w3c/sparql-protocol.git"
+format = "respec"
+source = "spec/index.html"
+rendered = "https://w3c.github.io/sparql-protocol/spec/"
+aliases = ["https://www.w3.org/TR/sparql12-protocol/", "https://www.w3.org/TR/sparql-protocol/"]
+
+[[spec]]
+name = "sparql-query"
+url = "https://github.com/w3c/sparql-query.git"
+format = "respec"
+source = "spec/index.html"
+rendered = "https://w3c.github.io/sparql-query/spec/"
+aliases = ["https://www.w3.org/TR/sparql12-query/", "https://www.w3.org/TR/sparql-query/"]
+
+[[spec]]
+name = "sparql-results-csv-tsv"
+url = "https://github.com/w3c/sparql-results-csv-tsv.git"
+format = "respec"
+source = "spec/index.html"
+rendered = "https://w3c.github.io/sparql-results-csv-tsv/spec/"
+aliases = ["https://www.w3.org/TR/sparql12-results-csv-tsv/", "https://www.w3.org/TR/sparql-results-csv-tsv/"]
+
+[[spec]]
+name = "sparql-results-json"
+url = "https://github.com/w3c/sparql-results-json.git"
+format = "respec"
+source = "spec/index.html"
+rendered = "https://w3c.github.io/sparql-results-json/spec/"
+aliases = ["https://www.w3.org/TR/sparql12-results-json/", "https://www.w3.org/TR/sparql-results-json/"]
+
+[[spec]]
+name = "sparql-results-xml"
+url = "https://github.com/w3c/sparql-results-xml.git"
+format = "respec"
+source = "spec/index.html"
+rendered = "https://w3c.github.io/sparql-results-xml/spec/"
+aliases = ["https://www.w3.org/TR/sparql12-results-xml/", "https://www.w3.org/TR/sparql-results-xml/"]
+
+[[spec]]
+name = "sparql-service-description"
+url = "https://github.com/w3c/sparql-service-description.git"
+format = "respec"
+source = "spec/index.html"
+rendered = "https://w3c.github.io/sparql-service-description/spec/"
+aliases = ["https://www.w3.org/TR/sparql12-service-description/", "https://www.w3.org/TR/sparql-service-description/"]
+
+[[spec]]
+name = "sparql-update"
+url = "https://github.com/w3c/sparql-update.git"
+format = "respec"
+source = "spec/index.html"
+rendered = "https://w3c.github.io/sparql-update/spec/"
+aliases = ["https://www.w3.org/TR/sparql12-update/", "https://www.w3.org/TR/sparql-update/"]
+
+[[spec]]
 name = "storage"
 url = "https://github.com/whatwg/storage.git"
 format = "bikeshed"
@@ -2553,6 +3897,15 @@ format = "bikeshed"
 rendered = "https://streams.spec.whatwg.org/"
 
 [[spec]]
+name = "svgwg"
+url = "https://github.com/w3c/svgwg.git"
+shortname = "SVG"
+format = "respec"
+source = "master/Overview.html"
+rendered = "https://w3c.github.io/svgwg/svg2-draft/"
+aliases = ["https://www.w3.org/TR/SVG2/", "https://www.w3.org/TR/SVG/"]
+
+[[spec]]
 name = "testutils"
 url = "https://github.com/whatwg/testutils.git"
 format = "bikeshed"
@@ -2563,6 +3916,52 @@ name = "timing-entrytypes-registry"
 url = "https://github.com/w3c/timing-entrytypes-registry.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/timing-entrytypes-registry/"
+aliases = ["https://www.w3.org/TR/timing-entrytypes-registry/"]
+
+[[spec]]
+name = "touch-events"
+url = "https://github.com/w3c/touch-events.git"
+format = "respec"
+rendered = "https://w3c.github.io/touch-events/"
+aliases = ["https://www.w3.org/TR/touch-events/"]
+
+[[spec]]
+name = "trace-context"
+url = "https://github.com/w3c/trace-context.git"
+format = "respec"
+rendered = "https://w3c.github.io/trace-context/"
+aliases = ["https://www.w3.org/TR/trace-context-2/", "https://www.w3.org/TR/trace-context/"]
+
+[[spec]]
+name = "trace-context-amqp"
+url = "https://github.com/w3c/trace-context-amqp.git"
+format = "respec"
+rendered = "https://w3c.github.io/trace-context-amqp/"
+
+[[spec]]
+name = "trace-context-binary"
+url = "https://github.com/w3c/trace-context-binary.git"
+format = "respec"
+rendered = "https://w3c.github.io/trace-context-binary/"
+
+[[spec]]
+name = "trace-context-mqtt"
+url = "https://github.com/w3c/trace-context-mqtt.git"
+format = "respec"
+rendered = "https://w3c.github.io/trace-context-mqtt/"
+
+[[spec]]
+name = "trace-context-protocols-registry"
+url = "https://github.com/w3c/trace-context-protocols-registry.git"
+format = "respec"
+rendered = "https://w3c.github.io/trace-context-protocols-registry/"
+aliases = ["https://www.w3.org/TR/trace-context-protocols-registry/"]
+
+[[spec]]
+name = "tracestate-ids-registry"
+url = "https://github.com/w3c/tracestate-ids-registry.git"
+format = "respec"
+rendered = "https://w3c.github.io/tracestate-ids-registry/"
 
 [[spec]]
 name = "trust-token-api"
@@ -2577,6 +3976,15 @@ url = "https://github.com/w3c/trusted-types.git"
 format = "bikeshed"
 source = "spec/index.bs"
 rendered = "https://w3c.github.io/trusted-types/dist/spec/"
+aliases = ["https://www.w3.org/TR/trusted-types/"]
+
+[[spec]]
+name = "ttml2"
+url = "https://github.com/w3c/ttml2.git"
+shortname = "ttml"
+format = "respec"
+rendered = "https://w3c.github.io/ttml2/index.html"
+aliases = ["https://w3c.github.io/ttml/index.html", "https://www.w3.org/TR/ttml2/", "https://www.w3.org/TR/ttml/"]
 
 [[spec]]
 name = "turtledove"
@@ -2596,6 +4004,7 @@ name = "uievents"
 url = "https://github.com/w3c/uievents.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/uievents/"
+aliases = ["https://www.w3.org/TR/uievents/"]
 
 [[spec]]
 name = "url"
@@ -2628,6 +4037,129 @@ name = "user-timing"
 url = "https://github.com/w3c/user-timing.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/user-timing/"
+aliases = ["https://www.w3.org/TR/user-timing/"]
+
+[[spec]]
+name = "vc-barcodes"
+url = "https://github.com/w3c/vc-barcodes.git"
+format = "respec"
+rendered = "https://w3c.github.io/vc-barcodes/"
+aliases = ["https://www.w3.org/TR/vc-barcodes-1.0/", "https://www.w3.org/TR/vc-barcodes/"]
+
+[[spec]]
+name = "vc-bitstring-status-list"
+url = "https://github.com/w3c/vc-bitstring-status-list.git"
+shortname = "vc-bitstring-status-list-1.1"
+format = "respec"
+rendered = "https://w3c.github.io/vc-bitstring-status-list/"
+aliases = ["https://www.w3.org/TR/vc-bitstring-status-list-1.1/"]
+series = "vc-bitstring-status-list"
+
+[[spec]]
+name = "vc-confidence-method"
+url = "https://github.com/w3c/vc-confidence-method.git"
+format = "respec"
+rendered = "https://w3c.github.io/vc-confidence-method/"
+aliases = ["https://www.w3.org/TR/vc-confidence-method/"]
+
+[[spec]]
+name = "vc-data-integrity"
+url = "https://github.com/w3c/vc-data-integrity.git"
+shortname = "vc-data-integrity-1.1"
+format = "respec"
+rendered = "https://w3c.github.io/vc-data-integrity/"
+aliases = ["https://www.w3.org/TR/vc-data-integrity-1.1/"]
+series = "vc-data-integrity"
+
+[[spec]]
+name = "vc-data-model"
+url = "https://github.com/w3c/vc-data-model.git"
+shortname = "vc-data-model-2.1"
+format = "respec"
+rendered = "https://w3c.github.io/vc-data-model/"
+aliases = ["https://www.w3.org/TR/vc-data-model-2.1/"]
+series = "vc-data-model"
+
+[[spec]]
+name = "vc-di-bbs"
+url = "https://github.com/w3c/vc-di-bbs.git"
+format = "respec"
+rendered = "https://w3c.github.io/vc-di-bbs/"
+aliases = ["https://www.w3.org/TR/vc-di-bbs/"]
+
+[[spec]]
+name = "vc-di-ecdsa"
+url = "https://github.com/w3c/vc-di-ecdsa.git"
+shortname = "vc-di-ecdsa-1.1"
+format = "respec"
+rendered = "https://w3c.github.io/vc-di-ecdsa/"
+aliases = ["https://www.w3.org/TR/vc-di-ecdsa-1.1/"]
+series = "vc-di-ecdsa"
+
+[[spec]]
+name = "vc-di-eddsa"
+url = "https://github.com/w3c/vc-di-eddsa.git"
+shortname = "vc-di-eddsa-1.1"
+format = "respec"
+rendered = "https://w3c.github.io/vc-di-eddsa/"
+aliases = ["https://www.w3.org/TR/vc-di-eddsa-1.1/"]
+series = "vc-di-eddsa"
+
+[[spec]]
+name = "vc-di-quantum-resistant"
+url = "https://github.com/w3c/vc-di-quantum-resistant.git"
+format = "respec"
+rendered = "https://w3c.github.io/vc-di-quantum-resistant/"
+aliases = ["https://www.w3.org/TR/vc-di-quantum-resistant-1.0/", "https://www.w3.org/TR/vc-di-quantum-resistant/"]
+
+[[spec]]
+name = "vc-forgery-defense"
+url = "https://github.com/w3c/vc-forgery-defense.git"
+format = "respec"
+rendered = "https://w3c.github.io/vc-forgery-defense/"
+aliases = ["https://www.w3.org/TR/vc-forgery-defense-1.0/", "https://www.w3.org/TR/vc-forgery-defense/"]
+
+[[spec]]
+name = "vc-jose-cose"
+url = "https://github.com/w3c/vc-jose-cose.git"
+format = "respec"
+rendered = "https://w3c.github.io/vc-jose-cose/"
+aliases = ["https://www.w3.org/TR/vc-jose-cose/"]
+
+[[spec]]
+name = "vc-json-schema"
+url = "https://github.com/w3c/vc-json-schema.git"
+format = "respec"
+rendered = "https://w3c.github.io/vc-json-schema/"
+aliases = ["https://www.w3.org/TR/vc-json-schema/"]
+
+[[spec]]
+name = "vc-recognized-entities"
+url = "https://github.com/w3c/vc-recognized-entities.git"
+format = "respec"
+rendered = "https://w3c.github.io/vc-recognized-entities/"
+aliases = ["https://www.w3.org/TR/vc-recognized-entities-1.0/", "https://www.w3.org/TR/vc-recognized-entities/"]
+
+[[spec]]
+name = "vc-render-method"
+url = "https://github.com/w3c/vc-render-method.git"
+format = "respec"
+rendered = "https://w3c.github.io/vc-render-method/"
+aliases = ["https://www.w3.org/TR/vc-render-method/"]
+
+[[spec]]
+name = "vcalm"
+url = "https://github.com/w3c/vcalm.git"
+format = "respec"
+rendered = "https://w3c.github.io/vcalm/"
+aliases = ["https://www.w3.org/TR/vcalm-1.0/", "https://www.w3.org/TR/vcalm/"]
+
+[[spec]]
+name = "vibration"
+url = "https://github.com/w3c/vibration.git"
+format = "respec"
+rendered = "https://w3c.github.io/vibration/"
+aliases = ["https://www.w3.org/TR/vibration/"]
 
 [[spec]]
 name = "video-rvfc"
@@ -2636,18 +4168,47 @@ format = "bikeshed"
 rendered = "https://wicg.github.io/video-rvfc/"
 
 [[spec]]
+name = "virtual-keyboard"
+url = "https://github.com/w3c/virtual-keyboard.git"
+format = "respec"
+rendered = "https://w3c.github.io/virtual-keyboard/"
+aliases = ["https://www.w3.org/TR/virtual-keyboard/"]
+
+[[spec]]
+name = "wcag"
+url = "https://github.com/w3c/wcag.git"
+format = "respec"
+rendered = "https://w3c.github.io/wcag/guidelines/22/"
+aliases = ["https://www.w3.org/TR/WCAG22/", "https://www.w3.org/TR/wcag/"]
+
+[[spec]]
 name = "wcag-act"
 url = "https://github.com/w3c/wcag-act.git"
 shortname = "act-rules-format"
 format = "bikeshed"
 source = "act-rules-format/act-rules-format.bs"
 rendered = "https://w3c.github.io/wcag-act/act-rules-format.html"
+aliases = ["https://www.w3.org/TR/act-rules-format-1.1/", "https://www.w3.org/TR/act-rules-format/"]
+
+[[spec]]
+name = "web-app-launch"
+url = "https://github.com/WICG/web-app-launch.git"
+format = "respec"
+rendered = "https://wicg.github.io/web-app-launch/"
+
+[[spec]]
+name = "web-based-payment-handler"
+url = "https://github.com/w3c/web-based-payment-handler.git"
+format = "respec"
+rendered = "https://w3c.github.io/web-based-payment-handler/"
+aliases = ["https://www.w3.org/TR/web-based-payment-handler/"]
 
 [[spec]]
 name = "web-locks"
 url = "https://github.com/w3c/web-locks.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/web-locks/"
+aliases = ["https://www.w3.org/TR/web-locks/"]
 
 [[spec]]
 name = "web-otp"
@@ -2661,6 +4222,19 @@ url = "https://github.com/WICG/web-preferences-api.git"
 format = "bikeshed"
 rendered = "https://wicg.github.io/web-preferences-api/"
 successors = ["mediaqueries-5"]
+
+[[spec]]
+name = "web-share"
+url = "https://github.com/w3c/web-share.git"
+format = "respec"
+rendered = "https://w3c.github.io/web-share/"
+aliases = ["https://www.w3.org/TR/web-share/"]
+
+[[spec]]
+name = "web-share-target"
+url = "https://github.com/w3c/web-share-target.git"
+format = "respec"
+rendered = "https://w3c.github.io/web-share-target/"
 
 [[spec]]
 name = "web-smart-card"
@@ -2693,6 +4267,7 @@ shortname = "change-password-url"
 format = "bikeshed"
 source = "change-password-url.bs"
 rendered = "https://w3c.github.io/webappsec-change-password-url/"
+aliases = ["https://www.w3.org/TR/change-password-url/"]
 
 [[spec]]
 name = "webappsec-clear-site-data"
@@ -2701,6 +4276,7 @@ shortname = "clear-site-data"
 format = "bikeshed"
 source = "index.src.html"
 rendered = "https://w3c.github.io/webappsec-clear-site-data/"
+aliases = ["https://www.w3.org/TR/clear-site-data/"]
 
 [[spec]]
 name = "webappsec-credential-management"
@@ -2708,6 +4284,7 @@ url = "https://github.com/w3c/webappsec-credential-management.git"
 shortname = "credential-management"
 format = "bikeshed"
 rendered = "https://w3c.github.io/webappsec-credential-management/"
+aliases = ["https://www.w3.org/TR/credential-management-1/", "https://www.w3.org/TR/credential-management/"]
 
 [[spec]]
 name = "webappsec-csp"
@@ -2715,6 +4292,7 @@ url = "https://github.com/w3c/webappsec-csp.git"
 shortname = "CSP"
 format = "bikeshed"
 rendered = "https://w3c.github.io/webappsec-csp/"
+aliases = ["https://www.w3.org/TR/CSP3/", "https://www.w3.org/TR/CSP/"]
 
 [[spec]]
 name = "webappsec-cspee"
@@ -2723,6 +4301,7 @@ shortname = "csp-embedded-enforcement"
 format = "bikeshed"
 source = "index.src.html"
 rendered = "https://w3c.github.io/webappsec-cspee/"
+aliases = ["https://www.w3.org/TR/csp-embedded-enforcement/"]
 
 [[spec]]
 name = "webappsec-dbsc"
@@ -2731,6 +4310,7 @@ shortname = "dbsc"
 format = "bikeshed"
 source = "spec.bs"
 rendered = "https://w3c.github.io/webappsec-dbsc/"
+aliases = ["https://www.w3.org/TR/dbsc-1/", "https://www.w3.org/TR/dbsc/"]
 
 [[spec]]
 name = "webappsec-fetch-metadata"
@@ -2738,6 +4318,7 @@ url = "https://github.com/w3c/webappsec-fetch-metadata.git"
 shortname = "fetch-metadata"
 format = "bikeshed"
 rendered = "https://w3c.github.io/webappsec-fetch-metadata/"
+aliases = ["https://www.w3.org/TR/fetch-metadata/"]
 
 [[spec]]
 name = "webappsec-mixed-content"
@@ -2745,6 +4326,7 @@ url = "https://github.com/w3c/webappsec-mixed-content.git"
 shortname = "mixed-content"
 format = "bikeshed"
 rendered = "https://w3c.github.io/webappsec-mixed-content/"
+aliases = ["https://www.w3.org/TR/mixed-content/"]
 
 [[spec]]
 name = "webappsec-passkey-endpoints"
@@ -2752,6 +4334,7 @@ url = "https://github.com/w3c/webappsec-passkey-endpoints.git"
 shortname = "passkey-endpoints"
 format = "bikeshed"
 rendered = "https://w3c.github.io/webappsec-passkey-endpoints/"
+aliases = ["https://www.w3.org/TR/passkey-endpoints-1/", "https://www.w3.org/TR/passkey-endpoints/"]
 
 [[spec]]
 name = "webappsec-permissions-policy"
@@ -2759,6 +4342,7 @@ url = "https://github.com/w3c/webappsec-permissions-policy.git"
 shortname = "permissions-policy"
 format = "bikeshed"
 rendered = "https://w3c.github.io/webappsec-permissions-policy/"
+aliases = ["https://www.w3.org/TR/permissions-policy-1/", "https://www.w3.org/TR/permissions-policy/"]
 
 [[spec]]
 name = "webappsec-referrer-policy"
@@ -2767,6 +4351,7 @@ shortname = "referrer-policy"
 format = "bikeshed"
 source = "index.src.html"
 rendered = "https://w3c.github.io/webappsec-referrer-policy/"
+aliases = ["https://www.w3.org/TR/referrer-policy/"]
 
 [[spec]]
 name = "webappsec-secure-contexts"
@@ -2774,6 +4359,7 @@ url = "https://github.com/w3c/webappsec-secure-contexts.git"
 shortname = "secure-contexts"
 format = "bikeshed"
 rendered = "https://w3c.github.io/webappsec-secure-contexts/"
+aliases = ["https://www.w3.org/TR/secure-contexts/"]
 
 [[spec]]
 name = "webappsec-subresource-integrity"
@@ -2781,6 +4367,7 @@ url = "https://github.com/w3c/webappsec-subresource-integrity.git"
 shortname = "sri"
 format = "bikeshed"
 rendered = "https://w3c.github.io/webappsec-subresource-integrity/"
+aliases = ["https://www.w3.org/TR/sri-2/", "https://www.w3.org/TR/sri/"]
 
 [[spec]]
 name = "webappsec-upgrade-insecure-requests"
@@ -2788,12 +4375,14 @@ url = "https://github.com/w3c/webappsec-upgrade-insecure-requests.git"
 shortname = "upgrade-insecure-requests"
 format = "bikeshed"
 rendered = "https://w3c.github.io/webappsec-upgrade-insecure-requests/"
+aliases = ["https://www.w3.org/TR/upgrade-insecure-requests/"]
 
 [[spec]]
 name = "webauthn"
 url = "https://github.com/w3c/webauthn.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/webauthn/"
+aliases = ["https://www.w3.org/TR/webauthn-4/", "https://www.w3.org/TR/webauthn/"]
 
 [[spec]]
 name = "webcodecs"
@@ -2801,6 +4390,7 @@ url = "https://github.com/w3c/webcodecs.git"
 format = "bikeshed"
 source = "index.src.html"
 rendered = "https://w3c.github.io/webcodecs/"
+aliases = ["https://www.w3.org/TR/webcodecs/"]
 
 [[spec]]
 name = "webcodecs-aac-codec-registration"
@@ -2808,6 +4398,7 @@ path = "webcodecs"
 format = "bikeshed"
 source = "aac_codec_registration.src.html"
 rendered = "https://w3c.github.io/webcodecs/aac_codec_registration.html"
+aliases = ["https://www.w3.org/TR/webcodecs-aac-codec-registration/"]
 
 [[spec]]
 name = "webcodecs-alaw-codec-registration"
@@ -2815,6 +4406,7 @@ path = "webcodecs"
 format = "bikeshed"
 source = "alaw_codec_registration.src.html"
 rendered = "https://w3c.github.io/webcodecs/alaw_codec_registration.html"
+aliases = ["https://www.w3.org/TR/webcodecs-alaw-codec-registration/"]
 
 [[spec]]
 name = "webcodecs-av1-codec-registration"
@@ -2822,6 +4414,7 @@ path = "webcodecs"
 format = "bikeshed"
 source = "av1_codec_registration.src.html"
 rendered = "https://w3c.github.io/webcodecs/av1_codec_registration.html"
+aliases = ["https://www.w3.org/TR/webcodecs-av1-codec-registration/"]
 
 [[spec]]
 name = "webcodecs-avc-codec-registration"
@@ -2829,6 +4422,7 @@ path = "webcodecs"
 format = "bikeshed"
 source = "avc_codec_registration.src.html"
 rendered = "https://w3c.github.io/webcodecs/avc_codec_registration.html"
+aliases = ["https://www.w3.org/TR/webcodecs-avc-codec-registration/"]
 
 [[spec]]
 name = "webcodecs-codec-registry"
@@ -2836,6 +4430,7 @@ path = "webcodecs"
 format = "bikeshed"
 source = "codec_registry.src.html"
 rendered = "https://w3c.github.io/webcodecs/codec_registry.html"
+aliases = ["https://www.w3.org/TR/webcodecs-codec-registry/"]
 
 [[spec]]
 name = "webcodecs-flac-codec-registration"
@@ -2843,6 +4438,7 @@ path = "webcodecs"
 format = "bikeshed"
 source = "flac_codec_registration.src.html"
 rendered = "https://w3c.github.io/webcodecs/flac_codec_registration.html"
+aliases = ["https://www.w3.org/TR/webcodecs-flac-codec-registration/"]
 
 [[spec]]
 name = "webcodecs-hevc-codec-registration"
@@ -2850,6 +4446,7 @@ path = "webcodecs"
 format = "bikeshed"
 source = "hevc_codec_registration.src.html"
 rendered = "https://w3c.github.io/webcodecs/hevc_codec_registration.html"
+aliases = ["https://www.w3.org/TR/webcodecs-hevc-codec-registration/"]
 
 [[spec]]
 name = "webcodecs-mp3-codec-registration"
@@ -2857,6 +4454,7 @@ path = "webcodecs"
 format = "bikeshed"
 source = "mp3_codec_registration.src.html"
 rendered = "https://w3c.github.io/webcodecs/mp3_codec_registration.html"
+aliases = ["https://www.w3.org/TR/webcodecs-mp3-codec-registration/"]
 
 [[spec]]
 name = "webcodecs-opus-codec-registration"
@@ -2864,6 +4462,7 @@ path = "webcodecs"
 format = "bikeshed"
 source = "opus_codec_registration.src.html"
 rendered = "https://w3c.github.io/webcodecs/opus_codec_registration.html"
+aliases = ["https://www.w3.org/TR/webcodecs-opus-codec-registration/"]
 
 [[spec]]
 name = "webcodecs-pcm-codec-registration"
@@ -2871,6 +4470,7 @@ path = "webcodecs"
 format = "bikeshed"
 source = "pcm_codec_registration.src.html"
 rendered = "https://w3c.github.io/webcodecs/pcm_codec_registration.html"
+aliases = ["https://www.w3.org/TR/webcodecs-pcm-codec-registration/"]
 
 [[spec]]
 name = "webcodecs-ulaw-codec-registration"
@@ -2878,6 +4478,7 @@ path = "webcodecs"
 format = "bikeshed"
 source = "ulaw_codec_registration.src.html"
 rendered = "https://w3c.github.io/webcodecs/ulaw_codec_registration.html"
+aliases = ["https://www.w3.org/TR/webcodecs-ulaw-codec-registration/"]
 
 [[spec]]
 name = "webcodecs-video-frame-metadata-registry"
@@ -2885,6 +4486,7 @@ path = "webcodecs"
 format = "bikeshed"
 source = "video_frame_metadata_registry.src.html"
 rendered = "https://w3c.github.io/webcodecs/video_frame_metadata_registry.html"
+aliases = ["https://www.w3.org/TR/webcodecs-video-frame-metadata-registry/"]
 
 [[spec]]
 name = "webcodecs-vorbis-codec-registration"
@@ -2892,6 +4494,7 @@ path = "webcodecs"
 format = "bikeshed"
 source = "vorbis_codec_registration.src.html"
 rendered = "https://w3c.github.io/webcodecs/vorbis_codec_registration.html"
+aliases = ["https://www.w3.org/TR/webcodecs-vorbis-codec-registration/"]
 
 [[spec]]
 name = "webcodecs-vp8-codec-registration"
@@ -2899,6 +4502,7 @@ path = "webcodecs"
 format = "bikeshed"
 source = "vp8_codec_registration.src.html"
 rendered = "https://w3c.github.io/webcodecs/vp8_codec_registration.html"
+aliases = ["https://www.w3.org/TR/webcodecs-vp8-codec-registration/"]
 
 [[spec]]
 name = "webcodecs-vp9-codec-registration"
@@ -2906,12 +4510,41 @@ path = "webcodecs"
 format = "bikeshed"
 source = "vp9_codec_registration.src.html"
 rendered = "https://w3c.github.io/webcodecs/vp9_codec_registration.html"
+aliases = ["https://www.w3.org/TR/webcodecs-vp9-codec-registration/"]
+
+[[spec]]
+name = "webcrypto"
+url = "https://github.com/w3c/webcrypto.git"
+format = "respec"
+source = "spec/Overview.html"
+rendered = "https://w3c.github.io/webcrypto/"
+aliases = ["https://www.w3.org/TR/webcrypto-2/", "https://www.w3.org/TR/webcrypto/"]
+
+[[spec]]
+name = "webcrypto-modern-algos"
+url = "https://github.com/WICG/webcrypto-modern-algos.git"
+format = "respec"
+rendered = "https://wicg.github.io/webcrypto-modern-algos/"
+
+[[spec]]
+name = "webcrypto-secure-curves"
+url = "https://github.com/WICG/webcrypto-secure-curves.git"
+format = "respec"
+rendered = "https://wicg.github.io/webcrypto-secure-curves/"
+
+[[spec]]
+name = "webdriver"
+url = "https://github.com/w3c/webdriver.git"
+format = "respec"
+rendered = "https://w3c.github.io/webdriver/"
+aliases = ["https://www.w3.org/TR/webdriver2/", "https://www.w3.org/TR/webdriver/"]
 
 [[spec]]
 name = "webdriver-bidi"
 url = "https://github.com/w3c/webdriver-bidi.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/webdriver-bidi/"
+aliases = ["https://www.w3.org/TR/webdriver-bidi/"]
 
 [[spec]]
 name = "webextensions"
@@ -2944,12 +4577,52 @@ name = "webrtc-encoded-transform"
 url = "https://github.com/w3c/webrtc-encoded-transform.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/webrtc-encoded-transform/"
+aliases = ["https://www.w3.org/TR/webrtc-encoded-transform/"]
+
+[[spec]]
+name = "webrtc-ice"
+url = "https://github.com/w3c/webrtc-ice.git"
+format = "respec"
+rendered = "https://w3c.github.io/webrtc-ice/"
+
+[[spec]]
+name = "webrtc-identity"
+url = "https://github.com/w3c/webrtc-identity.git"
+format = "respec"
+source = "identity.html"
+rendered = "https://w3c.github.io/webrtc-identity/"
+aliases = ["https://www.w3.org/TR/webrtc-identity/"]
+
+[[spec]]
+name = "webrtc-pc"
+url = "https://github.com/w3c/webrtc-pc.git"
+shortname = "webrtc"
+format = "respec"
+source = "webrtc.html"
+rendered = "https://w3c.github.io/webrtc-pc/"
+aliases = ["https://www.w3.org/TR/webrtc/"]
 
 [[spec]]
 name = "webrtc-priority"
 url = "https://github.com/w3c/webrtc-priority.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/webrtc-priority/"
+aliases = ["https://www.w3.org/TR/webrtc-priority/"]
+
+[[spec]]
+name = "webrtc-stats"
+url = "https://github.com/w3c/webrtc-stats.git"
+format = "respec"
+source = "webrtc-stats.html"
+rendered = "https://w3c.github.io/webrtc-stats/"
+aliases = ["https://www.w3.org/TR/webrtc-stats/"]
+
+[[spec]]
+name = "webrtc-svc"
+url = "https://github.com/w3c/webrtc-svc.git"
+format = "respec"
+rendered = "https://w3c.github.io/webrtc-svc/"
+aliases = ["https://www.w3.org/TR/webrtc-svc/"]
 
 [[spec]]
 name = "websockets"
@@ -2962,18 +4635,110 @@ name = "webtransport"
 url = "https://github.com/w3c/webtransport.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/webtransport/"
+aliases = ["https://www.w3.org/TR/webtransport/"]
 
 [[spec]]
 name = "webvtt"
 url = "https://github.com/w3c/webvtt.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/webvtt/"
+aliases = ["https://www.w3.org/TR/webvtt1/", "https://www.w3.org/TR/webvtt/"]
+
+[[spec]]
+name = "window-controls-overlay"
+url = "https://github.com/WICG/window-controls-overlay.git"
+format = "respec"
+rendered = "https://wicg.github.io/window-controls-overlay/"
 
 [[spec]]
 name = "window-management"
 url = "https://github.com/w3c/window-management.git"
 format = "bikeshed"
 rendered = "https://w3c.github.io/window-management/"
+aliases = ["https://www.w3.org/TR/window-management/"]
+
+[[spec]]
+name = "woff"
+url = "https://github.com/w3c/woff.git"
+
+[[spec]]
+name = "WOFF"
+path = "woff"
+format = "respec"
+source = "woff1/spec/Overview.html"
+rendered = "https://w3c.github.io/woff/woff1/spec/Overview.html"
+aliases = ["https://www.w3.org/TR/WOFF/"]
+
+[[spec]]
+name = "WOFF2"
+path = "woff"
+format = "respec"
+source = "woff2/index.html"
+rendered = "https://w3c.github.io/woff/woff2/"
+aliases = ["https://www.w3.org/TR/WOFF2/"]
+series = "WOFF"
+
+[[spec]]
+name = "wot-architecture"
+url = "https://github.com/w3c/wot-architecture.git"
+format = "respec"
+rendered = "https://w3c.github.io/wot-architecture/"
+aliases = ["https://www.w3.org/TR/wot-architecture11/", "https://www.w3.org/TR/wot-architecture/"]
+
+[[spec]]
+name = "wot-binding-registry"
+url = "https://github.com/w3c/wot-binding-registry.git"
+format = "respec"
+rendered = "https://w3c.github.io/wot-binding-registry/"
+aliases = ["https://www.w3.org/TR/wot-binding-registry/"]
+
+[[spec]]
+name = "wot-discovery"
+url = "https://github.com/w3c/wot-discovery.git"
+format = "respec"
+rendered = "https://w3c.github.io/wot-discovery/"
+aliases = ["https://www.w3.org/TR/wot-discovery/"]
+
+[[spec]]
+name = "wot-profile"
+url = "https://github.com/w3c/wot-profile.git"
+format = "respec"
+rendered = "https://w3c.github.io/wot-profile/"
+aliases = ["https://www.w3.org/TR/wot-profile/"]
+
+[[spec]]
+name = "wot-thing-description"
+url = "https://github.com/w3c/wot-thing-description.git"
+
+[[spec]]
+name = "wot-thing-description-2.0"
+path = "wot-thing-description"
+format = "respec"
+rendered = "https://w3c.github.io/wot-thing-description/"
+aliases = ["https://www.w3.org/TR/wot-thing-description-2.0/"]
+series = "wot-thing-description"
+
+[[spec]]
+name = "wot-thing-description11"
+path = "wot-thing-description"
+shortname = "wot-thing-description"
+format = "respec"
+rendered = "https://w3c.github.io/wot-thing-description/"
+aliases = ["https://www.w3.org/TR/wot-thing-description11/", "https://www.w3.org/TR/wot-thing-description/"]
+
+[[spec]]
+name = "wpub"
+url = "https://github.com/w3c/wpub.git"
+format = "respec"
+rendered = "https://w3c.github.io/wpub/"
+aliases = ["https://www.w3.org/TR/wpub/"]
+
+[[spec]]
+name = "wpub-ann"
+url = "https://github.com/w3c/wpub-ann.git"
+format = "respec"
+rendered = "https://w3c.github.io/wpub-ann/"
+aliases = ["https://www.w3.org/TR/wpub-ann/"]
 
 [[spec]]
 name = "xhr"
@@ -2981,3 +4746,11 @@ url = "https://github.com/whatwg/xhr.git"
 format = "bikeshed"
 source = "xhr.bs"
 rendered = "https://xhr.spec.whatwg.org/"
+
+[[spec]]
+name = "yaml-ld"
+url = "https://github.com/w3c/yaml-ld.git"
+format = "respec"
+source = "spec/index.html"
+rendered = "https://w3c.github.io/yaml-ld/"
+aliases = ["https://www.w3.org/TR/yaml-ld-10/", "https://www.w3.org/TR/yaml-ld/"]
