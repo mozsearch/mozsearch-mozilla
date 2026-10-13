@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# A try push's semantic analysis (see mozsearch's tools/src/try_delta.rs),
+# for a tree indexing only linux64's analysis (firefox-try; see its setup):
+# rebase the push's stack onto the indexed revision
+# (mozsearch's scripts/rebase-try-push.sh), and build it in the tree's
+# prepared build (see prepare.sh), starting from its pristine state: the
+# export tier, and then, with the indexer, the translation units that include
+# the files it changes (by the base's include map), writing their files'
+# analysis (see select_tus.py and compile.py), with all but 8 of the cores,
+# for the web server's sake.  That analysis, merged like the tree's (see
+# ../process-gecko-analysis.sh), is the delta's (see build-try-delta).
+#
+# Usage: analyze.sh NAME HEAD_REV, with try_import's hook environment (see
+# mozsearch's tools/src/try_import.rs): GIT_ROOT, INDEX_ROOT, CONFIG_FILE,
+# TREE_NAME, and MOZSEARCH_PATH.
+
+NAME=$1
+HEAD_REV=$2
+HERE=$(cd "$(dirname "$0")" && pwd)
+SEM=$INDEX_ROOT/semantic
+PUSH=$SEM/workspace/push
+JOBS=$(nproc)
+JOBS=$(( JOBS > 9 ? JOBS - 8 : 1 ))
+
+# (One at a time, like try imports.)
+exec 9> "$INDEX_ROOT/semantic.lock"
+flock 9
+
+"$HERE/prepare.sh" "$SEM" "$GIT_ROOT" "$(jq -r .moz_source_stamp "$INDEX_ROOT/target.json")"
+
+echo "Performing semantic::rebase step for $NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+BASE=$(git -C "$GIT_ROOT" rev-parse HEAD)
+REBASED=$("$MOZSEARCH_PATH/scripts/rebase-try-push.sh" "$GIT_ROOT" "$NAME" "$HEAD_REV")
+rsync -a --delete "$SEM/pristine/obj-build/" "$SEM/workspace/obj-build/"
+rsync -a --delete "$SEM/pristine/mozbuild/" "$SEM/mozbuild/"
+git -C "$SEM/gecko" checkout -q --detach -f "$REBASED"
+git -C "$SEM/gecko" clean -q -fdx
+rm -rf "$PUSH"
+mkdir -p "$PUSH"
+git -C "$GIT_ROOT" diff --name-only "$BASE" "$REBASED" > "$PUSH/changed.lst"
+
+echo "Performing semantic::build-export step for $NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+touch "$PUSH/export-marker"
+sleep 1
+"$HERE/inbuild.sh" "$SEM" python3 ./mach --no-interactive build pre-export export -j$JOBS
+# The generated C/C++ the push changes (relative to the base's; see
+# prepare.sh).
+(cd "$SEM/workspace/obj-build" && find . -newer "$PUSH/export-marker" -type f | sed 's#^\./##') |
+    { grep -E '\.(h|hh|hpp|c|cc|cpp|inc|def|msg)$' || true; } |
+    { grep -vE '^(buildid\.h|build/application\.ini\.h)$' || true; } |
+    while read -r FILE; do
+        if ! cmp -s "$SEM/gen-base/$FILE" "$SEM/workspace/obj-build/$FILE"; then
+            echo "__GENERATED__/$FILE"
+        fi
+    done >> "$PUSH/changed.lst"
+
+echo "Performing semantic::build-analysis step for $NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+python3 -I "$HERE/select_tus.py" "$SEM/deps-resolved.json" \
+    "$SEM/workspace/obj-build/compile_commands.json" "$PUSH"
+"$HERE/inbuild.sh" "$SEM" env MOZSEARCH_ONLY_FILES=/builds/worker/workspace/push/emit.lst \
+    python3 /builds/worker/semantic/compile.py /builds/worker/workspace/push/raw "$JOBS" \
+    /builds/worker/workspace/push/tus.lst
+# (Merged like the tree's, whose only platform is linux64.)
+mkdir -p "$PUSH/raw" "$PUSH/tip"
+ln -s raw "$PUSH/analysis-linux64"
+(cd "$PUSH/raw" && find . -type f | sed 's#^\./##') |
+    (cd "$PUSH" && parallel --halt now,fail=1 \
+        'mkdir -p "$(dirname tip/{})" && merge-analyses analysis-linux64/{} > tip/{}')
+
+echo "Performing semantic::delta step for $NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+{ grep '^__GENERATED__/' "$PUSH/changed.lst" || true; } > "$PUSH/changed-generated.lst"
+build-try-delta "$CONFIG_FILE" "$TREE_NAME" "$NAME" "$REBASED" "$PUSH/tip" \
+    --incomplete "$PUSH/incomplete.lst" --objdir "$SEM/workspace/obj-build" \
+    --changed-generated "$PUSH/changed-generated.lst" --threads "$JOBS"
+
+# (The worktree goes back to the base for the next push; the objdir and mach's
+# state go back to their pristine copies then.)
+git -C "$SEM/gecko" checkout -q --detach -f "$BASE"
+rm -rf "$PUSH"

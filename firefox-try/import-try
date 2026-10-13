@@ -12,7 +12,8 @@ set -o pipefail # Check all commands in a pipeline
 # ../firefox-shared/checkout-gecko-repos.sh), find its stack (its changesets
 # since it diverged from the trunk) in the try repository, and process it with
 # mozsearch's scripts/import-try-push.sh, with the history configuration the
-# history is built with (see ../firefox-disco/update-history.sh).
+# history is built with (see ../firefox-disco/update-history.sh), and then
+# analyze it semantically.
 
 HG_REV=$1
 
@@ -46,3 +47,9 @@ done
 PUSH_REVS="$PUSH_REVS" "$MOZSEARCH_PATH/scripts/import-try-push.sh" \
     "$SHARED_GIT" "$HISTORY_ROOT" "$GIT_BRANCH" "$HG_REV" "$GIT_REV" "$MAX_REVISIONS" \
     "$CONFIG_REPO/firefox-disco/history"
+
+# Its semantic analysis (see ../firefox-shared/semantic/analyze.sh), after
+# which its stack rebased onto the indexed revision has its jumps and
+# references, and searches of it.  (If that fails, it's still imported.)
+"$CONFIG_REPO/firefox-shared/semantic/analyze.sh" "$HG_REV" "$GIT_REV" ||
+    echo "WARNING: The push's semantic analysis failed."

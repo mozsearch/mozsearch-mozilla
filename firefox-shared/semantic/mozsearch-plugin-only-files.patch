@@ -1,0 +1,149 @@
+diff --git a/build/clang-plugin/mozsearch-plugin/MozsearchIndexer.cpp b/build/clang-plugin/mozsearch-plugin/MozsearchIndexer.cpp
+index 594e3f80c63e..71c5853c76d4 100644
+--- a/build/clang-plugin/mozsearch-plugin/MozsearchIndexer.cpp
++++ b/build/clang-plugin/mozsearch-plugin/MozsearchIndexer.cpp
+@@ -57,6 +57,12 @@ std::string Objdir;
+ // Absolute path where analysis JSON output will be stored.
+ std::string Outdir;
+ 
++// If MOZSEARCH_ONLY_FILES names a file, the only files (relative to the
++// srcdir, or __GENERATED__/...) to write analysis for, one per line.  (Other
++// files in the srcdir and objdir are still followed for macro expansions.)
++bool HaveOnlyFiles = false;
++std::set<std::string> OnlyFiles;
++
+ enum class FileType {
+   // The file was either in the source tree nor objdir. It might be a system
+   // include, for example.
+@@ -202,10 +208,13 @@ struct FileInfo {
+       Generated = false;
+       break;
+     }
++    Emit = Interesting && (!HaveOnlyFiles || OnlyFiles.count(Realname));
+   }
+   std::string Realname;
+   std::vector<std::string> Output;
+   bool Interesting;
++  // Whether to write analysis for the file (see OnlyFiles).
++  bool Emit;
+   bool Generated;
+ };
+ 
+@@ -339,6 +348,25 @@ private:
+   // Helpers for processing declarations
+   // Should we ignore this location?
+   bool isInterestingLocation(SourceLocation Loc) {
++    SourceLocation Original = Loc;
++    if (SM.isMacroBodyExpansion(Loc)) {
++      Loc = SM.getFileLoc(Loc);
++    }
++
++    normalizeLocation(&Loc);
++    if (Loc.isInvalid()) {
++      return false;
++    }
++
++    // (Every source file, written or not (see OnlyFiles), so that symbols
++    // are mangled in the same order either way: clang numbers unnamed types
++    // as they're first mangled.)
++    (void)Original;
++    return getFileInfo(Loc)->Interesting;
++  }
++
++  // Whether the location is in the srcdir or objdir, written or not.
++  bool isSourceLocation(SourceLocation Loc) {
+     if (SM.isMacroBodyExpansion(Loc)) {
+       Loc = SM.getFileLoc(Loc);
+     }
+@@ -808,7 +836,7 @@ public:
+     // Emit the JSON data for all files now.
+     std::map<FileID, std::unique_ptr<FileInfo>>::iterator It;
+     for (It = FileMap.begin(); It != FileMap.end(); It++) {
+-      if (!It->second->Interesting) {
++      if (!It->second->Emit) {
+         continue;
+       }
+ 
+@@ -1825,6 +1853,9 @@ public:
+     J.objectEnd();
+ 
+     FileInfo *F = getFileInfo(Loc);
++    if (!F->Emit) {
++      return;
++    }
+     // we want a newline.
+     ros << '\n';
+     F->Output.push_back(std::move(ros.str()));
+@@ -1910,6 +1941,25 @@ public:
+ 
+     FileInfo *F = getFileInfo(ExpansionLoc);
+ 
++    if (!F->Emit) {
++      // (Only the mangling the records would have done; see
++      // isInterestingLocation.)
++      if (!MaybeType.isNull()) {
++        QualType canonical = MaybeType.getCanonicalType();
++        const TagDecl *decl = canonical->getAsTagDecl();
++        if (!decl) {
++          canonical = canonical->getPointeeType();
++          if (!canonical.isNull()) {
++            decl = canonical->getAsTagDecl();
++          }
++        }
++        if (decl) {
++          getMangledName(CurMangleContext, decl);
++        }
++      }
++      return;
++    }
++
+     if (!(Flags & NoCrossref)) {
+       std::string json_str;
+       llvm::raw_string_ostream ros(json_str);
+@@ -3015,7 +3065,7 @@ public:
+   void enterSourceFile(SourceLocation Loc) {
+     normalizeLocation(&Loc);
+     FileInfo *newFile = getFileInfo(Loc);
+-    if (!newFile->Interesting) {
++    if (!newFile->Emit) {
+       return;
+     }
+     FileType type = newFile->Generated ? FileType::Generated : FileType::Source;
+@@ -3121,7 +3171,7 @@ public:
+ 
+     auto location = Tok.getLocation();
+     normalizeLocation(&location);
+-    if (!isInterestingLocation(location))
++    if (!isSourceLocation(location))
+       return;
+ 
+     if (MacroExpansionState) {
+@@ -3180,7 +3230,9 @@ public:
+         isIncludedFile ? includedFileExpansionReformatThreshold
+                        : mainFileExpansionReformatThreshold;
+ 
+-    if (MacroExpansionState->Expansion.length() < expansionReformatThreshold) {
++    const bool expansionWritten = getFileInfo(expansionLocation)->Emit;
++    if (expansionWritten &&
++        MacroExpansionState->Expansion.length() < expansionReformatThreshold) {
+       // large macros are too memory-hungry to reformat with ColumnLimit != 0
+       // see https://github.com/llvm/llvm-project/issues/107434
+       auto style = clang::format::getMozillaStyle();
+@@ -3376,6 +3428,17 @@ bool MozsearchAction::ParseArgs(const CompilerInstance &CI,
+   }
+   Objdir += PATHSEP_STRING;
+ 
++  if (const char *Only = getenv("MOZSEARCH_ONLY_FILES")) {
++    std::ifstream In(Only);
++    std::string Line;
++    while (std::getline(In, Line)) {
++      if (!Line.empty()) {
++        OnlyFiles.insert(Line);
++      }
++    }
++    HaveOnlyFiles = true;
++  }
++
+   printf("MOZSEARCH: %s %s %s\n", Srcdir.c_str(), Outdir.c_str(),
+          Objdir.c_str());
+ 
