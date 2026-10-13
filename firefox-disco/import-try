@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# Import a try push into firefox-disco's token-centric history for reviewing
+# it, for the web server (see mozsearch's tools/src/try_import.rs, which runs
+# this with the push's hg revision): fetch it from hg's try repository into
+# the shared firefox repo with git-cinnabar (as indexing a try push does; see
+# ../firefox-shared/checkout-gecko-repos.sh), find its own changesets in the
+# try repository's pushlog, and process it with mozsearch's
+# scripts/import-try-push.sh, with the history configuration the history is
+# built with (see update-history.sh).
+
+HG_REV=$1
+
+# (The tree's checkout is a worktree of the shared bare repo.)
+SHARED_GIT=$(git -C "$GIT_ROOT" rev-parse --path-format=absolute --git-common-dir)
+
+git -C "$SHARED_GIT" -c cinnabar.graft=false cinnabar fetch hg::https://hg.mozilla.org/try "$HG_REV"
+GIT_REV=$(git -C "$SHARED_GIT" cinnabar hg2git "$HG_REV")
+if [[ "$GIT_REV" == "0000000000000000000000000000000000000000" ]]; then
+    echo "ERROR: Unable to find the git revision of $HG_REV after fetching it from try."
+    exit 1
+fi
+
+# The push's changesets, oldest first, from the pushlog (or else, if it can't
+# be read, the revisions the branch doesn't have; see import-try-push.sh).
+PUSH_REVS=""
+if PUSHLOG=$(curl -sfL "https://hg.mozilla.org/try/json-pushes?changeset=$HG_REV"); then
+    for CHANGESET in $(python3 -c 'import json, sys; print(" ".join(c for push in json.load(sys.stdin).values() for c in push["changesets"]))' <<< "$PUSHLOG"); do
+        PUSH_REVS+="$(git -C "$SHARED_GIT" cinnabar hg2git "$CHANGESET") "
+    done
+fi
+
+PUSH_REVS="$PUSH_REVS" "$MOZSEARCH_PATH/scripts/import-try-push.sh" \
+    "$SHARED_GIT" "$HISTORY_ROOT" "$GIT_BRANCH" "$HG_REV" "$GIT_REV" "$MAX_REVISIONS" \
+    "$CONFIG_REPO/firefox-disco/history"
