@@ -8,10 +8,10 @@ set -o pipefail # Check all commands in a pipeline
 # it, for the web server (see mozsearch's tools/src/try_import.rs, which runs
 # this with the push's hg revision): fetch it from hg's try repository into
 # the shared firefox repo with git-cinnabar (as indexing a try push does; see
-# ../firefox-shared/checkout-gecko-repos.sh), find its own changesets in the
-# try repository's pushlog, and process it with mozsearch's
-# scripts/import-try-push.sh, with the history configuration the history is
-# built with (see update-history.sh).
+# ../firefox-shared/checkout-gecko-repos.sh), find its stack (its changesets
+# since it diverged from the trunk) in the try repository, and process it with
+# mozsearch's scripts/import-try-push.sh, with the history configuration the
+# history is built with (see update-history.sh).
 
 HG_REV=$1
 
@@ -25,14 +25,22 @@ if [[ "$GIT_REV" == "0000000000000000000000000000000000000000" ]]; then
     exit 1
 fi
 
-# The push's changesets, oldest first, from the pushlog (or else, if it can't
-# be read, the revisions the branch doesn't have; see import-try-push.sh).
-PUSH_REVS=""
-if PUSHLOG=$(curl -sfL "https://hg.mozilla.org/try/json-pushes?changeset=$HG_REV"); then
-    for CHANGESET in $(python3 -c 'import json, sys; print(" ".join(c for push in json.load(sys.stdin).values() for c in push["changesets"]))' <<< "$PUSHLOG"); do
-        PUSH_REVS+="$(git -C "$SHARED_GIT" cinnabar hg2git "$CHANGESET") "
-    done
+# The push's stack, oldest first: the head's draft ancestors in the try
+# repository, where the trunk's changesets are public, which include the
+# stack's changesets that earlier pushes had (which the push's pushlog entry
+# doesn't).  If that can't be read, the push's changesets from the pushlog, or
+# else the revisions the branch doesn't have (see import-try-push.sh).
+STACK=""
+if LOG=$(curl -sfL "https://hg.mozilla.org/try/json-log?rev=draft()%20and%20ancestors($HG_REV)&revcount=1000"); then
+    STACK=$(python3 -c 'import json, sys; print(" ".join(e["node"] for e in reversed(json.load(sys.stdin)["entries"])))' <<< "$LOG")
 fi
+if [[ -z "$STACK" ]] && PUSHLOG=$(curl -sfL "https://hg.mozilla.org/try/json-pushes?changeset=$HG_REV"); then
+    STACK=$(python3 -c 'import json, sys; print(" ".join(c for push in json.load(sys.stdin).values() for c in push["changesets"]))' <<< "$PUSHLOG")
+fi
+PUSH_REVS=""
+for CHANGESET in $STACK; do
+    PUSH_REVS+="$(git -C "$SHARED_GIT" cinnabar hg2git "$CHANGESET") "
+done
 
 PUSH_REVS="$PUSH_REVS" "$MOZSEARCH_PATH/scripts/import-try-push.sh" \
     "$SHARED_GIT" "$HISTORY_ROOT" "$GIT_BRANCH" "$HG_REV" "$GIT_REV" "$MAX_REVISIONS" \
