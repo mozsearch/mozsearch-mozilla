@@ -49,6 +49,32 @@
       "group": "Firefox other",
       "group_order": 5,
       "help_indexed_langs": ["js", "idl", "cpp", "rs", "java"]
+    },
+    "firefox-try": {
+      "priority": 800,
+      "on_error": "halt",
+      "cache": "everything",
+      "linked_trees": { "SPEC_": "wubspecs" },
+      "search_endpoint": "query",
+      "shared_path": "$WORKING/firefox-shared",
+      "index_path": "$WORKING/firefox-try",
+      "files_path": "$WORKING/firefox-try/git",
+      "git_path": "$WORKING/firefox-try/git",
+      "git_branch": "main",
+      "oldgit_path": "$WORKING/firefox-shared/oldgit",
+      "git_blame_path": "$WORKING/firefox-shared/blame",
+      "history_path": "$WORKING/firefox-shared/history",
+      "github_repo": "https://github.com/mozilla-firefox/firefox",
+      "oldgithub_repo": "https://github.com/mozilla/gecko-dev",
+      "hg_root": "https://hg.mozilla.org/mozilla-central",
+      "wpt_root": "testing/web-platform",
+      "objdir_path": "$WORKING/firefox-try/objdir",
+      "codesearch_path": "$WORKING/firefox-try/livegrep.idx",
+      "codesearch_port": 8083,
+      "scip_subtrees": {},
+      "group": "Firefox other",
+      "group_order": 6,
+      "help_indexed_langs": ["js", "idl", "cpp", "rs", "java"]
     }
   }
 }

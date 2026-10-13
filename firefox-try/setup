@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# firefox-try is firefox-disco's sibling for reviewing try pushes (see
+# import-try): the same revision, but with only linux64's analysis, the
+# platform whose compilation gives try pushes their semantic analysis (see
+# mozsearch's tools/src/try_delta.rs), so that a push's analysis replaces the
+# tree's exactly.  It shares firefox-disco's history (firefox-shared's, which
+# only firefox-disco updates; this tree comes after it in config8.json).
+
+BUILD_REVISION_TREE=mozilla-central
+
+# firefox-disco's revision (see its setup), from its target.json.
+PREEXISTING_HG_REV=
+if [ -f "$INDEX_ROOT/target.json" ]; then
+    PREEXISTING_HG_REV=$(jq -r ".moz_source_stamp" "$INDEX_ROOT/target.json")
+fi
+mkdir -p "$INDEX_ROOT"
+cp "$(dirname "$INDEX_ROOT")/firefox-disco/target.json" "$INDEX_ROOT/target.json"
+INDEXED_HG_REV=$(jq -r ".moz_source_stamp" "$INDEX_ROOT/target.json")
+
+$CONFIG_REPO/firefox-shared/checkout-gecko-repos.sh $BUILD_REVISION_TREE "main" "$INDEXED_HG_REV"
+
+GECKO_PLATFORMS=linux64 \
+    $CONFIG_REPO/firefox-shared/fetch-tc-artifacts.sh $BUILD_REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV"
+
+# (And MDN's browser-compat-data, for spec-analyze; see
+# ../shared/fetch-bcd.sh.)
+$CONFIG_REPO/shared/fetch-bcd.sh

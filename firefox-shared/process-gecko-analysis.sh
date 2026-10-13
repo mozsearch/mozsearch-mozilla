@@ -5,11 +5,13 @@ set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
 # No arguments needed to this script. It just needs $CONFIG_REPO
-# and $MOZSEARCH_PATH defined in the environment.
+# and $MOZSEARCH_PATH defined in the environment.  A tree can index fewer
+# platforms' analyses than all of them with GECKO_PLATFORMS (ex: firefox-try,
+# only linux64), which fetch-tc-artifacts.sh also takes.
 
 # Process the downloads for each platform in parallel
 echo "Performing build::process-tc-artifacts step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
-echo "linux64 linux64-opt macosx64 macosx64-aarch64 macosx64-aarch64-opt win64 win64-opt android-armv7 android-aarch64 ios" | tr " " "\n" |
+echo "${GECKO_PLATFORMS:-linux64 linux64-opt macosx64 macosx64-aarch64 macosx64-aarch64-opt win64 win64-opt android-armv7 android-aarch64 ios}" | tr " " "\n" |
 parallel --halt now,fail=1 "$CONFIG_REPO/shared/process-tc-artifacts.sh {}"
 
 # Combine the per-platform list files

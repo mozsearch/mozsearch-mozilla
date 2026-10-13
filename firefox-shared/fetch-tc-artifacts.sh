@@ -133,7 +133,9 @@ echo "${CURL} ${TC_LATEST_PREFIX}.source.doc-generate/artifacts/public/trees.jso
 
 HAZ_URL="${TC_REV_PREFIX}.firefox.browser-haz-debug/artifacts/public/build"
 
-for PLATFORM in linux64 linux64-opt macosx64 macosx64-aarch64 macosx64-aarch64-opt win64 win64-opt android-armv7 android-aarch64 ios; do
+# (A tree can index fewer platforms; see GECKO_PLATFORMS in
+# process-gecko-analysis.sh.)
+for PLATFORM in ${GECKO_PLATFORMS:-linux64 linux64-opt macosx64 macosx64-aarch64 macosx64-aarch64-opt win64 win64-opt android-armv7 android-aarch64 ios}; do
     case "${PLATFORM}" in
         *-opt)
             TC_PLATFORM=$(echo $PLATFORM | sed -e 's/-opt$//')

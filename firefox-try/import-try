@@ -4,14 +4,15 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
-# Import a try push into firefox-disco's token-centric history for reviewing
-# it, for the web server (see mozsearch's tools/src/try_import.rs, which runs
-# this with the push's hg revision): fetch it from hg's try repository into
-# the shared firefox repo with git-cinnabar (as indexing a try push does; see
+# Import a try push into the token-centric history firefox-try shares with
+# firefox-disco (firefox-shared's), for reviewing it on firefox-try, for the
+# web server (see mozsearch's tools/src/try_import.rs, which runs this with
+# the push's hg revision): fetch it from hg's try repository into the shared
+# firefox repo with git-cinnabar (as indexing a try push does; see
 # ../firefox-shared/checkout-gecko-repos.sh), find its stack (its changesets
 # since it diverged from the trunk) in the try repository, and process it with
 # mozsearch's scripts/import-try-push.sh, with the history configuration the
-# history is built with (see update-history.sh).
+# history is built with (see ../firefox-disco/update-history.sh).
 
 HG_REV=$1
 

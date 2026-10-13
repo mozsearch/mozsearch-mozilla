@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# Only linux64's analysis; see setup.
+pushd $INDEX_ROOT
+GECKO_PLATFORMS=linux64 $CONFIG_REPO/firefox-shared/process-gecko-analysis.sh
+popd
