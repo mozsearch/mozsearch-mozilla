@@ -34,8 +34,7 @@ JOBS=$(nproc)
 echo "Performing semantic::check-sandbox step : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 # (Try pushes' builds run their code; see inbuild.sh.  Unprivileged bwrap
 # needs user namespaces, which Ubuntu 24.04 only allows programs with
-# AppArmor profiles saying so; see mozsearch's
-# infrastructure/aws/web-server-provision.sh.)
+# AppArmor profiles saying so; see install-sandbox.sh.)
 if ! bwrap --ro-bind / / --unshare-net --unshare-pid true; then
     echo "ERROR: bwrap can't make a sandbox here, so try pushes can't be built."
     exit 1

@@ -8,3 +8,11 @@ set -o pipefail # Check all commands in a pipeline
 pushd $INDEX_ROOT
 GECKO_PLATFORMS=linux64 $CONFIG_REPO/firefox-shared/process-gecko-analysis.sh
 popd
+
+# The build of the indexed revision which try pushes' semantic analysis starts
+# from (see ../firefox-shared/semantic/prepare.sh), in the index, for the web
+# server.  (If it fails, the web server's first push prepares it.)
+echo "Performing build::prepare-semantic-analysis step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+$CONFIG_REPO/firefox-shared/semantic/prepare.sh "$INDEX_ROOT/semantic" "$GIT_ROOT" \
+    "$(jq -r .moz_source_stamp "$INDEX_ROOT/target.json")" ||
+    echo "WARNING: Preparing the semantic analysis of try pushes failed."

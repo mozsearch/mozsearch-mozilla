@@ -30,3 +30,9 @@ GECKO_PLATFORMS=linux64 \
 # (And MDN's browser-compat-data, for spec-analyze; see
 # ../shared/fetch-bcd.sh.)
 $CONFIG_REPO/shared/fetch-bcd.sh
+
+# The sandbox the semantic analysis of try pushes builds them in, which the
+# build prepares (see ../firefox-shared/semantic/prepare.sh) for the web
+# server, which installs its own (see web-server-setup).
+echo "Performing setup::install-sandbox step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+$CONFIG_REPO/firefox-shared/semantic/install-sandbox.sh --prepare

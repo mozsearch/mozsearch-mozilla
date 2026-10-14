@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# The web server's sandbox for building try pushes, for their semantic analysis
+# (see ../firefox-shared/semantic/analyze.sh, which import-try runs), and what
+# preparing it needs, in case the indexer's build couldn't (see build).
+$CONFIG_REPO/firefox-shared/semantic/install-sandbox.sh --prepare
