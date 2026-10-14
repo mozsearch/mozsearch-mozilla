@@ -1,16 +1,16 @@
 # Settings for firefox-disco's token-centric history; see
 # tools/src/hyperblame/history_config.rs in mozsearch.
 
-# The history starts at the last main commit from more than 365 days before
-# 2026-10-11, which is where the history in firefox-shared-history.tar.lz4
-# starts: reblame generated it with HISTORY_WINDOW_DAYS=365 (and
-# HISTORY_IN_PLACE=1), with the tokenizers and history tools of mozsearch's
-# Part 237, which the full history (back to 1998, generated with
-# HISTORY_START=none, finishing on 2026-10-04, around Part 85) predates.
-# That one is kept as firefox-shared-history-full.tar.lz4.
-# (firefox-shared-history-2year.tar.lz4 and firefox-shared-history-1year.tar.lz4
-# start at 8f896407e506049489f93d82c7fe0bfc4672fdf4 and
-# 30cf6caf99ccfad64d14fb2203a1d9e3c3e7d5ca, the last main commits from more
-# than 730 and 400 days before 2026-09-29.)  Changing the start requires
+# The history is the full one, back to 1998 (no `start`), which is what
+# firefox-shared-history.tar.lz4 has since 2026-10-13: reblame generated it
+# with HISTORY_START=none, with the tokenizers and history tools of mozsearch's
+# Part 255, finishing on 2026-10-13 (uploaded as
+# firefox-shared-history-full-2026-10.tar.lz4).  The 1-year history it
+# replaced (starting at e8d5fdd3ed1739f166bf8d7e4034d3925518e478, the last
+# main commit from more than 365 days before 2026-10-11; Part 237) is kept as
+# firefox-shared-history-1year-2026-10.tar.lz4.  (The earlier full history,
+# finishing on 2026-10-04 around Part 85, is firefox-shared-history-full.tar.lz4;
+# the 2-year and 1-year ones from 2026-09-29 start at
+# 8f896407e506049489f93d82c7fe0bfc4672fdf4 and
+# 30cf6caf99ccfad64d14fb2203a1d9e3c3e7d5ca.)  Changing the start requires
 # regenerating the history.
-start = "e8d5fdd3ed1739f166bf8d7e4034d3925518e478"
