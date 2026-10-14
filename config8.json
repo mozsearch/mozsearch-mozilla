@@ -52,7 +52,7 @@
     },
     "firefox-try": {
       "priority": 800,
-      "on_error": "halt",
+      "on_error": "continue",
       "cache": "everything",
       "linked_trees": { "SPEC_": "wubspecs" },
       "search_endpoint": "query",
