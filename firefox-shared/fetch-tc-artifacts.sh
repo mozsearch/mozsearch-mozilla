@@ -79,6 +79,7 @@ pushd $INDEX_ROOT
 
 if [[ -n $PREEXISTING_HG_REV && $PREEXISTING_HG_REV != $INDEXED_HG_REV ]]; then
     echo "New hg revision $INDEXED_HG_REV doesn't match pre-existing hg revision $PREEXISTING_HG_REV, deleting old artifacts..."
+    # (No longer downloaded, but older indexes may have it.)
     rm -f bugzilla-components.json
     rm -f *.mozsearch-index.zip
     rm -f *.mozsearch-rust.zip
@@ -94,7 +95,7 @@ if [[ -n $PREEXISTING_HG_REV && $PREEXISTING_HG_REV != $INDEXED_HG_REV ]]; then
     rm -f allFunctions.txt.gz
 fi
 
-# Download the bugzilla components file and the artifacts from each platform that
+# Download the test information and the artifacts from each platform that
 # we're indexing. But do them in parallel by emitting all the curl commands into
 # a file and then feeding it to GNU parallel.
 echo "Performing setup::fetch-tc-artifacts-create-list step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
@@ -103,14 +104,10 @@ TC_TASK="https://firefox-ci-tc.services.mozilla.com/api/index/v1/task"
 TC_REV_PREFIX="${TC_TASK}/${INDEX_NAME}.v2.${REVISION}"
 TC_LATEST_PREFIX="${TC_TASK}/${INDEX_NAME}.v2.${REVISION_TREE}.latest"
 
-# The components job periodically fails when someone adds a new file to the tree
-# without ensuring there's a moz.build file that covers it, so we fail over to
-# using the "latest" version of the components file in that case when we don't
-# have the data for the exact revision.  This means some files may have stale or
-# missing "File a bug..." UI in the navigation panel, but this is acceptable.
-echo "${CURL} ${TC_REV_PREFIX}.source.source-bugzilla-info/artifacts/public/components-normalized.json -o bugzilla-components.json \
-   || ${CURL} ${TC_LATEST_PREFIX}.source.source-bugzilla-info/artifacts/public/components-normalized.json -o bugzilla-components.json || true" > downloads.lst
-echo "${CURL} ${TC_REV_PREFIX}.source.test-info-all/artifacts/public/test-info-all-tests.json -o test-info-all-tests.json || true" >> downloads.lst
+# (Files' Bugzilla components come from the tree's moz.build files, see
+# mozsearch's tools/src/bin/metadata-analyze.rs, not the source-bugzilla-info
+# task's components-normalized.json.)
+echo "${CURL} ${TC_REV_PREFIX}.source.test-info-all/artifacts/public/test-info-all-tests.json -o test-info-all-tests.json || true" > downloads.lst
 # CI results of the xpcshell and mochitest tests over the last 21 days, as shown
 # on https://tests.firefox.dev/, summarized by mozsearch's
 # scripts/summarize-test-results.py.  These jobs run nightly on mozilla-central
