@@ -33,6 +33,9 @@ $CONFIG_REPO/shared/fetch-bcd.sh
 
 # The sandbox the semantic analysis of try pushes builds them in, which the
 # build prepares (see ../firefox-shared/semantic/prepare.sh) for the web
-# server, which installs its own (see web-server-setup).
+# server, which installs its own (see web-server-setup).  (Without it, the
+# build doesn't prepare it, since prepare.sh checks for it, but the indexing
+# goes on; a setup's failure would stop all of it.)
 echo "Performing setup::install-sandbox step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
-$CONFIG_REPO/firefox-shared/semantic/install-sandbox.sh --prepare
+$CONFIG_REPO/firefox-shared/semantic/install-sandbox.sh --prepare ||
+    echo "WARNING: Installing the sandbox for building try pushes failed."
