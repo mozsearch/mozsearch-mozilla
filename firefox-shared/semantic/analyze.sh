@@ -35,9 +35,19 @@ flock 9
 
 echo "Performing semantic::rebase step for $NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 BASE=$(git -C "$GIT_ROOT" rev-parse HEAD)
-REBASED=$("$MOZSEARCH_PATH/scripts/rebase-try-push.sh" "$GIT_ROOT" "$NAME" "$HEAD_REV")
+if ! REBASED=$("$MOZSEARCH_PATH/scripts/rebase-try-push.sh" "$GIT_ROOT" "$NAME" "$HEAD_REV"); then
+    echo "ERROR: The push's changes conflict with the indexed revision's, so it can't be analyzed semantically until it's rebased."
+    exit 1
+fi
 rsync -a --delete "$SEM/pristine/obj-build/" "$SEM/workspace/obj-build/"
 rsync -a --delete "$SEM/pristine/mozbuild/" "$SEM/mozbuild/"
+# (Only the files the push changes get new times, or else the build rebuilds
+# everything, and the checkout's CLOBBER being newer than the objdir's makes
+# mach clobber the objdir, with its compile database and plugin.  So git's
+# index has to know that the other files are unchanged even if their stat
+# data changed, ex: after the index's copy from its volume to the web server's
+# disk, which doesn't keep their inodes.)
+git -C "$SEM/gecko" update-index -q --refresh || true
 git -C "$SEM/gecko" checkout -q --detach -f "$REBASED"
 git -C "$SEM/gecko" clean -q -fdx
 rm -rf "$PUSH"
@@ -58,6 +68,19 @@ sleep 1
             echo "__GENERATED__/$FILE"
         fi
     done >> "$PUSH/changed.lst"
+
+# (If the build clobbered the objdir anyway, ex: for a push changing CLOBBER,
+# the plugin and the compile database have to be built again; see
+# prepare.sh.)
+if [ ! -e "$SEM/workspace/obj-build/compile_commands.json" ]; then
+    echo "Performing semantic::rebuild-plugin step for $NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+    if [ -e "$SEM/only-files" ]; then
+        git -C "$SEM/gecko" apply "$HERE/mozsearch-plugin-only-files.patch"
+    fi
+    "$HERE/inbuild.sh" "$SEM" gmake -C /builds/worker/workspace/obj-build/build/clang-plugin host -j$JOBS
+    "$HERE/inbuild.sh" "$SEM" python3 ./mach --no-interactive build-backend -b CompileDB
+    git -C "$SEM/gecko" checkout -- .
+fi
 
 echo "Performing semantic::build-analysis step for $NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 python3 -I "$HERE/select_tus.py" "$SEM/deps-resolved.json" \
