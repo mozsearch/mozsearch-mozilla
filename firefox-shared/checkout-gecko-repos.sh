@@ -104,7 +104,7 @@ for REFBRANCH in beta release esr153 esr140 esr128 esr115; do
 done
 
 # Fetch the tags as well to enable permalinks to tags (bug 1873020)
-git cinnabar fetch --tags
+git fetch --tags hg::tags: tag '*' --force
 
 # Put enterprise-firefox repository to the shared tarball, and also pull the
 # specified revision when indexing the enterprise-firefox repository.
