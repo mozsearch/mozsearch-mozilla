@@ -45,10 +45,16 @@
       "objdir_path": "$WORKING/firefox-disco/objdir",
       "codesearch_path": "$WORKING/firefox-disco/livegrep.idx",
       "codesearch_port": 8081,
-      "scip_subtrees": {},
+      "scip_subtrees": {
+        "typescript": {
+          "scip_index_path": "$WORKING/firefox-disco/typescript.scip",
+          "subtree_root": ""
+        }
+      },
       "group": "Firefox other",
       "group_order": 5,
-      "help_indexed_langs": ["js", "idl", "cpp", "rs", "java"]
+      "help_indexed_langs": ["js", "idl", "cpp", "rs", "java"],
+      "do_not_fill_idl_binding_slots": true
     },
     "firefox-try": {
       "priority": 800,
