@@ -54,7 +54,8 @@
       "group": "Firefox other",
       "group_order": 5,
       "help_indexed_langs": ["js", "idl", "cpp", "rs", "java"],
-      "do_not_fill_idl_binding_slots": true
+      "do_not_fill_idl_binding_slots": true,
+      "dataflow_summaries": true
     },
     "firefox-try": {
       "priority": 800,
