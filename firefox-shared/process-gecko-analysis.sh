@@ -37,8 +37,11 @@ sort generated-files.list | uniq | parallel --halt now,fail=1 "$CONFIG_REPO/shar
 # are going to be listed in the analysis-files.list, possibly duplicated across
 # platforms, so we deduplicate the filenames and merge each filename across platforms.
 echo "Performing build::merge-analyses step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
-sort analysis-dirs.list | uniq | parallel --halt now,fail=1 'mkdir -p analysis/{}'
-sort analysis-files.list | uniq | parallel --halt now,fail=1 "RUST_LOG=info merge-analyses analysis-*/{} > analysis/{}"
+sort analysis-dirs.list | uniq | sed -e 's#^#analysis/#' | xargs -r -d '\n' mkdir -p
+# (Each merge-analyses process merges a chunk of the files, each from the
+# analysis-* directories which have it, into analysis/: starting one per file,
+# ~250k for firefox, was most of the step's time.)
+sort analysis-files.list | uniq | parallel --pipe -N 500 --halt now,fail=1 "RUST_LOG=info merge-analyses --batch analysis"
 
 # Delete the generated-* and analysis-* directories, but retain the tarballs
 # for ease of investigation.  (The tarballs are still available from taskcluster
