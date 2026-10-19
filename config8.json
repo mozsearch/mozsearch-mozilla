@@ -4,6 +4,7 @@
   "default_tree": "firefox-disco",
   "instance_type": "m6id.8xlarge",
   "index_volume_gb": 600,
+  "pipeline_trees": true,
 
   "trees": {
     "wubspecs": {
