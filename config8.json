@@ -25,6 +25,7 @@
       "group_order": 0,
       "label": "Web specs",
       "help_indexed_langs": [],
+      "search_endpoint": "query",
       "linked_trees": { "SPEC_": "firefox-disco" }
     },
     "firefox-disco": {
