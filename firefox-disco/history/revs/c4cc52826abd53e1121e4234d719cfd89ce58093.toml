@@ -9,6 +9,11 @@
 # XPIDL, and the pre-2001 DOM IDL in dom/public/idl, are close enough to parse
 # as XPIDL, with errors.)
 #
+# Besides those, which files' contexts are by tests' names (`tests`) or by
+# headings (`headings`), which `.inc` files aren't C/C++, and where the inline
+# event handler heuristic applies (needing mozsearch's hyperblame Part 517 and
+# later, which know these attributes).
+#
 # Changing these needs the history regenerated: build-syntax-token-tree refuses
 # to build on revisions processed with other attributes.
 
@@ -37,4 +42,59 @@ webshell/embed/ActiveX/**/*.idl searchfox-lang=none
 js/src/xpconnect/tests/idispatch/**/*.idl searchfox-lang=none
 third_party/python/gyp/**/*.idl searchfox-lang=none
 media/webrtc/trunk/tools/gyp/**/*.idl searchfox-lang=none
+
+# Preprocessor includes: .inc files are C/C++ fragments by default (ex:
+# zydis's tables, abseil's, security/certverifier's), but in the UI's content
+# directories they were XUL (and XBL) fragments of its documents (ex:
+# browser-menubar.inc, until Bug 1596591 renamed them .inc.xhtml in 2019), in
+# locales the preprocessor's defines, and in themes CSS for the
+# preprocessor.
+browser/**/content/**/*.inc searchfox-lang=html
+toolkit/**/content/**/*.inc searchfox-lang=html
+content/xbl/builtin/**/*.inc searchfox-lang=xml
+**/locales/**/*.inc searchfox-lang=none
+**/themes/**/*.inc searchfox-lang=none
+mobile/android/base/**/*.inc searchfox-lang=none
+testing/web-platform/**/*.inc searchfox-lang=none
+
+# Tests are contexted by their names too (testharness's `test(..., "...")`
+# and kin, besides mochitest's and xpcshell's named functions), in their
+# scripts and JS files; reftests and crashtests, which are mostly markup and
+# styles, by their elements' ids and their styles' rules, as by default.
+**/test/** searchfox-contexts=tests
+**/tests/** searchfox-contexts=tests
+**/mochitest/** searchfox-contexts=tests
+testing/web-platform/** searchfox-contexts=tests
+dom/imptests/** searchfox-contexts=tests
+js/src/jit-test/** searchfox-contexts=tests
+**/reftest/** searchfox-contexts=default
+**/reftests/** searchfox-contexts=default
+**/crashtests/** searchfox-contexts=default
+
+# Documentation in HTML is contexted by its headings' sections (its Markdown
+# and reStructuredText always are).
+**/doc/**/*.html searchfox-contexts=headings
+**/docs/**/*.html searchfox-contexts=headings
+**/doc/**/*.htm searchfox-contexts=headings
+**/docs/**/*.htm searchfox-contexts=headings
+toolkit/content/license.html searchfox-contexts=headings
+toolkit/content/licenses/** searchfox-contexts=headings
+
+# The UI's documents, whose XUL (and later XHTML) inline event handlers moved
+# into JS (ex: for CSP, 2018-2024), are followed there by the handler
+# heuristic (see hyperblame's inference `infer_handler_moves`), but not their
+# tests', where it isn't worth risking.
+browser/base/content/** searchfox-handler-moves
+browser/components/** searchfox-handler-moves
+toolkit/content/** searchfox-handler-moves
+toolkit/components/** searchfox-handler-moves
+toolkit/mozapps/** searchfox-handler-moves
+devtools/client/** searchfox-handler-moves
+security/manager/** searchfox-handler-moves
+mobile/android/chrome/** searchfox-handler-moves
+editor/ui/** searchfox-handler-moves
+xpfe/** searchfox-handler-moves
+**/test/** -searchfox-handler-moves
+**/tests/** -searchfox-handler-moves
+**/mochitest/** -searchfox-handler-moves
 """
