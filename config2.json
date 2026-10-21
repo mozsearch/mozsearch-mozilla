@@ -2,6 +2,7 @@
   "mozsearch_path": "$MOZSEARCH_PATH",
   "config_repo": "$CONFIG_REPO",
   "instance_type": "m6id.2xlarge",
+  "index_volume_gb": 440,
 
   "trees": {
     "firefox-beta": {
