@@ -2,6 +2,7 @@
   "mozsearch_path": "$MOZSEARCH_PATH",
   "config_repo": "$CONFIG_REPO",
   "instance_type": "t3.2xlarge",
+  "index_volume_gb": 400,
 
   "trees": {
     "l10n": {
