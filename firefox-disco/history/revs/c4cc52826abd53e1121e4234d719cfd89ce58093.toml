@@ -48,7 +48,10 @@ media/webrtc/trunk/tools/gyp/**/*.idl searchfox-lang=none
 # directories they were XUL (and XBL) fragments of its documents (ex:
 # browser-menubar.inc, until Bug 1596591 renamed them .inc.xhtml in 2019), in
 # locales the preprocessor's defines, and in themes CSS for the
-# preprocessor.
+# preprocessor.  The HSTS preload list is gperf's input (`domain, 1` lines
+# after `%%`, a few MB, updated twice a week), which tree-sitter-cpp's error
+# recovery took ~5 s a version to parse, so it's text.
+security/manager/ssl/nsSTSPreloadList.inc searchfox-lang=none
 browser/**/content/**/*.inc searchfox-lang=html
 toolkit/**/content/**/*.inc searchfox-lang=html
 content/xbl/builtin/**/*.inc searchfox-lang=xml
