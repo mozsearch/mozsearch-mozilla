@@ -52,9 +52,12 @@ done
 # whose tokens take ~0.8 GB per revision, so 15 threads took 77 GB.
 # (build-timeline-tree's threads, which the history's speed is limited by, are
 # as usual: with 4, the first reblame's timeline had its 4 threads busy and 77%
-# of an m8id.8xlarge idle.)
+# of an m8id.8xlarge idle.)  The timeline's runs are up to 10,000 revisions
+# (mozsearch Part 531): each run's start and end take a while, which in runs of
+# 500 was ~15% of the 2026-10-23 reblame's timeline, and it still ends a run
+# early once it has written MAX_WRITTEN_BYTES (see build-history.py).
 SYNTAX_COMPUTE_THREADS=${SYNTAX_COMPUTE_THREADS:-4} \
-    $MOZSEARCH_PATH/scripts/build-history.py --chunk-size 500 \
+    $MOZSEARCH_PATH/scripts/build-history.py --chunk-size 500 --timeline-chunk-size 10000 \
     ${HISTORY_STATUS_COMMAND:+--status-command "$HISTORY_STATUS_COMMAND"} \
     "$GIT_ROOT" "$HISTORY_ROOT"
 
