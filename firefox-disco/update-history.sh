@@ -72,6 +72,19 @@ if [ -d "$SHARED_ROOT/oldgit" ]; then
     OLD_REVISION_ARGS+=(--old-cinnabar-repo-path "$SHARED_ROOT/oldgit")
 fi
 
+# The history's dates are when revisions landed (see mozsearch's
+# tools/src/hyperblame/landing.rs), and hg's commit dates were their authors',
+# so for hg-era revisions they're when they were first pushed, from
+# hg.mozilla.org's pushlogs (archived once; see mozsearch's scripts/pushlog/).
+# build-timeline-tree reads PUSH_DATES, and build-commit-index --push-dates.
+echo "Performing setup::download-push-dates step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+PUSH_DATES=$SHARED_ROOT/firefox-hg-push-dates.tsv
+if [ ! -f "$PUSH_DATES" ]; then
+    aws s3 cp s3://searchfox.repositories/firefox-hg-push-dates.tsv.gz "$PUSH_DATES.gz" --no-sign-request
+    gunzip -f "$PUSH_DATES.gz"
+fi
+export PUSH_DATES
+
 # The history is derived from the shared bare repo (like blame), which has the
 # git-cinnabar metadata that lets build-syntax-token-tree record each
 # revision's hg revision (needed to find the old revisions) and lets
@@ -94,4 +107,5 @@ BLAME_REF="refs/heads/$BRANCH" $MOZSEARCH_PATH/scripts/build-history.py \
 # but it covers the whole branch rather than the history's revisions.  Each
 # branch has its own, in commit-index/$BRANCH, like the history repos' branches.
 echo "Performing setup::build-commit-index step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
-build-commit-index "$SHARED_BARE_GIT_ROOT" "$HISTORY_ROOT/commit-index" "refs/heads/$BRANCH"
+build-commit-index "$SHARED_BARE_GIT_ROOT" "$HISTORY_ROOT/commit-index" "refs/heads/$BRANCH" \
+    --push-dates "$PUSH_DATES"
