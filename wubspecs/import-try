@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# Import a spec repository's pull request into wubspecs' token-centric
+# history, for reviewing it at /wubspecs/try/SPEC/NUMBER, for the web server
+# (see mozsearch's tools/src/try_import.rs, which runs this with SPEC/NUMBER,
+# SPEC being the spec repository's directory in the forest): fetch it from
+# GitHub (`refs/pull/NUMBER/head`, through git rather than its API), make the
+# forest commits of its commits and of its head rebased onto the forest's tip
+# (mozsearch's build-spec-pr; see tools/src/spec_forest.rs), process them
+# with mozsearch's scripts/import-try-push.sh, as the history is built (see
+# update-history.sh, whose 4 compute threads are for the HTML Standard's big
+# files' tokens), and render and analyze it.
+
+NAME=$1
+OUT=$(mktemp)
+if ! build-spec-pr --fetch "$CONFIG_REPO/$TREE_NAME/specs.toml" "$GIT_ROOT" "$NAME" > "$OUT"; then
+    cat "$OUT"
+    exit 1
+fi
+cat "$OUT"
+STACK=$(sed -n 's/^stack: //p' "$OUT")
+HEAD_REV=$(sed -n 's/^head: //p' "$OUT")
+
+SYNTAX_COMPUTE_THREADS=4 PUSH_REVS="$STACK" "$MOZSEARCH_PATH/scripts/import-try-push.sh" \
+    "$GIT_ROOT" "$HISTORY_ROOT" "$GIT_BRANCH" "$NAME" "$HEAD_REV" "$MAX_REVISIONS"
+
+# Its head's renderings of the Bikeshed specs it changes, and its semantic
+# analysis (see mozsearch's scripts/analyze-spec-pr.sh), with Bikeshed and
+# spec-analyze in a bubblewrap sandbox (installed for firefox-try's semantic
+# analysis, on the same web server; see
+# ../firefox-shared/semantic/install-sandbox.sh).  (If that fails, it's still
+# imported.)
+"$MOZSEARCH_PATH/scripts/analyze-spec-pr.sh" "$CONFIG_REPO/$TREE_NAME/specs.toml" "$NAME" "$OUT" ||
+    echo "WARNING: Its semantic analysis failed."
+rm -f "$OUT"
