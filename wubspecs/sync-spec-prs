@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+# Bring wubspecs' pull request summaries up to date, for the web server (see
+# mozsearch's tools/src/spec_prs.rs, which runs this when asked, with a spec
+# repository's forest directory if it's asked for one, and
+# scripts/spec-prs/README.md): the configured spec repositories' open pull
+# requests (see spec-prs.toml), from the GitHub Action's snapshot of their
+# metadata, and what they change, from their heads, fetched from GitHub
+# through git.
+
+"$MOZSEARCH_PATH/scripts/spec-prs/sync.py" \
+    --specs "$CONFIG_REPO/$TREE_NAME/specs.toml" \
+    --config "$CONFIG_REPO/$TREE_NAME/spec-prs.toml" \
+    --forest "$GIT_ROOT" \
+    --out "$HISTORY_ROOT/spec-prs" \
+    ${1:+--spec "$1"}

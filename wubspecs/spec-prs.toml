@@ -1,0 +1,38 @@
+# wubspecs' pull request summaries (see mozsearch's scripts/spec-prs/README.md
+# and tools/src/spec_prs.rs), at /wubspecs/spec-prs: the forest directories
+# whose open pull requests are summarized, a configured set to start with
+# (WHATWG's, TC39's ECMA-262 and ECMA-402, and the W3C specs Gecko implements
+# and cites most), and the snapshot of their metadata, which a GitHub Action
+# publishes (see the README; its list of repositories is this one).
+
+repos = [
+    # WHATWG
+    "bluetooth", "compat", "compression", "console", "cookiestore", "dom",
+    "encoding", "fetch", "fs", "fullscreen", "hid", "html", "infra",
+    "mimesniff", "notifications", "quirks", "serial", "storage", "streams",
+    "testutils", "url", "urlpattern", "usb", "webidl", "websockets", "xhr",
+    # TC39
+    "ecma262", "ecma402",
+    # W3C
+    "aria", "clipboard-apis", "csswg-drafts", "dom-parsing", "editing",
+    "encrypted-media", "event-timing", "fileapi", "gamepad", "geolocation",
+    "hr-time", "html-aria", "indexeddb", "input-events",
+    "intersectionobserver", "largest-contentful-paint", "manifest",
+    "mathml-core", "media-source", "mediacapture-main", "mediasession",
+    "navigation-timing", "paint-timing", "payment-request",
+    "performance-timeline", "permissions", "picture-in-picture",
+    "pointerevents", "presentation-api", "push-api", "reporting",
+    "requestidlecallback", "resource-timing", "screen-orientation",
+    "screen-wake-lock", "selection-api", "service-workers", "svgwg",
+    "trusted-types", "uievents", "user-timing", "web-locks", "web-share",
+    "webappsec-csp", "webappsec-fetch-metadata", "webappsec-mixed-content",
+    "webappsec-permissions-policy", "webappsec-referrer-policy",
+    "webappsec-secure-contexts", "webappsec-subresource-integrity",
+    "webauthn", "webcodecs", "webcrypto", "webdriver", "webdriver-bidi",
+    "webrtc-pc", "webtransport",
+]
+
+# (The Action's repository is yet to be made; until then, syncs of one spec
+# repository ask GitHub's API, unauthenticated, and syncs of all of them
+# summarize none.)
+snapshot = "https://raw.githubusercontent.com/mozsearch/spec-pr-state/snapshot/snapshot.json"
