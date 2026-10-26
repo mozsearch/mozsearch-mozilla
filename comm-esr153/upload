@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -x # Show commands
+set -eu # Errors/undefined vars are fatal
+set -o pipefail # Check all commands in a pipeline
+
+echo "Performing upload::git step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+
+echo Uploading comm-esr153
+pushd $INDEX_ROOT
+$CONFIG_REPO/shared/git-maintenance.sh ./git
+tar cf - git | lz4 - comm-esr153.tar.lz4
+$AWS_ROOT/upload.py $INDEX_ROOT/comm-esr153.tar.lz4 searchfox.repositories comm-esr153.tar.lz4
+rm comm-esr153.tar.lz4
+popd
+
+echo "Performing upload::blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+
+echo Uploading comm-esr153 blame
+pushd $INDEX_ROOT
+$CONFIG_REPO/shared/git-maintenance.sh ./blame
+tar cf - blame | lz4 - comm-esr153-blame.tar.lz4
+$AWS_ROOT/upload.py $INDEX_ROOT/comm-esr153-blame.tar.lz4 searchfox.repositories comm-esr153-blame.tar.lz4
+rm comm-esr153-blame.tar.lz4
+popd
