@@ -4,16 +4,34 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
+# (Like firefox-main's; see there.)  scip-typescript needs only the checkout,
+# so it runs in the background while the Gecko analysis is processed (it took
+# 2.6 minutes on one core after it, which firefox-disco's indexing waited
+# for), its log shown once it's done.
+SCIP_TS_LOG="$INDEX_ROOT/scip-typescript.log"
+(
+    set -eu
+    set -o pipefail
+    echo "Performing build::scip-typescript step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+    cd "$GIT_ROOT"
+    npm install
+    TS_PROJECTS=$(find . -name '[tj]sconfig.json' | grep -v 'node_modules\|third_party')
+    scip-typescript index --max-file-byte-size 0 $TS_PROJECTS
+    mv index.scip "$INDEX_ROOT/typescript.scip"
+    rm -rf node_modules
+    echo "build::scip-typescript done for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+) > "$SCIP_TS_LOG" 2>&1 &
+SCIP_TS_PID=$!
+
 pushd $INDEX_ROOT
 $CONFIG_REPO/firefox-shared/process-gecko-analysis.sh
 popd
 
-# (Like firefox-main's; see there.)
-echo "Performing build::scip-typescript step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
-pushd "$GIT_ROOT"
-npm install
-TS_PROJECTS=$(find . -name '[tj]sconfig.json' | grep -v 'node_modules\|third_party')
-scip-typescript index --max-file-byte-size 0 $TS_PROJECTS
-mv index.scip "$INDEX_ROOT/typescript.scip"
-rm -rf node_modules
-popd
+echo "Waiting for build::scip-typescript for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+if ! wait $SCIP_TS_PID; then
+    cat "$SCIP_TS_LOG"
+    echo "scip-typescript failed"
+    exit 1
+fi
+cat "$SCIP_TS_LOG"
+rm -f "$SCIP_TS_LOG"
