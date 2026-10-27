@@ -32,21 +32,10 @@ HISTORY_CONFIG=${HISTORY_CONFIG:-$CONFIG_REPO/firefox-disco/history}
 # See ../firefox-shared/checkout-gecko-repos.sh.
 SHARED_BARE_GIT_ROOT=$SHARED_ROOT/git
 
-echo "Performing setup::download-history step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
-mkdir -p $SHARED_ROOT
-pushd $SHARED_ROOT
+# (setup downloads it in the background, earlier.)
 if [ ! -d "$HISTORY_ROOT" ]; then
-    # We use the "aws" command for download throughput; see
-    # ../firefox-shared/checkout-gecko-repos.sh.  The tarball won't exist until
-    # the first successful upload, in which case we build from scratch.
-    if aws s3 cp s3://searchfox.repositories/firefox-shared-history.tar.lz4 . --no-sign-request; then
-        lz4 -dc firefox-shared-history.tar.lz4 | tar -x
-        rm firefox-shared-history.tar.lz4
-    else
-        echo "No firefox-shared-history.tar.lz4 is available; building the history from scratch."
-    fi
+    $CONFIG_REPO/firefox-disco/download-history.sh
 fi
-popd
 
 for REPO in syntax timeline; do
     if [ ! -d "$HISTORY_ROOT/$REPO/.git" ]; then

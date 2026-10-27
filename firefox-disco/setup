@@ -16,9 +16,28 @@ BUILD_REVISION_ID=latest
 # The next line populates the INDEXED_HG_REV and PREEXISTING_HG_REV env vars.
 source $CONFIG_REPO/firefox-shared/resolve-gecko-revs.sh $BUILD_REVISION_TREE $BUILD_REVISION_ID
 
+# The history's download (download-history.sh) needs only the network and the
+# disk, so it runs in the background while the git repos are downloaded and
+# updated (profiling the 2026-10-27 config8 run, it took 3.9 minutes after
+# their 5.5, all of the setup's critical path), its log shown once it's waited
+# for.  update-history.sh then finds the history there.
+mkdir -p "$SHARED_ROOT"
+HISTORY_DOWNLOAD_LOG="$SHARED_ROOT/download-history.log"
+$CONFIG_REPO/firefox-disco/download-history.sh > "$HISTORY_DOWNLOAD_LOG" 2>&1 &
+HISTORY_DOWNLOAD_PID=$!
+
 $CONFIG_REPO/firefox-shared/checkout-gecko-repos.sh $BUILD_REVISION_TREE "main" "$INDEXED_HG_REV"
 
 $CONFIG_REPO/firefox-shared/fetch-tc-artifacts.sh $BUILD_REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV"
+
+echo "Waiting for setup::download-history for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+if ! wait $HISTORY_DOWNLOAD_PID; then
+    cat "$HISTORY_DOWNLOAD_LOG"
+    echo "Downloading the history failed"
+    exit 1
+fi
+cat "$HISTORY_DOWNLOAD_LOG"
+rm -f "$HISTORY_DOWNLOAD_LOG"
 
 $CONFIG_REPO/firefox-disco/update-history.sh "main"
 
