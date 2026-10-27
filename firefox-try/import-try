@@ -50,6 +50,14 @@ PUSH_REVS="$PUSH_REVS" "$MOZSEARCH_PATH/scripts/import-try-push.sh" \
 
 # Its semantic analysis (see ../firefox-shared/semantic/analyze.sh), after
 # which its stack rebased onto the indexed revision has its jumps and
-# references, and searches of it.  (If that fails, it's still imported.)
-"$CONFIG_REPO/firefox-shared/semantic/analyze.sh" "$HG_REV" "$GIT_REV" ||
+# references, and searches of it; and that rebased stack's import into the
+# history too, for its pages' blame and stack strip (see mozsearch's
+# scripts/import-try-rebased.sh).  (If those fail, it's still imported.)
+if "$CONFIG_REPO/firefox-shared/semantic/analyze.sh" "$HG_REV" "$GIT_REV"; then
+    "$MOZSEARCH_PATH/scripts/import-try-rebased.sh" \
+        "$SHARED_GIT" "$HISTORY_ROOT" "$GIT_BRANCH" "$HG_REV" "$MAX_REVISIONS" \
+        "$CONFIG_REPO/firefox-disco/history" ||
+        echo "WARNING: The push's rebased stack's import failed."
+else
     echo "WARNING: The push's semantic analysis failed."
+fi
