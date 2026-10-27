@@ -20,6 +20,18 @@ BRANCH=$2
 INDEXED_HG_REV=$3
 INDEXED_GIT_REV=${4:-}
 
+# The shared line blame repo (firefox-shared/blame, which build-blame updates
+# below) is for the trees with classic line blame, which their configuration's
+# `git_blame_path` names (`BLAME_ROOT`; see mozsearch's load-vars.sh).  A tree
+# with a token-centric history instead (`history_path`, ex: firefox-disco and
+# firefox-try on config8) has no `git_blame_path`, and skips downloading and
+# updating it.
+if [[ ${BLAME_ROOT:-null} != "null" ]]; then
+    LINE_BLAME=1
+else
+    LINE_BLAME=
+fi
+
 # --- Ensure shared resources are downloaded
 #
 # We now use the "aws" command to perform the download for performance reasons
@@ -46,19 +58,23 @@ if [ ! -d git ]; then
     git -C ./git worktree prune
 fi
 
-echo "Performing setup::download-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+if [[ -z $LINE_BLAME ]]; then
+    echo "Skipping setup::download-blame for $TREE_NAME, which has no git_blame_path"
+else
+    echo "Performing setup::download-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
-if [ ! -d blame ]; then
-    # firefox-shared/blame comes from firefox-shared-blame.tar.lz4
-    if [[ ! -f "firefox-shared-blame.tar.lz4" ]]; then
-        aws s3 cp s3://searchfox.repositories/firefox-shared-blame.tar.lz4 . --no-sign-request
+    if [ ! -d blame ]; then
+        # firefox-shared/blame comes from firefox-shared-blame.tar.lz4
+        if [[ ! -f "firefox-shared-blame.tar.lz4" ]]; then
+            aws s3 cp s3://searchfox.repositories/firefox-shared-blame.tar.lz4 . --no-sign-request
+        fi
+        lz4 -dc firefox-shared-blame.tar.lz4 | tar -x
+        rm firefox-shared-blame.tar.lz4
+        # Since this is the first time we have extracted this repo, it's possible
+        # someone may have tarballed the git tree with worktrees present from their
+        # local system.  These will now be stale, so let's prune those.
+        git -C ./blame worktree prune
     fi
-    lz4 -dc firefox-shared-blame.tar.lz4 | tar -x
-    rm firefox-shared-blame.tar.lz4
-    # Since this is the first time we have extracted this repo, it's possible
-    # someone may have tarballed the git tree with worktrees present from their
-    # local system.  These will now be stale, so let's prune those.
-    git -C ./blame worktree prune
 fi
 
 echo "Performing setup::download-oldgit step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
@@ -239,10 +255,14 @@ popd
 # script that uploads things.  But because this script is invoked by firefox-main's
 # setup script before it does that, this logic will run before that logic (and
 # so that logic should end up as a no-op when it runs for the "main" branch).
-echo "Performing setup::build-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
-echo "Generating blame information for $BRANCH..."
+if [[ -z $LINE_BLAME ]]; then
+    echo "Skipping setup::build-blame for $TREE_NAME, which has no git_blame_path"
+else
+    echo "Performing setup::build-blame step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+    echo "Generating blame information for $BRANCH..."
 
-build-blame "$SHARED_BARE_GIT_ROOT" "$SHARED_BARE_BLAME_ROOT" --blame-ref "refs/heads/$BRANCH" --old-cinnabar-repo-path "$SHARED_BARE_OLDGIT_ROOT"
+    build-blame "$SHARED_BARE_GIT_ROOT" "$SHARED_BARE_BLAME_ROOT" --blame-ref "refs/heads/$BRANCH" --old-cinnabar-repo-path "$SHARED_BARE_OLDGIT_ROOT"
+fi
 
 # We used to reset the blame branch so that its HEAD matches up with the indexed
 # revision, but now that we use a single shared blame repo for multiple searchfox
