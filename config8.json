@@ -5,7 +5,7 @@
   "instance_type": "m6id.8xlarge",
   "index_volume_gb": 600,
   "pipeline_trees": true,
-  "setup_groups": [["wubspecs"], ["firefox-disco", "firefox-try"]],
+  "setup_groups": [["wubspecs"], ["firefox-disco"], ["firefox-try"]],
 
   "trees": {
     "wubspecs": {

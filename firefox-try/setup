@@ -9,23 +9,12 @@ set -o pipefail # Check all commands in a pipeline
 # platform whose compilation gives try pushes their semantic analysis (see
 # mozsearch's tools/src/try_delta.rs), so that a push's analysis replaces the
 # tree's exactly.  It shares firefox-disco's history (firefox-shared's, which
-# only firefox-disco updates; this tree comes after it in config8.json).
+# only firefox-disco updates) and repos.  Its setup is in a setup group of its
+# own (see config8.json), running alongside firefox-disco's: what needs
+# nothing from it first, then, once firefox-disco's setup has updated the
+# shared repos and has the revision, the rest.
 
 BUILD_REVISION_TREE=mozilla-central
-
-# firefox-disco's revision (see its setup), from its target.json.
-PREEXISTING_HG_REV=
-if [ -f "$INDEX_ROOT/target.json" ]; then
-    PREEXISTING_HG_REV=$(jq -r ".moz_source_stamp" "$INDEX_ROOT/target.json")
-fi
-mkdir -p "$INDEX_ROOT"
-cp "$(dirname "$INDEX_ROOT")/firefox-disco/target.json" "$INDEX_ROOT/target.json"
-INDEXED_HG_REV=$(jq -r ".moz_source_stamp" "$INDEX_ROOT/target.json")
-
-$CONFIG_REPO/firefox-shared/checkout-gecko-repos.sh $BUILD_REVISION_TREE "main" "$INDEXED_HG_REV"
-
-GECKO_PLATFORMS=linux64 \
-    $CONFIG_REPO/firefox-shared/fetch-tc-artifacts.sh $BUILD_REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV"
 
 # (And MDN's browser-compat-data, for spec-analyze; see
 # ../shared/fetch-bcd.sh.)
@@ -39,3 +28,41 @@ $CONFIG_REPO/shared/fetch-bcd.sh
 echo "Performing setup::install-sandbox step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 $CONFIG_REPO/firefox-shared/semantic/install-sandbox.sh --prepare ||
     echo "WARNING: Installing the sandbox for building try pushes failed."
+
+# firefox-disco's setup's signal (see there): it has downloaded and updated
+# the firefox-shared repos (which this setup then doesn't update again, as
+# firefox-disco's build-history reads them), and its target.json has the
+# revision.
+echo "Performing setup::wait-for-firefox-disco step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+REPOS_SIGNAL="$SHARED_ROOT/firefox-disco-repos"
+WAIT_LIMIT_SECS=3600
+while true; do
+    SIGNAL=$(cat "$REPOS_SIGNAL" 2>/dev/null || true)
+    if [[ $SIGNAL == "${SETUP_ID:?} ready" ]]; then
+        break
+    fi
+    if [[ $SIGNAL == "$SETUP_ID failed" ]]; then
+        echo "firefox-disco's setup failed before updating the shared repos."
+        exit 1
+    fi
+    if (( SECONDS > WAIT_LIMIT_SECS )); then
+        echo "firefox-disco's setup didn't update the shared repos within $WAIT_LIMIT_SECS s."
+        exit 1
+    fi
+    sleep 5
+done
+
+# firefox-disco's revision, from its target.json.
+PREEXISTING_HG_REV=
+if [ -f "$INDEX_ROOT/target.json" ]; then
+    PREEXISTING_HG_REV=$(jq -r ".moz_source_stamp" "$INDEX_ROOT/target.json")
+fi
+mkdir -p "$INDEX_ROOT"
+cp "$(dirname "$INDEX_ROOT")/firefox-disco/target.json" "$INDEX_ROOT/target.json"
+INDEXED_HG_REV=$(jq -r ".moz_source_stamp" "$INDEX_ROOT/target.json")
+
+SHARED_REPOS_UPDATED=1 \
+    $CONFIG_REPO/firefox-shared/checkout-gecko-repos.sh $BUILD_REVISION_TREE "main" "$INDEXED_HG_REV"
+
+GECKO_PLATFORMS=linux64 \
+    $CONFIG_REPO/firefox-shared/fetch-tc-artifacts.sh $BUILD_REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV"

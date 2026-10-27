@@ -32,6 +32,31 @@ else
     LINE_BLAME=
 fi
 
+# A tree whose setup comes after another tree's which downloaded and updated
+# the shared repos in this setup (SHARED_REPOS_UPDATED=1, ex: firefox-try's,
+# after firefox-disco's) only checks out its revision as its worktree, as at
+# the end of this script.  Updating the repos again would move their branches
+# (ex: refs/heads/main) while the other tree reads them (ex: firefox-disco's
+# build-history walks main).
+if [[ -n ${SHARED_REPOS_UPDATED:-} ]]; then
+    echo "Performing setup::worktree step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+    echo "Checking out the revision in new git as a worktree (the shared repos are up to date)"
+    pushd $SHARED_ROOT/git
+    if [[ "$INDEXED_GIT_REV" == "" ]]; then
+        INDEXED_GIT_REV=$(git cinnabar hg2git $INDEXED_HG_REV)
+    fi
+    if [ "$INDEXED_GIT_REV" == "0000000000000000000000000000000000000000" ]; then
+        echo "ERROR: Unable to find git equivalent for hg rev $INDEXED_HG_REV."
+        exit 1
+    fi
+    if [ -d "$GIT_ROOT" ]; then
+        git worktree remove --force "$GIT_ROOT"
+    fi
+    git worktree add --detach "$GIT_ROOT" "$INDEXED_GIT_REV"
+    popd
+    exit 0
+fi
+
 # --- Ensure shared resources are downloaded
 #
 # We now use the "aws" command to perform the download for performance reasons
