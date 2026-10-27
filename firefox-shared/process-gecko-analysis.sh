@@ -31,7 +31,8 @@ done
 # generate the file at all due to being a platform-specific feature), copy it to
 # the merged objdir.
 echo "Performing build::collapse-generated-files step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
-sort generated-files.list | uniq | parallel --halt now,fail=1 "$CONFIG_REPO/shared/collapse-generated-files.sh {}"
+# (One process for all of them: see collapse-generated-files.py.)
+sort generated-files.list | uniq | $CONFIG_REPO/firefox-shared/collapse-generated-files.py
 
 # Finally, merge the analysis files for the non-generated source files. All the files
 # are going to be listed in the analysis-files.list, possibly duplicated across
