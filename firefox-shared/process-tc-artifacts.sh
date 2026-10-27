@@ -229,6 +229,25 @@ date
 # (We also copy that source into ojbdir, but that action is racey.  See the
 # comments where we perform the copying.)
 export RUST_LOG=info
+
+# Only android builds will have a java.scip.  Its scip-indexer runs in the
+# background while the Rust index's does (they write different analysis
+# files, and the leftover structured records' files are named after the SCIP
+# files): on 2026-10-27's config8 run, they took 68 and 133 s one after the
+# other, making this platform's the last job by 3 minutes.  Its log is shown
+# once it's waited for.
+JAVA_SCIP_PID=
+JAVA_SCIP_LOG="objdir-$PLATFORM/scip-indexer-java.log"
+if [ -f "objdir-$PLATFORM/java.scip" ]; then
+  scip-indexer \
+    "$CONFIG_FILE" \
+    "$TREE_NAME" \
+    --subtree-root "." \
+    --platform "$PLATFORM" \
+    "objdir-$PLATFORM/java.scip" > "$JAVA_SCIP_LOG" 2>&1 &
+  JAVA_SCIP_PID=$!
+fi
+
 scip-indexer \
   "$CONFIG_FILE" \
   "$TREE_NAME" \
@@ -238,14 +257,14 @@ scip-indexer \
 
 date
 
-# Only android builds will have a java.scip
-if [ -f "objdir-$PLATFORM/java.scip" ]; then
-  scip-indexer \
-    "$CONFIG_FILE" \
-    "$TREE_NAME" \
-    --subtree-root "." \
-    --platform "$PLATFORM" \
-    "objdir-$PLATFORM/java.scip"
+if [ -n "$JAVA_SCIP_PID" ]; then
+  if ! wait $JAVA_SCIP_PID; then
+    cat "$JAVA_SCIP_LOG"
+    echo "scip-indexer failed for objdir-$PLATFORM/java.scip"
+    exit 1
+  fi
+  cat "$JAVA_SCIP_LOG"
+  rm -f "$JAVA_SCIP_LOG"
 
   date
 fi
