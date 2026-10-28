@@ -13,13 +13,18 @@ set -o pipefail # Check all commands in a pipeline
 # since it diverged from the trunk) in the try repository, and process it with
 # mozsearch's scripts/import-try-push.sh, with the history configuration the
 # history is built with (see ../firefox-disco/update-history.sh), and then
-# analyze it semantically.
+# analyze it semantically.  Its steps say when they start, and how long each
+# took when it exits (see ../firefox-shared/step-times.sh).
 
 HG_REV=$1
+
+source "$CONFIG_REPO/firefox-shared/step-times.sh"
+trap 'end_steps try-import' EXIT
 
 # (The tree's checkout is a worktree of the shared bare repo.)
 SHARED_GIT=$(git -C "$GIT_ROOT" rev-parse --path-format=absolute --git-common-dir)
 
+begin_step try-import fetch "$HG_REV"
 git -C "$SHARED_GIT" -c cinnabar.graft=false cinnabar fetch hg::https://hg.mozilla.org/try "$HG_REV"
 GIT_REV=$(git -C "$SHARED_GIT" cinnabar hg2git "$HG_REV")
 if [[ "$GIT_REV" == "0000000000000000000000000000000000000000" ]]; then
@@ -32,6 +37,7 @@ fi
 # stack's changesets that earlier pushes had (which the push's pushlog entry
 # doesn't).  If that can't be read, the push's changesets from the pushlog, or
 # else the revisions the branch doesn't have (see import-try-push.sh).
+begin_step try-import stack "$HG_REV"
 STACK=""
 if LOG=$(curl -sfL "https://hg.mozilla.org/try/json-log?rev=draft()%20and%20ancestors($HG_REV)&revcount=1000"); then
     STACK=$(python3 -c 'import json, sys; print(" ".join(e["node"] for e in reversed(json.load(sys.stdin)["entries"])))' <<< "$LOG")
@@ -44,6 +50,7 @@ for CHANGESET in $STACK; do
     PUSH_REVS+="$(git -C "$SHARED_GIT" cinnabar hg2git "$CHANGESET") "
 done
 
+begin_step try-import history "$HG_REV"
 PUSH_REVS="$PUSH_REVS" "$MOZSEARCH_PATH/scripts/import-try-push.sh" \
     "$SHARED_GIT" "$HISTORY_ROOT" "$GIT_BRANCH" "$HG_REV" "$GIT_REV" "$MAX_REVISIONS" \
     "$CONFIG_REPO/firefox-disco/history"
@@ -53,7 +60,9 @@ PUSH_REVS="$PUSH_REVS" "$MOZSEARCH_PATH/scripts/import-try-push.sh" \
 # references, and searches of it; and that rebased stack's import into the
 # history too, for its pages' blame and stack strip (see mozsearch's
 # scripts/import-try-rebased.sh).  (If those fail, it's still imported.)
+begin_step try-import semantic "$HG_REV"
 if "$CONFIG_REPO/firefox-shared/semantic/analyze.sh" "$HG_REV" "$GIT_REV"; then
+    begin_step try-import rebased "$HG_REV"
     "$MOZSEARCH_PATH/scripts/import-try-rebased.sh" \
         "$SHARED_GIT" "$HISTORY_ROOT" "$GIT_BRANCH" "$HG_REV" "$MAX_REVISIONS" \
         "$CONFIG_REPO/firefox-disco/history" ||
