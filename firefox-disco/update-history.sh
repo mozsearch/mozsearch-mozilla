@@ -90,6 +90,17 @@ BLAME_REF="refs/heads/$BRANCH" $MOZSEARCH_PATH/scripts/build-history.py \
     ${HISTORY_STATUS_COMMAND:+--status-command "$HISTORY_STATUS_COMMAND"} \
     "$SHARED_BARE_GIT_ROOT" "$HISTORY_ROOT" "$HISTORY_CONFIG" "${OLD_REVISION_ARGS[@]}"
 
+# Revisions whose rev-summaries have totals rather than file deltas (those
+# changing over 1,000 files) have token indexes, which history greps read to
+# check only their files where the tokens changed (see mozsearch's
+# tools/src/file_format/history/rev_token_index.rs).  build-timeline-tree writes
+# them for the revisions it processes; index-mass-revisions writes those of the
+# history's earlier ones, once (~3 minutes for the 502 of firefox's history,
+# on 32 threads), and then says so in rev-summaries/token-indexes-complete,
+# after which it does nothing.
+echo "Performing setup::index-mass-revisions step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+index-mass-revisions "$HISTORY_ROOT" "$SHARED_BARE_GIT_ROOT" --branch "$BRANCH"
+
 # The commit index maps bugs and Phabricator revisions to the commits which
 # mention them (see mozsearch's tools/src/commit_index.rs).  It's kept (and
 # uploaded) with the history so that updating it only processes new commits,
