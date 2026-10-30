@@ -36,3 +36,18 @@ $CONFIG_REPO/$TREE_NAME/update-history.sh
 # (And MDN's browser-compat-data, for spec-analyze; see
 # ../shared/fetch-bcd.sh.)
 $CONFIG_REPO/shared/fetch-bcd.sh
+
+echo "Performing setup::download-pull-requests step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+
+# The spec repositories' merged pull requests, for the blame popups' links to
+# commits' pull requests and the issues they close, from the GitHub Action's
+# snapshot (see mozsearch's scripts/spec-prs/README.md), as the history's
+# pull-requests.json.  Without it (or with the last one, if it's there), the
+# links are those the commits' messages make.
+if curl -sSfL --retry 3 --max-time 300 -o "$HISTORY_ROOT/pull-requests.json.tmp" \
+        https://raw.githubusercontent.com/mozsearch/spec-pr-state/snapshot/merged.json; then
+    mv "$HISTORY_ROOT/pull-requests.json.tmp" "$HISTORY_ROOT/pull-requests.json"
+else
+    rm -f "$HISTORY_ROOT/pull-requests.json.tmp"
+    echo "No merged pull requests' snapshot; keeping the last one, if any."
+fi
