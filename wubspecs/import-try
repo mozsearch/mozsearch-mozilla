@@ -17,12 +17,26 @@ set -o pipefail # Check all commands in a pipeline
 
 NAME=$1
 OUT=$(mktemp)
+step() {
+    echo "Performing import::$1 step for $NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+}
+# (Fetched from GitHub first, beside the other imports, which don't wait for
+# it; see mozsearch's tools/src/spec_forest.rs's `fetch_pull_request`.)
+step fetch
+if ! build-spec-pr --fetch-only "$CONFIG_REPO/$TREE_NAME/specs.toml" "$GIT_ROOT" "$NAME" > "$OUT"; then
+    cat "$OUT"
+    exit 1
+fi
+cat "$OUT"
 # (Its steps writing to the forest and the history take turns with the other
 # imports running beside it; its rendering and analysis don't.  See
-# TRY_IMPORT_LOCK in mozsearch's tools/src/try_import.rs.)
+# TRY_IMPORT_LOCK in mozsearch's tools/src/try_import.rs.  The steps say when
+# it got the lock, and when it let it go.)
+step wait-for-lock
 exec 9>"${TRY_IMPORT_LOCK:-$HISTORY_ROOT/try-imports/history.lock}"
 flock 9
-if ! build-spec-pr --fetch "$CONFIG_REPO/$TREE_NAME/specs.toml" "$GIT_ROOT" "$NAME" > "$OUT"; then
+step forest-commits
+if ! build-spec-pr "$CONFIG_REPO/$TREE_NAME/specs.toml" "$GIT_ROOT" "$NAME" > "$OUT"; then
     cat "$OUT"
     exit 1
 fi
@@ -30,10 +44,12 @@ cat "$OUT"
 STACK=$(sed -n 's/^stack: //p' "$OUT")
 HEAD_REV=$(sed -n 's/^head: //p' "$OUT")
 
+step history
 SYNTAX_COMPUTE_THREADS=4 PUSH_REVS="$STACK" "$MOZSEARCH_PATH/scripts/import-try-push.sh" \
     "$GIT_ROOT" "$HISTORY_ROOT" "$GIT_BRANCH" "$NAME" "$HEAD_REV" "$MAX_REVISIONS"
 flock -u 9
 exec 9>&-
+step unlocked
 
 # Its head's renderings of the Bikeshed specs it changes, and its semantic
 # analysis (see mozsearch's scripts/analyze-spec-pr.sh), with Bikeshed and
