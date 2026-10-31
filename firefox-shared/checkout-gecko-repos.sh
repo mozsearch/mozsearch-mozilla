@@ -133,15 +133,33 @@ pushd $SHARED_BARE_GIT_ROOT
 # Note that this fetch is only updating remotes/origin/*, not our local tracking
 # branches (ex: refs/heads/main).
 git fetch
+# The branches' tips come from their own hg repos (their "default/tip"
+# branches, as for oldgit below), rather than from mozilla-unified's bookmarks,
+# which can lag: on 2026-10-31 its "central" bookmark stayed at a changeset
+# from the morning while mozilla-central (and the indexed revision) moved on,
+# failing the validation below.  git-cinnabar gives a changeset the same git
+# commit (the "firefox" repo's) whichever of the repos it's fetched from, and
+# the fetch above already has nearly all of their changesets (ex: via
+# mozilla-unified's "autoland" bookmark), so these fetches are quick.
+# We don't use BRANCH as a var here because we would clobber the script arg.
+for REFBRANCH in central beta release esr153 esr140 esr128 esr115; do
+    if [[ "$REFBRANCH" == "central" ]]; then
+        HG_REPO=mozilla-central
+    else
+        HG_REPO=releases/mozilla-$REFBRANCH
+    fi
+    git config "remote.$REFBRANCH.url" \
+        || git remote add -t branches/default/tip "$REFBRANCH" "hg::https://hg.mozilla.org/$HG_REPO"
+done
+git fetch --multiple central beta release esr153 esr140 esr128 esr115
 # So we update the references here; note that because "main" is the name for
 # "central", we manually do that outside the loop.  We do this:
 # - For idiomatic / convenience reasons.
 # - Because our blame ingestion wants to use the same ref scheme for every
 #   git repository (for simplicity).
-git update-ref refs/heads/main refs/remotes/origin/bookmarks/central
-# We don't use BRANCH as a var here because we would clobber the script arg.
+git update-ref refs/heads/main refs/remotes/central/branches/default/tip
 for REFBRANCH in beta release esr153 esr140 esr128 esr115; do
-    git update-ref "refs/heads/$REFBRANCH" "refs/remotes/origin/bookmarks/$REFBRANCH"
+    git update-ref "refs/heads/$REFBRANCH" "refs/remotes/$REFBRANCH/branches/default/tip"
 done
 
 # Fetch the tags as well to enable permalinks to tags (bug 1873020)
@@ -235,7 +253,9 @@ popd
 #
 # This is something that should ideally happen incredibly rarely; if we see this
 # with any regularity then we should escalate the issue as a relative of
-# bug 2029158.
+# bug 2029158.  (The branches now come from their own hg repos rather than
+# mozilla-unified's bookmarks, see setup::update-git above, which is how it
+# happened on 2026-10-31.)
 if [ "$REVISION_TREE" != "try" ]; then
     if ! git -C "$SHARED_BARE_GIT_ROOT" merge-base --is-ancestor "$INDEXED_GIT_REV^{commit}" "refs/heads/$BRANCH"; then
         echo "ERROR: git rev $INDEXED_GIT_REV is not present in the history chain for $BRANCH."
