@@ -81,7 +81,13 @@ popd
 status "fetching the latest firefox main"
 SHARED_BARE_GIT_ROOT=$SHARED_ROOT/git
 git -C $SHARED_BARE_GIT_ROOT fetch
-git -C $SHARED_BARE_GIT_ROOT update-ref refs/heads/main refs/remotes/origin/bookmarks/central
+# (mozilla-central's tip, rather than mozilla-unified's "central" bookmark,
+# which can lag; see firefox-shared/checkout-gecko-repos.sh's
+# setup::update-git.)
+git -C $SHARED_BARE_GIT_ROOT config remote.central.url \
+    || git -C $SHARED_BARE_GIT_ROOT remote add -t branches/default/tip central hg::https://hg.mozilla.org/mozilla-central
+git -C $SHARED_BARE_GIT_ROOT fetch central
+git -C $SHARED_BARE_GIT_ROOT update-ref refs/heads/main refs/remotes/central/branches/default/tip
 
 # ## The history configuration, with a different start if requested.
 START=${HISTORY_START:-}
