@@ -60,7 +60,7 @@ date
 if [ -f "$PLATFORM.mozsearch-java-index.zip" ]; then
   mkdir -p objdir-$PLATFORM/java_index
   unzip -q $PLATFORM.mozsearch-java-index.zip -d objdir-$PLATFORM/java_index
-  scip-java index-semanticdb --no-emit-inverse-relationships --output=objdir-$PLATFORM/java.scip objdir-$PLATFORM/java_index
+  scip-java-semanticdb index-semanticdb --no-emit-inverse-relationships --output=objdir-$PLATFORM/java.scip objdir-$PLATFORM/java_index
 fi
 
 date
