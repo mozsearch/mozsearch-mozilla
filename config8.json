@@ -63,6 +63,7 @@
       "group": "Firefox other",
       "group_order": 5,
       "help_indexed_langs": ["js", "idl", "cpp", "rs", "java", "py"],
+      "semantic_coverage": "firefox-shared/semantic-coverage.toml",
       "do_not_fill_idl_binding_slots": true,
       "dataflow_summaries": true
     },

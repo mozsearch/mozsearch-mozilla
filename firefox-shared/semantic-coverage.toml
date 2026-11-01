@@ -1,0 +1,36 @@
+# Firefox's semantic coverage (see mozsearch's tools/src/semantic_coverage.rs):
+# the languages whose files firefox's trees analyze semantically, and the
+# files known to be left out, whose source listings' "No Semantic Analysis"
+# info boxes say why; others' warn that their missing analysis is unexpected,
+# with a Bugzilla search for its bug (bug 1789515).
+
+# scip-python, in the build (ex: firefox-main's), in two chunks: the
+# web-platform-tests, and the rest, but the vendored code below.
+[[language]]
+name = "Python"
+extensions = ["py"]
+analyzer = "scip-python"
+symbol_prefixes = ["S_py_"]
+bug_search = "component:Searchfox python"
+
+# (The build's exclusions from scip-python's first chunk, but
+# testing/web-platform, which is its second chunk.)
+[[gap]]
+paths = [
+    "third_party/chromium/build",
+    "third_party/libwebrtc",
+    "third_party/python/aiohttp/examples",
+    "third_party/python/cbor2",
+    "third_party/python/dlmanager/examples",
+    "third_party/python/gyp/test",
+    "third_party/python/pip/pip/_internal",
+    "third_party/python/pip/pip/_vendor",
+    "third_party/python/ply/example",
+    "third_party/python/python-hglib/examples",
+    "third_party/python/pyyaml/examples",
+    "third_party/python/setuptools/setuptools/_vendor",
+    "third_party/python/setuptools/setuptools/_distutils/tests",
+    "third_party/rust",
+]
+reason = "It's vendored code (third-party tests, examples and internals), which the build leaves out of scip-python's analysis: with all of the tree's Python, scip-python runs out of memory."
+bug = 1999118
