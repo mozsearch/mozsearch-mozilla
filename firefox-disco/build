@@ -23,6 +23,54 @@ SCIP_TS_LOG="$INDEX_ROOT/scip-typescript.log"
 ) > "$SCIP_TS_LOG" 2>&1 &
 SCIP_TS_PID=$!
 
+# scip-python, as firefox-main's build runs it (see there for its two chunks,
+# the web-platform-tests and the rest, what the rest excludes, and its
+# memory), which needs only the checkout too, so it runs in the background
+# beside scip-typescript, while the Gecko analysis is processed (it took 10.6
+# minutes for firefox-main on 2026-10-31), its log shown once it's done.  Its
+# pyright configuration is in the checkout, which it takes it from, and goes
+# once it's done.
+SCIP_PY_LOG="$INDEX_ROOT/scip-python.log"
+(
+    set -eu
+    set -o pipefail
+    echo "Performing build::scip-python step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+    cd "$GIT_ROOT"
+    cat <<EOF > __pyright_exclude_paths.txt
+testing/web-platform
+third_party/chromium/build
+third_party/libwebrtc
+third_party/python/aiohttp/examples
+third_party/python/cbor2
+third_party/python/dlmanager/examples
+third_party/python/gyp/test
+third_party/python/pip/pip/_internal
+third_party/python/pip/pip/_vendor
+third_party/python/ply/example
+third_party/python/python-hglib/examples
+third_party/python/pyyaml/examples
+third_party/python/setuptools/setuptools/_vendor
+third_party/python/setuptools/setuptools/_distutils/tests
+third_party/rust
+EOF
+    jo verboseOutput=false \
+      include=$(echo "." | jo -a) \
+      extraPaths=$(git ls-files '*.py' | xargs -n1 dirname | sort | uniq | grep -vf __pyright_exclude_paths.txt | jo -a) \
+      exclude=$(cat __pyright_exclude_paths.txt | jo -a) \
+      > pyrightconfig.json
+    NODE_OPTIONS="--max-old-space-size=10240" scip-python index --show-progress-rate-limit 0 --project-name python --output python.scip
+    mv python.scip "$INDEX_ROOT"
+    jo verboseOutput=false \
+      include=$(echo testing/web-platform | jo -a) \
+      extraPaths=$(echo testing/web-platform | jo -a) \
+      > pyrightconfig.json
+    NODE_OPTIONS="--max-old-space-size=10240" scip-python index --show-progress-rate-limit 0 --project-name python --output python2.scip
+    mv python2.scip "$INDEX_ROOT"
+    rm -f pyrightconfig.json __pyright_exclude_paths.txt
+    echo "build::scip-python done for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+) > "$SCIP_PY_LOG" 2>&1 &
+SCIP_PY_PID=$!
+
 pushd $INDEX_ROOT
 $CONFIG_REPO/firefox-shared/process-gecko-analysis.sh
 popd
@@ -35,3 +83,12 @@ if ! wait $SCIP_TS_PID; then
 fi
 cat "$SCIP_TS_LOG"
 rm -f "$SCIP_TS_LOG"
+
+echo "Waiting for build::scip-python for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+if ! wait $SCIP_PY_PID; then
+    cat "$SCIP_PY_LOG"
+    echo "scip-python failed"
+    exit 1
+fi
+cat "$SCIP_PY_LOG"
+rm -f "$SCIP_PY_LOG"

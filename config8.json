@@ -50,6 +50,11 @@
       "codesearch_path": "$WORKING/firefox-disco/livegrep.idx",
       "codesearch_port": 8081,
       "scip_subtrees": {
+        "python": {
+          "scip_index_path": "$WORKING/firefox-disco/python.scip",
+          "scip_index_path2": "$WORKING/firefox-disco/python2.scip",
+          "subtree_root": ""
+        },
         "typescript": {
           "scip_index_path": "$WORKING/firefox-disco/typescript.scip",
           "subtree_root": ""
@@ -57,7 +62,7 @@
       },
       "group": "Firefox other",
       "group_order": 5,
-      "help_indexed_langs": ["js", "idl", "cpp", "rs", "java"],
+      "help_indexed_langs": ["js", "idl", "cpp", "rs", "java", "py"],
       "do_not_fill_idl_binding_slots": true,
       "dataflow_summaries": true
     },
