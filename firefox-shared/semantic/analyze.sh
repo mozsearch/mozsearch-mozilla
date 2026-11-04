@@ -20,7 +20,8 @@ set -o pipefail # Check all commands in a pipeline
 #
 # Usage: analyze.sh NAME HEAD_REV, with try_import's hook environment (see
 # mozsearch's tools/src/try_import.rs): GIT_ROOT, INDEX_ROOT, CONFIG_FILE,
-# TREE_NAME, and MOZSEARCH_PATH.
+# TREE_NAME, and MOZSEARCH_PATH; and PUSH_REVS, the push's stack's commits,
+# oldest first (see rebase-try-push.sh), if known.
 
 NAME=$1
 HEAD_REV=$2
@@ -109,9 +110,14 @@ ln -s raw "$PUSH/analysis-linux64"
 
 begin_step semantic delta "$NAME"
 { grep '^__GENERATED__/' "$PUSH/changed.lst" || true; } > "$PUSH/changed-generated.lst"
+# (A stack on a newer trunk revision which needs its changes is analyzed with
+# them, and the delta says what the stack itself changes; see
+# rebase-try-push.sh.)
+STACK_BASE=$(git -C "$GIT_ROOT" rev-parse -q --verify "refs/try-stack-base/$NAME" || true)
 build-try-delta "$CONFIG_FILE" "$TREE_NAME" "$NAME" "$REBASED" "$PUSH/tip" \
     --incomplete "$PUSH/incomplete.lst" --objdir "$SEM/workspace/obj-build" \
-    --changed-generated "$PUSH/changed-generated.lst" --threads "$JOBS"
+    --changed-generated "$PUSH/changed-generated.lst" --threads "$JOBS" \
+    ${STACK_BASE:+--stack-base "$STACK_BASE"}
 
 # (The worktree goes back to the base for the next push; the objdir and mach's
 # state go back to their pristine copies then.)
