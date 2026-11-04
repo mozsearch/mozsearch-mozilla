@@ -13,7 +13,8 @@ set -o pipefail # Check all commands in a pipeline
 # the files it changes (by the base's include map), writing their files'
 # analysis (see select_tus.py and compile.py), with all but 8 of the cores,
 # for the web server's sake.  That analysis, merged like the tree's (see
-# ../process-gecko-analysis.sh), is the delta's (see build-try-delta).
+# ../process-gecko-analysis.sh), and its JS's, is the delta's (see
+# build-try-delta).
 #
 # Its steps say when they start, and how long each took when it exits (see
 # ../step-times.sh); compile.py says how long the translation units took.
@@ -107,6 +108,14 @@ ln -s raw "$PUSH/analysis-linux64"
 (cd "$PUSH/raw" && find . -type f | sed 's#^\./##') |
     (cd "$PUSH" && parallel --halt now,fail=1 \
         'mkdir -p "$(dirname tip/{})" && merge-analyses analysis-linux64/{} > tip/{}')
+
+# And its JS, which the compilation doesn't analyze, as the tree's is (see
+# mozsearch's scripts/try-analyze-js.sh, which revisions before Part 667
+# don't have).
+if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-js.sh" ]; then
+    begin_step semantic js "$NAME"
+    "$MOZSEARCH_PATH/scripts/try-analyze-js.sh" "$INDEX_ROOT" "$SEM/gecko" "$PUSH/changed.lst" "$PUSH/tip"
+fi
 
 begin_step semantic delta "$NAME"
 { grep '^__GENERATED__/' "$PUSH/changed.lst" || true; } > "$PUSH/changed-generated.lst"
