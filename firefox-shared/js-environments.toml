@@ -1,0 +1,94 @@
+# Firefox's JS environments, for mozsearch's js-environments tool (see its
+# tools/src/js_environments/): which global a test's scripts run in, after
+# which harness scripts, by the moz.build variables declaring their test
+# manifests; the URLs tests load files at; and web-platform-tests' harness.
+
+# The globals with a `load(path)` function.
+load_globals = ["xpcshell", "js-shell"]
+
+[[flavors]]
+name = "xpcshell"
+manifest_variables = ["XPCSHELL_TESTS_MANIFESTS"]
+global = "xpcshell"
+# (testing/xpcshell/head.js, then the manifest's `head` files, then the test;
+# see runxpcshelltests.py.)
+harness = ["testing/xpcshell/head.js"]
+
+[[flavors]]
+name = "mochitest"
+manifest_variables = ["MOCHITEST_MANIFESTS"]
+global = "window"
+
+[[flavors]]
+name = "mochitest-chrome"
+manifest_variables = ["MOCHITEST_CHROME_MANIFESTS"]
+global = "chrome-window"
+
+[[flavors]]
+name = "a11y"
+manifest_variables = ["A11Y_MANIFESTS"]
+global = "chrome-window"
+
+[[flavors]]
+name = "browser-chrome"
+manifest_variables = ["BROWSER_CHROME_MANIFESTS"]
+global = "browser-window"
+# (browser-test.js's test scope, with the scripts it loads into it, and the
+# test's directory's head.js, which it loads whether or not the manifest says
+# so; see its `Tester.prototype.execTest`.)
+harness = [
+  "testing/mochitest/browser-test.js",
+  "testing/mochitest/chrome-harness.js",
+]
+implicit_head = ["head.js"]
+
+# SpiderMonkey's tests, which its own runners find by their paths: jit-tests
+# run in the JS shell after jit-test/lib/prologue.js, and load jit-test/lib's
+# scripts as `load(libdir + "x.js")` (see js/src/tests/lib/jittests.py);
+# jstests run after the shell.js of each of their directories, from
+# js/src/tests's down (see js/src/tests/lib/tests.py's `prefix_command`).
+[[path_flavors]]
+name = "jit-test"
+include = ["js/src/jit-test/tests/**/*.js"]
+global = "js-shell"
+harness = ["js/src/jit-test/lib/prologue.js"]
+variables = { libdir = "js/src/jit-test/lib/", scriptdir = "{dir}" }
+
+[[path_flavors]]
+name = "jstests"
+include = ["js/src/tests/**/*.js"]
+exclude = ["**/shell.js", "**/browser.js", "js/src/tests/lib/**", "js/src/tests/*.js"]
+global = "js-shell"
+dir_heads_root = "js/src/tests"
+dir_heads = ["shell.js"]
+
+# URL prefixes, and the directories of the files they load ("" is the tree's
+# root): mochitest serves tests at /tests/<their path>, and SimpleTest at
+# /tests/SimpleTest/; chrome tests are at chrome://mochitests/content/<flavor>/;
+# browser tests' support files are at <origin>/browser/<their path>.
+[urls]
+"/tests/" = ""
+"/tests/SimpleTest/" = "testing/mochitest/tests/SimpleTest/"
+"chrome://mochikit/content/" = "testing/mochitest/"
+"chrome://mochikit/content/tests/SimpleTest/" = "testing/mochitest/tests/SimpleTest/"
+"chrome://mochitests/content/chrome/" = ""
+"chrome://mochitests/content/browser/" = ""
+"chrome://mochitests/content/a11y/" = ""
+"http://mochi.test:8888/tests/" = ""
+"http://mochi.test:8888/tests/SimpleTest/" = "testing/mochitest/tests/SimpleTest/"
+"https://example.com/tests/" = ""
+"http://example.com/tests/" = ""
+"https://example.org/tests/" = ""
+"http://example.org/tests/" = ""
+"https://example.com/browser/" = ""
+"http://example.com/browser/" = ""
+"https://example.org/browser/" = ""
+"http://example.org/browser/" = ""
+"https://example.net/browser/" = ""
+"http://example.net/browser/" = ""
+"/_mozilla/" = "testing/web-platform/mozilla/tests/"
+
+[wpt]
+root = "testing/web-platform/tests"
+window_harness = ["resources/testharness.js", "resources/testharnessreport.js"]
+worker_harness = ["resources/testharness.js"]

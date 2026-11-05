@@ -64,6 +64,7 @@
       "group_order": 5,
       "help_indexed_langs": ["js", "idl", "cpp", "rs", "java", "py"],
       "semantic_coverage": "firefox-shared/semantic-coverage.toml",
+      "js_environments": "firefox-shared/js-environments.toml",
       "do_not_fill_idl_binding_slots": true,
       "dataflow_summaries": true
     },
@@ -94,6 +95,7 @@
           "subtree_root": ""
         }
       },
+      "js_environments": "firefox-shared/js-environments.toml",
       "group": "Firefox other",
       "group_order": 6,
       "help_indexed_langs": ["js", "idl", "cpp", "rs", "java"]
