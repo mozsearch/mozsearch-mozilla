@@ -88,7 +88,12 @@
       "objdir_path": "$WORKING/firefox-try/objdir",
       "codesearch_path": "$WORKING/firefox-try/livegrep.idx",
       "codesearch_port": 8083,
-      "scip_subtrees": {},
+      "scip_subtrees": {
+        "typescript": {
+          "scip_index_path": "$WORKING/firefox-try/typescript.scip",
+          "subtree_root": ""
+        }
+      },
       "group": "Firefox other",
       "group_order": 6,
       "help_indexed_langs": ["js", "idl", "cpp", "rs", "java"]

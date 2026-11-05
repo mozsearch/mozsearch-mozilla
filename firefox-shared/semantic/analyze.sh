@@ -13,8 +13,8 @@ set -o pipefail # Check all commands in a pipeline
 # the files it changes (by the base's include map), writing their files'
 # analysis (see select_tus.py and compile.py), with all but 8 of the cores,
 # for the web server's sake.  That analysis, merged like the tree's (see
-# ../process-gecko-analysis.sh), and its JS's, is the delta's (see
-# build-try-delta).
+# ../process-gecko-analysis.sh), and its TypeScript's and JS's, is the
+# delta's (see build-try-delta).
 #
 # Its steps say when they start, and how long each took when it exits (see
 # ../step-times.sh); compile.py says how long the translation units took.
@@ -62,7 +62,8 @@ rsync -a --delete "$SEM/pristine/mozbuild/" "$SEM/mozbuild/"
 # disk, which doesn't keep their inodes.)
 git -C "$SEM/gecko" update-index -q --refresh || true
 git -C "$SEM/gecko" checkout -q --detach -f "$REBASED"
-git -C "$SEM/gecko" clean -q -fdx
+# (But the npm packages the TypeScript analysis installs; see below.)
+git -C "$SEM/gecko" clean -q -fdx -e /node_modules
 rm -rf "$PUSH"
 mkdir -p "$PUSH"
 git -C "$GIT_ROOT" diff --name-only "$BASE" "$REBASED" > "$PUSH/changed.lst"
@@ -109,9 +110,32 @@ ln -s raw "$PUSH/analysis-linux64"
     (cd "$PUSH" && parallel --halt now,fail=1 \
         'mkdir -p "$(dirname tip/{})" && merge-analyses analysis-linux64/{} > tip/{}')
 
-# And its JS, which the compilation doesn't analyze, as the tree's is (see
-# mozsearch's scripts/try-analyze-js.sh, which revisions before Part 667
-# don't have).
+# And its TypeScript and JS, which the compilation doesn't analyze, as the
+# tree's are: with scip-typescript, the files the projects at its head include
+# (listed as the tree's build lists them; see mozsearch's
+# scripts/try-analyze-typescript.sh, which revisions before Part 669 don't
+# have), with the checkout's npm packages, installed for the first push, and
+# again for a push whose package.json or package-lock.json differ from those
+# they were installed for; if that fails, those files' JS is js-analyze's, as
+# the others' is (see mozsearch's scripts/try-analyze-js.sh, which revisions
+# before Part 667 don't have).
+if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-typescript.sh" ]; then
+    begin_step semantic typescript "$NAME"
+    NPM_STAMP=$(cat "$SEM/gecko/package.json" "$SEM/gecko/package-lock.json" 2>/dev/null | sha256sum | cut -d' ' -f1)
+    if [ ! -d "$SEM/gecko/node_modules" ] || [ "$(cat "$SEM/npm-stamp" 2>/dev/null)" != "$NPM_STAMP" ]; then
+        rm -f "$SEM/npm-stamp"
+        if (cd "$SEM/gecko" && npm install --no-audit --no-fund); then
+            echo "$NPM_STAMP" > "$SEM/npm-stamp"
+        else
+            echo "WARNING: npm install failed in the semantic analysis's checkout."
+        fi
+    fi
+    "$HERE/../typescript-projects.sh" "$SEM/gecko" > "$PUSH/typescript-projects"
+    if ! "$MOZSEARCH_PATH/scripts/try-analyze-typescript.sh" "$CONFIG_FILE" "$TREE_NAME" \
+        "$SEM/gecko" "$PUSH/typescript-projects" "$PUSH/changed.lst" "$PUSH/tip"; then
+        echo "WARNING: The push's TypeScript analysis failed, so its JS is js-analyze's."
+    fi
+fi
 if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-js.sh" ]; then
     begin_step semantic js "$NAME"
     "$MOZSEARCH_PATH/scripts/try-analyze-js.sh" "$INDEX_ROOT" "$SEM/gecko" "$PUSH/changed.lst" "$PUSH/tip"

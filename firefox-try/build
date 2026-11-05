@@ -4,6 +4,28 @@ set -x # Show commands
 set -eu # Errors/undefined vars are fatal
 set -o pipefail # Check all commands in a pipeline
 
+# Its TypeScript and JS, with scip-typescript, as firefox-disco's (whose build
+# runs it as this does; js-analyze then analyzes the JS it doesn't, the files
+# its projects don't include), so that try pushes' analysis, which analyzes
+# the TypeScript and JS they change with it (see
+# ../firefox-shared/semantic/analyze.sh), has the same analysis.  It needs
+# only the checkout, so it runs in the background while the Gecko analysis is
+# processed, its log shown once it's done.
+SCIP_TS_LOG="$INDEX_ROOT/scip-typescript.log"
+(
+    set -eu
+    set -o pipefail
+    echo "Performing build::scip-typescript step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+    cd "$GIT_ROOT"
+    npm install
+    "$CONFIG_REPO/firefox-shared/typescript-projects.sh" . > "$INDEX_ROOT/typescript-projects"
+    "$MOZSEARCH_PATH/scripts/scip-typescript-index.sh" . "$INDEX_ROOT/typescript-projects" \
+        "$INDEX_ROOT/typescript.scip"
+    rm -rf node_modules
+    echo "build::scip-typescript done for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+) > "$SCIP_TS_LOG" 2>&1 &
+SCIP_TS_PID=$!
+
 # Only linux64's analysis; see setup.
 pushd $INDEX_ROOT
 GECKO_PLATFORMS=linux64 $CONFIG_REPO/firefox-shared/process-gecko-analysis.sh
@@ -16,3 +38,12 @@ echo "Performing build::prepare-semantic-analysis step for $TREE_NAME : $(date +
 $CONFIG_REPO/firefox-shared/semantic/prepare.sh "$INDEX_ROOT/semantic" "$GIT_ROOT" \
     "$(jq -r .moz_source_stamp "$INDEX_ROOT/target.json")" ||
     echo "WARNING: Preparing the semantic analysis of try pushes failed."
+
+echo "Waiting for build::scip-typescript for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+if ! wait $SCIP_TS_PID; then
+    cat "$SCIP_TS_LOG"
+    echo "scip-typescript failed"
+    exit 1
+fi
+cat "$SCIP_TS_LOG"
+rm -f "$SCIP_TS_LOG"

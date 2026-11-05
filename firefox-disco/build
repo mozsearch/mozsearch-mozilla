@@ -15,9 +15,16 @@ SCIP_TS_LOG="$INDEX_ROOT/scip-typescript.log"
     echo "Performing build::scip-typescript step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
     cd "$GIT_ROOT"
     npm install
-    TS_PROJECTS=$(find . -name '[tj]sconfig.json' | grep -v 'node_modules\|third_party')
-    scip-typescript index --max-file-byte-size 0 $TS_PROJECTS
-    mv index.scip "$INDEX_ROOT/typescript.scip"
+    # (As try pushes' analysis lists and indexes them, with mozsearch's
+    # scip-typescript-index.sh, if it has it; see firefox-try's build.)
+    "$CONFIG_REPO/firefox-shared/typescript-projects.sh" . > "$INDEX_ROOT/typescript-projects"
+    if [ -x "$MOZSEARCH_PATH/scripts/scip-typescript-index.sh" ]; then
+        "$MOZSEARCH_PATH/scripts/scip-typescript-index.sh" . "$INDEX_ROOT/typescript-projects" \
+            "$INDEX_ROOT/typescript.scip"
+    else
+        scip-typescript index --max-file-byte-size 0 $(cat "$INDEX_ROOT/typescript-projects")
+        mv index.scip "$INDEX_ROOT/typescript.scip"
+    fi
     rm -rf node_modules
     echo "build::scip-typescript done for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 ) > "$SCIP_TS_LOG" 2>&1 &
