@@ -39,8 +39,18 @@ global = "browser-window"
 harness = [
   "testing/mochitest/browser-test.js",
   "testing/mochitest/chrome-harness.js",
+  "testing/modules/Mochia.js",
 ]
 implicit_head = ["head.js"]
+# (A test runs in a testScope object, not in the window: its members, and the
+# modules' exports the Tester copies into it, are the names it sees first; see
+# `Tester.prototype.execTest`.  browser-test.js, which the window loads, and
+# chrome-harness.js and Mochia.js, which it loads into the scope, are the
+# harness.)
+[flavors.scope]
+file = "testing/mochitest/browser-test.js"
+constructor = "testScope"
+modules = { ContentTask = "resource://testing-common/ContentTask.sys.mjs", BrowserTestUtils = "resource://testing-common/BrowserTestUtils.sys.mjs", TestUtils = "resource://testing-common/TestUtils.sys.mjs", Assert = "new resource://testing-common/Assert.sys.mjs" }
 
 # SpiderMonkey's tests, which its own runners find by their paths: jit-tests
 # run in the JS shell after jit-test/lib/prologue.js, and load jit-test/lib's
@@ -92,3 +102,25 @@ dir_heads = ["shell.js"]
 root = "testing/web-platform/tests"
 window_harness = ["resources/testharness.js", "resources/testharnessreport.js"]
 worker_harness = ["resources/testharness.js"]
+
+# Each global kind's TypeScript types, for its environments' projects: Gecko's
+# (tools/@types: its DOM, XPCOM and modules) in its windows and in xpcshell;
+# TypeScript's own in workers (Gecko has no worker types) and in the JS shell.
+[globals.window]
+extends = "tools/@types/tsconfig.json"
+[globals.chrome-window]
+extends = "tools/@types/tsconfig.json"
+[globals.browser-window]
+extends = "tools/@types/tsconfig.json"
+[globals.xpcshell]
+extends = "tools/@types/tsconfig.json"
+[globals.chromeworker]
+lib = ["ESNext", "WebWorker"]
+[globals.dedicatedworker]
+lib = ["ESNext", "WebWorker"]
+[globals.sharedworker]
+lib = ["ESNext", "WebWorker"]
+[globals.serviceworker]
+lib = ["ESNext", "WebWorker"]
+[globals.js-shell]
+lib = ["ESNext"]

@@ -65,6 +65,7 @@
       "help_indexed_langs": ["js", "idl", "cpp", "rs", "java", "py"],
       "semantic_coverage": "firefox-shared/semantic-coverage.toml",
       "js_environments": "firefox-shared/js-environments.toml",
+      "js_environments_analysis": true,
       "do_not_fill_idl_binding_slots": true,
       "dataflow_summaries": true
     },
