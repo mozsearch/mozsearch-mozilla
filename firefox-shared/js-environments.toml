@@ -6,6 +6,19 @@
 # The globals with a `load(path)` function.
 load_globals = ["xpcshell", "js-shell"]
 
+# The scripts whose functions are in functions they call at once, exposing
+# them as their global's properties, which their projects unwrap, so that
+# their declarations are the globals their tests see (by globs): wpt's
+# harness's (testharness.js's `expose(promise_test, 'promise_test')`,
+# testdriver.js's `window.test_driver = ...`), and SpiderMonkey's tests'
+# helpers (`global.assertEqArray = assertEqArray`,
+# `globalThis.assertDeepEq = ...`).
+unwrap = [
+  "testing/web-platform/tests/resources/*.js",
+  "js/src/tests/shell.js",
+  "js/src/tests/non262/**/shell.js",
+]
+
 [[flavors]]
 name = "xpcshell"
 manifest_variables = ["XPCSHELL_TESTS_MANIFESTS"]
