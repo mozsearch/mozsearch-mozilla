@@ -11,6 +11,12 @@ set -o pipefail # Check all commands in a pipeline
 
 echo "Performing upload::history step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
+# (After the setup's stale anchors' lookup, if it's still running; see
+# update-history.sh.)
+if [ -x "$MOZSEARCH_PATH/scripts/background-step.sh" ]; then
+    $MOZSEARCH_PATH/scripts/background-step.sh wait "$INDEX_ROOT/stale-anchors-lookup" || true
+fi
+
 pushd $INDEX_ROOT
 for DIR in "$(basename "$GIT_ROOT")" "$(basename "$HISTORY_ROOT")"; do
     NAME=wubspecs-$DIR.tar.lz4

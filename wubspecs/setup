@@ -31,7 +31,9 @@ if [ ! -d "$(basename "$GIT_ROOT")" ] && [ ! -d "$(basename "$HISTORY_ROOT")" ];
 fi
 popd
 
-$CONFIG_REPO/$TREE_NAME/update-history.sh
+# (Its stale anchors' lookup in the background, for this tree's and the
+# citing trees' spec-analyze steps, which wait for it; see update-history.sh.)
+STALE_ANCHORS_IN_BACKGROUND=1 $CONFIG_REPO/$TREE_NAME/update-history.sh
 
 # (And MDN's browser-compat-data, for spec-analyze; see
 # ../shared/fetch-bcd.sh.)

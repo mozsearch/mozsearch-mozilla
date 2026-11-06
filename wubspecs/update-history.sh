@@ -68,23 +68,16 @@ build-commit-index "$GIT_ROOT" "$HISTORY_ROOT/commit-index"
 
 echo "Performing setup::stale-anchors step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 
-# The anchors which the trees citing the specs (this one, and firefox-disco on
-# config8) cited but the specs no longer define, as of their last indexing (see
-# ../shared/upload-stale-anchors-cited.sh), looked up in the history, in its
-# cache (history/stale-anchors.json, uploaded with it), which spec-analyze
-# marks their citations with; see mozsearch's tools/src/spec_analyze/stale.rs.
-# Only anchors not yet in the cache are looked up (by analyzing old revisions,
-# with Bikeshed for Bikeshed specs), so this is quick after the first time.
-if [ -n "${HISTORY_STATUS_COMMAND:-}" ]; then
-    $HISTORY_STATUS_COMMAND "looking up stale anchors in the history"
+# The stale anchors' lookup (see stale-anchors.sh).  With
+# STALE_ANCHORS_IN_BACKGROUND (the indexing's setup), in the background
+# (mozsearch's scripts/background-step.sh, as stale-anchors-lookup in the
+# index directory), which the spec-analyze steps of this tree and of the trees
+# citing it wait for, and the history's upload: the indexing waits for every
+# tree's setup, and it took 159 s on the 2026-11-05 config8 run, looking 7
+# anchors up.
+if [ -n "${STALE_ANCHORS_IN_BACKGROUND:-}" ] && [ -x "$MOZSEARCH_PATH/scripts/background-step.sh" ]; then
+    $MOZSEARCH_PATH/scripts/background-step.sh start "$INDEX_ROOT/stale-anchors-lookup" \
+        $CONFIG_REPO/$TREE_NAME/stale-anchors.sh
+else
+    $CONFIG_REPO/$TREE_NAME/stale-anchors.sh
 fi
-CITED_DIR=$(mktemp -d)
-CITED=()
-for CITING_TREE in wubspecs firefox-disco; do
-    if aws s3 cp s3://searchfox.repositories/$CITING_TREE-stale-anchors-cited.json \
-        $CITED_DIR/$CITING_TREE.json --no-sign-request; then
-        CITED+=("$CITED_DIR/$CITING_TREE.json")
-    fi
-done
-stale-anchors $CONFIG_REPO/$TREE_NAME/specs.toml "$GIT_ROOT" "$HISTORY_ROOT" ${CITED[@]+"${CITED[@]}"}
-rm -rf "$CITED_DIR"
