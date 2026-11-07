@@ -13,8 +13,9 @@ set -o pipefail # Check all commands in a pipeline
 # the files it changes (by the base's include map), writing their files'
 # analysis (see select_tus.py and compile.py), with all but 8 of the cores,
 # for the web server's sake.  That analysis, merged like the tree's (see
-# ../process-gecko-analysis.sh), and its TypeScript's and JS's, is the
-# delta's (see build-try-delta).
+# ../process-gecko-analysis.sh), and its TypeScript's, its web analyses' (its
+# JS's, pages', stylesheets') and its Python's, is the delta's (see
+# build-try-delta).
 #
 # Its steps say when they start, and how long each took when it exits (see
 # ../step-times.sh); compile.py says how long the translation units took.
@@ -136,12 +137,32 @@ if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-typescript.sh" ]; then
         echo "WARNING: The push's TypeScript analysis failed, so its JS is js-analyze's."
     fi
 fi
-if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-js.sh" ]; then
+# And its web analyses, as the tree's (see mozsearch's
+# scripts/try-analyze-web.sh, which revisions before Part 704 don't have, whose
+# push analysis is try-analyze-js.sh's): its JS environments' (with
+# scip-typescript, its pages' inline scripts' too), its JS's and pages'
+# markup's (js-analyze's), its stylesheets', and its web-platform-tests'
+# links.
+if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-web.sh" ]; then
+    begin_step semantic web "$NAME"
+    JS_ENVIRONMENTS_JOBS=$JOBS "$MOZSEARCH_PATH/scripts/try-analyze-web.sh" "$CONFIG_FILE" "$TREE_NAME" \
+        "$INDEX_ROOT" "$SEM/gecko" "$PUSH/changed.lst" "$PUSH/tip"
+elif [ -x "$MOZSEARCH_PATH/scripts/try-analyze-js.sh" ]; then
     begin_step semantic js "$NAME"
     # (Its web-platform-tests' custom properties are each file's own, as the
     # tree's are; see mozsearch's scripts/js-analyze.sh.)
     TESTS_ROOT=$(jq -r --arg tree "$TREE_NAME" '.trees[$tree].wpt_root // "-"' "$CONFIG_FILE") \
         "$MOZSEARCH_PATH/scripts/try-analyze-js.sh" "$INDEX_ROOT" "$SEM/gecko" "$PUSH/changed.lst" "$PUSH/tip"
+fi
+# And its Python, with scip-python, in the tree's projects (see
+# ../python-configs.sh and mozsearch's scripts/try-analyze-python.sh).
+if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-python.sh" ]; then
+    begin_step semantic python "$NAME"
+    "$HERE/../python-configs.sh" "$SEM/gecko"
+    "$MOZSEARCH_PATH/scripts/try-analyze-python.sh" "$CONFIG_FILE" "$TREE_NAME" "$SEM/gecko" \
+        "$PUSH/changed.lst" "$PUSH/tip" "$SEM/gecko/pyrightconfig.json" "$SEM/gecko/__pyright_wpt.json" ||
+        echo "WARNING: The push's Python analysis failed."
+    rm -f "$SEM/gecko/pyrightconfig.json" "$SEM/gecko/__pyright_wpt.json"
 fi
 
 begin_step semantic delta "$NAME"

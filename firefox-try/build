@@ -26,6 +26,13 @@ SCIP_TS_LOG="$INDEX_ROOT/scip-typescript.log"
 ) > "$SCIP_TS_LOG" 2>&1 &
 SCIP_TS_PID=$!
 
+# And its Python, with scip-python, as firefox-disco's (see
+# ../firefox-shared/scip-python.sh), which try pushes' analysis analyzes the
+# Python they change with too (see ../firefox-shared/semantic/analyze.sh).
+SCIP_PY_LOG="$INDEX_ROOT/scip-python.log"
+"$CONFIG_REPO/firefox-shared/scip-python.sh" > "$SCIP_PY_LOG" 2>&1 &
+SCIP_PY_PID=$!
+
 # Only linux64's analysis; see setup.
 pushd $INDEX_ROOT
 GECKO_PLATFORMS=linux64 $CONFIG_REPO/firefox-shared/process-gecko-analysis.sh
@@ -47,3 +54,12 @@ if ! wait $SCIP_TS_PID; then
 fi
 cat "$SCIP_TS_LOG"
 rm -f "$SCIP_TS_LOG"
+
+echo "Waiting for build::scip-python for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+if ! wait $SCIP_PY_PID; then
+    cat "$SCIP_PY_LOG"
+    echo "scip-python failed"
+    exit 1
+fi
+cat "$SCIP_PY_LOG"
+rm -f "$SCIP_PY_LOG"

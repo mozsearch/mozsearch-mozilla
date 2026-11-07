@@ -91,15 +91,24 @@
       "codesearch_path": "$WORKING/firefox-try/livegrep.idx",
       "codesearch_port": 8083,
       "scip_subtrees": {
+        "python": {
+          "scip_index_path": "$WORKING/firefox-try/python.scip",
+          "scip_index_path2": "$WORKING/firefox-try/python2.scip",
+          "subtree_root": ""
+        },
         "typescript": {
           "scip_index_path": "$WORKING/firefox-try/typescript.scip",
           "subtree_root": ""
         }
       },
-      "js_environments": "firefox-shared/js-environments.toml",
       "group": "Firefox other",
       "group_order": 6,
-      "help_indexed_langs": ["js", "idl", "cpp", "rs", "java"]
+      "help_indexed_langs": ["js", "idl", "cpp", "rs", "java", "py"],
+      "semantic_coverage": "firefox-shared/semantic-coverage.toml",
+      "js_environments": "firefox-shared/js-environments.toml",
+      "js_environments_analysis": true,
+      "do_not_fill_idl_binding_slots": true,
+      "dataflow_summaries": true
     }
   }
 }
