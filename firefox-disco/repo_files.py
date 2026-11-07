@@ -24,11 +24,6 @@ def filter_js(path):
         return False
     return True
 
-def filter_html(path):
-    if 'testing/web-platform/' in path:
-        return False
-    return True
-
 def filter_css(path):
     if 'testing/web-platform/' in path:
         return False

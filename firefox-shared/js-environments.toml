@@ -111,10 +111,26 @@ dir_heads = ["shell.js"]
 "http://example.net/browser/" = ""
 "/_mozilla/" = "testing/web-platform/mozilla/tests/"
 
+# web-platform-tests, as its manifest and server have them
+# (tools/manifest/sourcefile.py, tools/serve/serve.py): `.any.js` tests'
+# variants, `.window.js` and `.worker.js` tests, `.extension.js` tests (after
+# ExtensionHandler's scripts), pages with scripts or event handlers (with
+# their inline scripts'), its other root's (/_mozilla/), and its Test262 tests
+# (Test262WindowTestBaseHandler's: the reporter, assert.js, sta.js and the
+# provider, then each test's frontmatter's includes, and doneprintHandle.js
+# for an async one).
 [wpt]
 root = "testing/web-platform/tests"
 window_harness = ["resources/testharness.js", "resources/testharnessreport.js"]
 worker_harness = ["resources/testharness.js"]
+extension_harness = ["resources/testharness.js", "resources/testharnessreport.js", "resources/testdriver.js", "resources/testdriver-vendor.js", "resources/web-extensions-helper.js"]
+extra_roots = { "/_mozilla/" = "testing/web-platform/mozilla/tests" }
+
+[wpt.test262]
+tests = ["third_party/test262/test", "infrastructure/test262"]
+harness = ["resources/test262/test262-reporter.js", "third_party/test262/harness/assert.js", "third_party/test262/harness/sta.js", "resources/test262/test262-provider.js"]
+includes_dir = "third_party/test262/harness"
+async_harness = ["third_party/test262/harness/doneprintHandle.js"]
 
 # Each global kind's TypeScript types, for its environments' projects: Gecko's
 # (tools/@types: its DOM, XPCOM and modules) in its windows and in xpcshell;

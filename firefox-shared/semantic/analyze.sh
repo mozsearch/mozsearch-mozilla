@@ -138,7 +138,10 @@ if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-typescript.sh" ]; then
 fi
 if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-js.sh" ]; then
     begin_step semantic js "$NAME"
-    "$MOZSEARCH_PATH/scripts/try-analyze-js.sh" "$INDEX_ROOT" "$SEM/gecko" "$PUSH/changed.lst" "$PUSH/tip"
+    # (Its web-platform-tests' custom properties are each file's own, as the
+    # tree's are; see mozsearch's scripts/js-analyze.sh.)
+    TESTS_ROOT=$(jq -r --arg tree "$TREE_NAME" '.trees[$tree].wpt_root // "-"' "$CONFIG_FILE") \
+        "$MOZSEARCH_PATH/scripts/try-analyze-js.sh" "$INDEX_ROOT" "$SEM/gecko" "$PUSH/changed.lst" "$PUSH/tip"
 fi
 
 begin_step semantic delta "$NAME"
