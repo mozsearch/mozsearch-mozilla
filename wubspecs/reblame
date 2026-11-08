@@ -88,12 +88,21 @@ if [[ "$UPLOAD" == "yes" ]]; then
         if [[ -z "$SUFFIX" ]]; then
             aws s3 cp "s3://searchfox.repositories/$NAME" "s3://searchfox.repositories/backups/$NAME" --acl public-read || true
         fi
-        # (Streamed, rather than written next to what it archives; see
-        # ../firefox-disco/reblame.)
+        # (Streamed, rather than written next to what it archives, in parts
+        # sized for it, and tried again twice; see ../firefox-disco/reblame.)
         SIZE=$(du -sb "$DIR" | cut -f1)
-        status "uploading $DIR ($(numfmt --to=iec "$SIZE") before compression) as $NAME"
-        tar cf - "$DIR" | lz4 -c |
-            aws s3 cp - "s3://searchfox.repositories/$NAME" --acl public-read --expected-size "$SIZE"
+        for ATTEMPT in 1 2 3; do
+            status "uploading $DIR ($(numfmt --to=iec "$SIZE") before compression) as $NAME (attempt $ATTEMPT)"
+            if tar cf - "$DIR" | lz4 -c |
+                "$MOZSEARCH_PATH/infrastructure/aws/s3-upload-stream.sh" "s3://searchfox.repositories/$NAME" \
+                    "$SIZE" --acl public-read; then
+                break
+            elif [[ $ATTEMPT == 3 ]]; then
+                echo "ERROR: $DIR's upload failed 3 times." > /dev/stderr
+                exit 1
+            fi
+            echo "WARNING: $DIR's upload failed; trying again."
+        done
     done
     popd
 fi

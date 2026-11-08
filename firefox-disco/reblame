@@ -127,12 +127,25 @@ if [[ "$UPLOAD" == "yes" ]]; then
         aws s3 cp "s3://searchfox.repositories/$NAME" "s3://searchfox.repositories/backups/$NAME" --acl public-read || true
     fi
     # Stream the archive to S3 rather than writing it next to the history, which
-    # would need as much space again.  (aws needs to know about how big a stream
-    # over 50 GB is to choose the size of its parts; lz4 barely shrinks packs.)
+    # would need as much space again, in parts sized for its size before
+    # compression (lz4 barely shrinks packs), which the aws CLI's CRT client
+    # doesn't do itself (see mozsearch's infrastructure/aws/s3-upload-stream.sh:
+    # 2026-11-08's history, 99 GB, failed at 10,000 of its 8 MiB parts).  A
+    # failed upload is tried again twice; after a third, the instance stays up
+    # for hours, with the history (see mozsearch's infrastructure/aws/main.sh).
     pushd $SHARED_ROOT
     SIZE=$(du -sb "$(basename "$HISTORY_ROOT")" | cut -f1)
-    status "uploading the history ($(numfmt --to=iec "$SIZE") before compression) as $NAME"
-    tar cf - "$(basename "$HISTORY_ROOT")" | lz4 -c |
-        aws s3 cp - "s3://searchfox.repositories/$NAME" --acl public-read --expected-size "$SIZE"
+    for ATTEMPT in 1 2 3; do
+        status "uploading the history ($(numfmt --to=iec "$SIZE") before compression) as $NAME (attempt $ATTEMPT)"
+        if tar cf - "$(basename "$HISTORY_ROOT")" | lz4 -c |
+            "$MOZSEARCH_PATH/infrastructure/aws/s3-upload-stream.sh" "s3://searchfox.repositories/$NAME" \
+                "$SIZE" --acl public-read; then
+            break
+        elif [[ $ATTEMPT == 3 ]]; then
+            echo "ERROR: The history's upload failed 3 times." > /dev/stderr
+            exit 1
+        fi
+        echo "WARNING: The history's upload failed; trying again."
+    done
     popd
 fi
