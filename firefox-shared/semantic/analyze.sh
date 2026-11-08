@@ -14,8 +14,9 @@ set -o pipefail # Check all commands in a pipeline
 # analysis (see select_tus.py and compile.py), with all but 8 of the cores,
 # for the web server's sake.  That analysis, merged like the tree's (see
 # ../process-gecko-analysis.sh), and its TypeScript's, its web analyses' (its
-# JS's, pages', stylesheets') and its Python's, is the delta's (see
-# build-try-delta).
+# JS's, pages', stylesheets'), its Python's, and the rest of the tree's (its
+# IDL's, IPDL's, TOML's, semantic analysis' and moz.build files', and its
+# analysis' URLs and functions' GC), is the delta's (see build-try-delta).
 #
 # Its steps say when they start, and how long each took when it exits (see
 # ../step-times.sh); compile.py says how long the translation units took.
@@ -163,6 +164,19 @@ if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-python.sh" ]; then
         "$PUSH/changed.lst" "$PUSH/tip" "$SEM/gecko/pyrightconfig.json" "$SEM/gecko/__pyright_wpt.json" ||
         echo "WARNING: The push's Python analysis failed."
     rm -f "$SEM/gecko/pyrightconfig.json" "$SEM/gecko/__pyright_wpt.json"
+fi
+# And the rest of its analyses, as the tree's (see mozsearch's
+# scripts/try-analyze-rest.sh, which revisions before Part 708 don't have):
+# its XPIDL's, WebIDL's and IPDL's (with its build's generated files, and its
+# compilation's analysis of their C++ over the tree's), its TOML's, its
+# semantic analysis' and its moz.build files'; and then its analysis' URLs
+# and functions' GC, as the tree's last steps add them, so that the files
+# whose records it doesn't change have the tree's.
+if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-rest.sh" ]; then
+    begin_step semantic rest "$NAME"
+    "$MOZSEARCH_PATH/scripts/try-analyze-rest.sh" "$CONFIG_FILE" "$TREE_NAME" "$INDEX_ROOT" "$SEM/gecko" \
+        "$SEM/workspace/obj-build" "$PUSH/changed.lst" "$PUSH/tip" "$PUSH/incomplete.lst" ||
+        echo "WARNING: The rest of the push's analyses failed."
 fi
 
 begin_step semantic delta "$NAME"
