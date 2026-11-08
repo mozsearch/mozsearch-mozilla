@@ -10,18 +10,25 @@ set -o pipefail # Check all commands in a pipeline
 # the indexer's outputs in /builds/worker/workspace, so that configure and the
 # build see the task's paths, and the analysis is like the task's.  Only the
 # system's directories and the checkout's git repository (the tree's shared
-# one, whose worktree it is) are visible besides (read-only), there's no
-# network (unless --net), and the environment is the task's (SEM/env).
+# one, whose worktree it is) are visible besides (read-only), and the nix
+# store with --nix (read-only, for mozsearch's tools, ex: its rust-analyzer),
+# there's no network (unless --net), and the environment is the task's
+# (SEM/env).
 #
-# Usage: inbuild.sh SEM [--net] COMMAND...
+# Usage: inbuild.sh SEM [--net] [--nix] COMMAND...
 
 SEM=$1
 shift
 NET=(--unshare-net)
-if [ "${1:-}" = "--net" ]; then
-    NET=()
+NIX=()
+while true; do
+    case "${1:-}" in
+        --net) NET=() ;;
+        --nix) NIX=(--ro-bind /nix /nix) ;;
+        *) break ;;
+    esac
     shift
-fi
+done
 mkdir -p "$SEM/workspace" "$SEM/artifacts" "$SEM/mozbuild"
 
 ROOT=()
@@ -47,7 +54,7 @@ exec bwrap "${ROOT[@]}" \
     --bind "$SEM/workspace" /builds/worker/workspace \
     --bind "$SEM/artifacts" /builds/worker/artifacts \
     --bind "$SEM/mozbuild" /builds/worker/.mozbuild \
-    --ro-bind "$GIT_COMMON" "$GIT_COMMON" \
+    --ro-bind "$GIT_COMMON" "$GIT_COMMON" "${NIX[@]}" \
     --ro-bind "$(cd "$(dirname "$0")" && pwd)" /builds/worker/semantic \
     --chdir /builds/worker/checkouts/gecko \
     "${NET[@]}" --unshare-pid --unshare-ipc --unshare-uts \

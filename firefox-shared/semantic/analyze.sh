@@ -104,6 +104,49 @@ python3 -I "$HERE/select_tus.py" "$SEM/deps-resolved.json" \
 "$HERE/inbuild.sh" "$SEM" env MOZSEARCH_ONLY_FILES=/builds/worker/workspace/push/emit.lst \
     python3 /builds/worker/semantic/compile.py /builds/worker/workspace/push/raw "$JOBS" \
     /builds/worker/workspace/push/tus.lst
+
+# And its Rust, as the tree's is the task's rust-analyzer's SCIP index (see
+# ../process-tc-artifacts.sh): the files whose analysis it can change
+# (mozsearch's try-rust-files: those it changes, and the tree's files using
+# their symbols), indexed by mozsearch's rust-analyzer (whose --only-files
+# the task's doesn't have) in the build's sandbox, with the task's
+# configuration, replaying prepare.sh's cargo check of the build scripts'
+# outputs and proc macros, or, if the push changes a Cargo.toml, Cargo.lock
+# or build.rs file, a cargo check of its own (in the sandbox, without the
+# network); their analysis joins the compilation's (see mozsearch's
+# scripts/try-analyze-rust.sh, which revisions before Part 710 don't have).
+# (On firefox at config8's 2026-11-06 revision, 4 files took 12.6 s, and
+# 134 files 17.2 s, 4.3 GB; 6,729 of the 4 files' 6,738 records were the
+# task's rust-analyzer's, the others with hovers' types the task's lacks.)
+if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-rust.sh" ] && [ -f "$SEM/workspace/rust-analyzer-replay.json" ]; then
+    begin_step semantic rust "$NAME"
+    try-rust-files "$CONFIG_FILE" "$TREE_NAME" "$SEM/gecko" "$PUSH/changed.lst" > "$PUSH/rust-files"
+    if [ -s "$PUSH/rust-files" ]; then
+        REPLAY=/builds/worker/workspace/rust-analyzer-replay.json
+        if grep -qE '(^|/)(Cargo\.toml|Cargo\.lock|build\.rs)$' "$PUSH/changed.lst"; then
+            "$HERE/inbuild.sh" "$SEM" sh -c "$(cat "$SEM/workspace/cargo-check.cmd")" \
+                > "$PUSH/cargo-check.json" 2> "$PUSH/cargo-check.log" ||
+                echo "WARNING: The push's cargo check failed for some crates (see its cargo-check.log)."
+            jq '.cargo.buildScripts.overrideCommand = ["cat", "/builds/worker/workspace/push/cargo-check.json"]' \
+                "$SEM/workspace/rust-analyzer-replay.json" > "$PUSH/rust-analyzer-replay.json"
+            REPLAY=/builds/worker/workspace/push/rust-analyzer-replay.json
+        fi
+        # (Offline, with prepare.sh's cargo home, which has the standard
+        # library's dependencies.)
+        if "$HERE/inbuild.sh" "$SEM" --nix env CARGO=/builds/worker/fetches/rustc/bin/cargo \
+            RUSTC=/builds/worker/fetches/rustc/bin/rustc CARGO_HOME=/builds/worker/.mozbuild/cargo-home \
+            CARGO_NET_OFFLINE=true "$(realpath "$(command -v rust-analyzer)")" \
+            scip . --config-path "$REPLAY" --only-files /builds/worker/workspace/push/rust-files \
+            --output /builds/worker/workspace/push/rust.scip > "$PUSH/rust-analyzer.log" 2>&1; then
+            "$MOZSEARCH_PATH/scripts/try-analyze-rust.sh" "$CONFIG_FILE" "$TREE_NAME" "$SEM/gecko" \
+                "$PUSH/rust.scip" "$PUSH/rust-files" "$PUSH/raw"
+        else
+            tail -5 "$PUSH/rust-analyzer.log"
+            echo "WARNING: rust-analyzer failed for the push's Rust, so it isn't analyzed."
+        fi
+    fi
+fi
+
 # (Merged like the tree's, whose only platform is linux64.)
 begin_step semantic merge "$NAME"
 mkdir -p "$PUSH/raw" "$PUSH/tip"

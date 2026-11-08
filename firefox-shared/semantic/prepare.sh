@@ -103,6 +103,43 @@ echo "Performing semantic::include-map step : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 "$HERE/inbuild.sh" "$SEM" python3 /builds/worker/semantic/deps.py /builds/worker/workspace/deps.json -j $JOBS
 python3 -I "$HERE/resolve_deps.py" "$SEM/workspace/obj-build" "$SEM/workspace/deps.json" "$SEM/deps-resolved.json"
 
+echo "Performing semantic::cargo-check step : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+# The tree's Rust as rust-analyzer sees it (see analyze.sh's rust step), with
+# the task's configuration (its packager's `mach rust-analyzer-config`): its
+# build scripts' outputs and proc macros, from the `cargo check` the
+# configuration runs for them (in the objdir, its target directory), whose
+# JSON pushes' analyses replay (rust-analyzer-replay.json), rather than
+# running cargo.
+"$HERE/inbuild.sh" "$SEM" --net python3 ./mach --no-interactive rust-analyzer-config \
+    -o /builds/worker/workspace/rust-analyzer.json
+jq -r '.cargo.buildScripts.overrideCommand | @sh' \
+    "$SEM/workspace/rust-analyzer.json" > "$SEM/workspace/cargo-check.cmd"
+# (Its build scripts which fail, ex: Windows-only crates', are left out, as
+# --keep-going does in the task.)
+"$HERE/inbuild.sh" "$SEM" --net sh -c "$(cat "$SEM/workspace/cargo-check.cmd")" \
+    > "$SEM/workspace/cargo-check.json" 2> "$SEM/workspace/cargo-check.log" ||
+    echo "WARNING: cargo check failed for some crates (see $SEM/workspace/cargo-check.log)."
+jq '.cargo.buildScripts.overrideCommand = ["cat", "/builds/worker/workspace/cargo-check.json"]
+    | del(.check)' "$SEM/workspace/rust-analyzer.json" > "$SEM/workspace/rust-analyzer-replay.json"
+# (Only what rust-analyzer reads of its outputs: the proc macros' libraries,
+# without their debug info, and the build scripts' OUT_DIRs, rather than all
+# of it, in the objdir and its pristine copy: 184 MB rather than 4.5 GB, on
+# firefox at config8's 2026-11-06 revision.  A push changing them checks
+# its crates from scratch.)
+(cd "$SEM/workspace/obj-build/debug" &&
+    find deps -name '*.so' -exec strip --strip-debug {} + &&
+    find deps -type f ! -name '*.so' -delete &&
+    find build -mindepth 2 -maxdepth 2 ! -name out -exec rm -rf {} + &&
+    rm -rf .fingerprint incremental)
+# (And the standard library's dependencies, in a cargo home of the
+# workspace's, for rust-analyzer's `cargo metadata` of its sources, without
+# which its crates aren't loaded, since pushes' analyses are offline; the task
+# has the network.  The task's toolchain's own, outside the sandbox, whose
+# /etc/resolv.conf can't resolve names.)
+CARGO_HOME="$SEM/mozbuild/cargo-home" RUSTC_BOOTSTRAP=1 RUSTC="$SEM/fetches/rustc/bin/rustc" \
+    "$SEM/fetches/rustc/bin/cargo" metadata --format-version 1 \
+    --manifest-path "$SEM/fetches/rustc/lib/rustlib/src/rust/library/Cargo.toml" > /dev/null
+
 echo "Performing semantic::snapshot step : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 # (The generated C/C++, which pushes' builds compare theirs with.)
 mkdir -p "$SEM/gen-base"
