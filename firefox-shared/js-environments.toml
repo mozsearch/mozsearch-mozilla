@@ -135,8 +135,16 @@ async_harness = ["third_party/test262/harness/doneprintHandle.js"]
 # Each global kind's TypeScript types, for its environments' projects: Gecko's
 # (tools/@types: its DOM, XPCOM and modules) in its windows and in xpcshell;
 # TypeScript's own in workers (Gecko has no worker types) and in the JS shell.
+# (Gecko's DOM is tools/@types' lib replacement, the package.json's
+# @typescript/lib-dom, which mozsearch's js-environments-analyze.sh links for
+# the projects.)  Web content's (web-platform-tests' and plain mochitests')
+# without the paths of Gecko's chrome:// and resource:// modules, which its
+# tests can't import: the module types of tools/@types' typings add them all
+# (1,938 files, 45 MB) to each program otherwise, which made web-platform-tests'
+# projects 3.2 times as slow to index, for 0.01% more of their references.
 [globals.window]
 extends = "tools/@types/tsconfig.json"
+compiler_options = { paths = {} }
 [globals.chrome-window]
 extends = "tools/@types/tsconfig.json"
 [globals.browser-window]
