@@ -124,9 +124,15 @@ if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-rust.sh" ] && [ -f "$SEM/workspace/
     if [ -s "$PUSH/rust-files" ]; then
         REPLAY=/builds/worker/workspace/rust-analyzer-replay.json
         if grep -qE '(^|/)(Cargo\.toml|Cargo\.lock|build\.rs)$' "$PUSH/changed.lst"; then
-            "$HERE/inbuild.sh" "$SEM" sh -c "$(cat "$SEM/workspace/cargo-check.cmd")" \
-                > "$PUSH/cargo-check.json" 2> "$PUSH/cargo-check.log" ||
-                echo "WARNING: The push's cargo check failed for some crates (see its cargo-check.log)."
+            # (As prepare.sh's: the crates which failed, which some always
+            # do, are left out.)
+            if ! "$HERE/inbuild.sh" "$SEM" sh -c "$(cat "$SEM/workspace/cargo-check.cmd")" \
+                    > "$PUSH/cargo-check.json" 2> "$PUSH/cargo-check.log"; then
+                echo "The push's cargo check: these crates failed, and are left out: $(grep -oE '(failed to run custom build command for|could not compile) `[^`]+`' "$PUSH/cargo-check.log" | cut -d'`' -f2 | cut -d' ' -f1 | sort -u | paste -sd ' ') (see its cargo-check.log)."
+            fi
+            if ! grep -q '"reason":"compiler-artifact"' "$PUSH/cargo-check.json"; then
+                echo "WARNING: The push's cargo check built none of the crates (see its cargo-check.log)."
+            fi
             jq '.cargo.buildScripts.overrideCommand = ["cat", "/builds/worker/workspace/push/cargo-check.json"]' \
                 "$SEM/workspace/rust-analyzer-replay.json" > "$PUSH/rust-analyzer-replay.json"
             REPLAY=/builds/worker/workspace/push/rust-analyzer-replay.json

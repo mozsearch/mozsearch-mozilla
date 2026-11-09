@@ -114,11 +114,16 @@ echo "Performing semantic::cargo-check step : $(date +"%Y-%m-%dT%H:%M:%S%z")"
     -o /builds/worker/workspace/rust-analyzer.json
 jq -r '.cargo.buildScripts.overrideCommand | @sh' \
     "$SEM/workspace/rust-analyzer.json" > "$SEM/workspace/cargo-check.cmd"
-# (Its build scripts which fail, ex: Windows-only crates', are left out, as
-# --keep-going does in the task.)
-"$HERE/inbuild.sh" "$SEM" --net sh -c "$(cat "$SEM/workspace/cargo-check.cmd")" \
-    > "$SEM/workspace/cargo-check.json" 2> "$SEM/workspace/cargo-check.log" ||
-    echo "WARNING: cargo check failed for some crates (see $SEM/workspace/cargo-check.log)."
+# (Its crates which fail, ex: Windows-only crates' build scripts, are left
+# out, as --keep-going does in the task, which it says, by name, rather than
+# warning, as some always do; it warns if it built none.)
+if ! "$HERE/inbuild.sh" "$SEM" --net sh -c "$(cat "$SEM/workspace/cargo-check.cmd")" \
+        > "$SEM/workspace/cargo-check.json" 2> "$SEM/workspace/cargo-check.log"; then
+    echo "cargo check: these crates failed, and are left out: $(grep -oE '(failed to run custom build command for|could not compile) `[^`]+`' "$SEM/workspace/cargo-check.log" | cut -d'`' -f2 | cut -d' ' -f1 | sort -u | paste -sd ' ') (see $SEM/workspace/cargo-check.log)."
+fi
+if ! grep -q '"reason":"compiler-artifact"' "$SEM/workspace/cargo-check.json"; then
+    echo "WARNING: cargo check built none of the crates (see $SEM/workspace/cargo-check.log)."
+fi
 jq '.cargo.buildScripts.overrideCommand = ["cat", "/builds/worker/workspace/cargo-check.json"]
     | del(.check)' "$SEM/workspace/rust-analyzer.json" > "$SEM/workspace/rust-analyzer-replay.json"
 # (Only what rust-analyzer reads of its outputs: the proc macros' libraries,
