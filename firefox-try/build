@@ -10,7 +10,10 @@ set -o pipefail # Check all commands in a pipeline
 # the TypeScript and JS they change with it (see
 # ../firefox-shared/semantic/analyze.sh), has the same analysis.  It needs
 # only the checkout, so it runs in the background while the Gecko analysis is
-# processed, its log shown once it's done.
+# processed, its log shown once it's done.  (Its index and scip-python's are
+# for the tree's scip-analyze step, which runs only if the tree's web analyses
+# aren't firefox-disco's: `web_analysis_from`, see mozsearch's
+# scripts/web-analysis-share.sh.)
 SCIP_TS_LOG="$INDEX_ROOT/scip-typescript.log"
 (
     set -eu
