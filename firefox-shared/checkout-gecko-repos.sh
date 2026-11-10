@@ -187,7 +187,8 @@ fi
 # If a try push was specified, pull it in non-graft mode so we actually pull those changes.
 if [ "$REVISION_TREE" == "try" ]; then
     git config cinnabar.graft false
-    git cinnabar fetch hg::https://hg.mozilla.org/try $INDEXED_HG_REV
+    # (hg-edge, where hg.mozilla.org redirects.)
+    git cinnabar fetch hg::https://hg-edge.mozilla.org/try $INDEXED_HG_REV
 fi
 
 if [[ "$INDEXED_GIT_REV" == "" ]]; then

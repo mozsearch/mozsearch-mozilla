@@ -7,10 +7,10 @@ set -o pipefail # Check all commands in a pipeline
 # Import a try push into the token-centric history firefox-try shares with
 # firefox-disco (firefox-shared's), for reviewing it on firefox-try, for the
 # web server (see mozsearch's tools/src/try_import.rs, which runs this with
-# the push's hg revision): fetch it from hg's try repository into the shared
-# firefox repo with git-cinnabar (as indexing a try push does; see
-# ../firefox-shared/checkout-gecko-repos.sh), find its stack (its changesets
-# since it diverged from the trunk) in the try repository, and process it with
+# the push's hg revision): find its stack (its changesets since it diverged
+# from the trunk) in hg's try repository, fetch it into the shared firefox
+# repo with git-cinnabar (as indexing a try push does; see
+# ../firefox-shared/checkout-gecko-repos.sh), and process it with
 # mozsearch's scripts/import-try-push.sh, with the history configuration the
 # history is built with (see ../firefox-disco/update-history.sh), and then
 # analyze it semantically.  Its steps say when they start, and how long each
@@ -24,25 +24,79 @@ trap 'end_steps try-import' EXIT
 # (The tree's checkout is a worktree of the shared bare repo.)
 SHARED_GIT=$(git -C "$GIT_ROOT" rev-parse --path-format=absolute --git-common-dir)
 
+# (hg-edge, where hg.mozilla.org redirects.)
+TRY=https://hg-edge.mozilla.org/try
+known() {
+    [[ "$(git -C "$SHARED_GIT" cinnabar hg2git "$1")" != "0000000000000000000000000000000000000000" ]]
+}
+
+# The push's stack, oldest first: the head's draft ancestors in the try
+# repository, where the trunk's changesets are public, which include the
+# stack's changesets that earlier pushes had (which the push's pushlog entry
+# doesn't), and its bases, their parents which aren't drafts.  If that can't
+# be read, the push's changesets from the pushlog (after fetching it), or else
+# the revisions the branch doesn't have (see import-try-push.sh).
+begin_step try-import stack "$HG_REV"
+STACK=""
+BASES=""
+if LOG=$(curl -sfL "$TRY/json-log?rev=draft()%20and%20ancestors($HG_REV)&revcount=1000"); then
+    { read -r STACK; read -r BASES; } < <(python3 -c 'import json, sys
+entries = json.load(sys.stdin)["entries"]
+drafts = {entry["node"] for entry in entries}
+print(" ".join(entry["node"] for entry in reversed(entries)))
+print(" ".join(sorted({parent for entry in entries for parent in entry["parents"] if parent not in drafts})))' <<< "$LOG") || true
+fi
+
+# The push: nothing, if the repo has it already (ex: imported again); or, if
+# the repo has the stack's bases, the stack's changesets, as a bundle of them
+# (getbundle, one request, of which cinnabar's fetch makes several, for its
+# discovery, each taking about 5 s on try, whose heads are many: 34,256 on
+# 2026-11-09, when cinnabar's fetch of a 4-changeset stack took 51 s);
+# otherwise (ex: a push on a newer trunk revision than the repo's, or if that
+# fails), cinnabar's fetch.
 begin_step try-import fetch "$HG_REV"
-git -C "$SHARED_GIT" -c cinnabar.graft=false cinnabar fetch hg::https://hg.mozilla.org/try "$HG_REV"
+fetch_stack_bundle() {
+    local base
+    [[ -n "$BASES" ]] || return 1
+    for base in $BASES; do
+        known "$base" || return 1
+    done
+    local bundle
+    bundle=$(mktemp --suffix=.hg)
+    # (getbundle's response is a version 1 changegroup, zlib-compressed:
+    # that of an uncompressed bundle file, after its header.)
+    if curl -sfL -H "Accept: application/mercurial-0.1" \
+            "$TRY?cmd=getbundle&heads=$HG_REV&common=${BASES// /%20}" |
+            python3 -I -c 'import sys, zlib
+out = sys.stdout.buffer
+out.write(b"HG10UN")
+d = zlib.decompressobj()
+for chunk in iter(lambda: sys.stdin.buffer.read(1 << 16), b""):
+    out.write(d.decompress(chunk))
+out.write(d.flush())
+if not d.eof:
+    sys.exit("getbundle: the response was truncated")' > "$bundle" &&
+            git -C "$SHARED_GIT" -c cinnabar.graft=false cinnabar unbundle "$bundle"; then
+        rm -f "$bundle"
+        known "$HG_REV"
+        return
+    fi
+    rm -f "$bundle"
+    return 1
+}
+if known "$HG_REV"; then
+    echo "The repo has $HG_REV already."
+elif ! fetch_stack_bundle; then
+    echo "Fetching $HG_REV with git-cinnabar's discovery."
+    git -C "$SHARED_GIT" -c cinnabar.graft=false cinnabar fetch "hg::$TRY" "$HG_REV"
+fi
 GIT_REV=$(git -C "$SHARED_GIT" cinnabar hg2git "$HG_REV")
 if [[ "$GIT_REV" == "0000000000000000000000000000000000000000" ]]; then
     echo "ERROR: Unable to find the git revision of $HG_REV after fetching it from try."
     exit 1
 fi
 
-# The push's stack, oldest first: the head's draft ancestors in the try
-# repository, where the trunk's changesets are public, which include the
-# stack's changesets that earlier pushes had (which the push's pushlog entry
-# doesn't).  If that can't be read, the push's changesets from the pushlog, or
-# else the revisions the branch doesn't have (see import-try-push.sh).
-begin_step try-import stack "$HG_REV"
-STACK=""
-if LOG=$(curl -sfL "https://hg.mozilla.org/try/json-log?rev=draft()%20and%20ancestors($HG_REV)&revcount=1000"); then
-    STACK=$(python3 -c 'import json, sys; print(" ".join(e["node"] for e in reversed(json.load(sys.stdin)["entries"])))' <<< "$LOG")
-fi
-if [[ -z "$STACK" ]] && PUSHLOG=$(curl -sfL "https://hg.mozilla.org/try/json-pushes?changeset=$HG_REV"); then
+if [[ -z "$STACK" ]] && PUSHLOG=$(curl -sfL "$TRY/json-pushes?changeset=$HG_REV"); then
     STACK=$(python3 -c 'import json, sys; print(" ".join(c for push in json.load(sys.stdin).values() for c in push["changesets"]))' <<< "$PUSHLOG")
 fi
 PUSH_REVS=""
