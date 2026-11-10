@@ -35,7 +35,7 @@ JOBS=$(nproc)
 JOBS=$(( JOBS > 9 ? JOBS - 8 : 1 ))
 
 source "$HERE/../step-times.sh"
-trap 'end_steps semantic' EXIT
+trap 'end_steps semantic; if [[ -n ${PYTHON_PID:-} ]]; then kill "$PYTHON_PID" 2>/dev/null || true; fi' EXIT
 
 begin_step semantic prepare "$NAME"
 # (One at a time, like try imports.)
@@ -161,6 +161,26 @@ ln -s raw "$PUSH/analysis-linux64"
     (cd "$PUSH" && parallel --halt now,fail=1 \
         'mkdir -p "$(dirname tip/{})" && merge-analyses analysis-linux64/{} > tip/{}')
 
+# And its Python, with scip-python, in the tree's projects (see
+# ../python-configs.sh and mozsearch's scripts/try-analyze-python.sh): in the
+# background, beside its TypeScript and web analyses, which analyze other
+# files, as scip-python takes a while (21 s for one file on 2026-11-09, mostly
+# starting), until the rest of its analyses (which read all of its files'),
+# its output shown then.  (Stopped if this exits before.)
+PYTHON_PID=
+if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-python.sh" ]; then
+    echo "Performing semantic::python step for $NAME, in the background : $(date +"%Y-%m-%dT%H:%M:%S%z")"
+    PYTHON_START=$(date +%s)
+    (
+        "$HERE/../python-configs.sh" "$SEM/gecko"
+        "$MOZSEARCH_PATH/scripts/try-analyze-python.sh" "$CONFIG_FILE" "$TREE_NAME" "$SEM/gecko" \
+            "$PUSH/changed.lst" "$PUSH/tip" "$SEM/gecko/pyrightconfig.json" "$SEM/gecko/__pyright_wpt.json" ||
+            echo "WARNING: The push's Python analysis failed."
+        rm -f "$SEM/gecko/pyrightconfig.json" "$SEM/gecko/__pyright_wpt.json"
+    ) > "$PUSH/python.log" 2>&1 &
+    PYTHON_PID=$!
+fi
+
 # And its TypeScript and JS, which the compilation doesn't analyze, as the
 # tree's are: with scip-typescript, the files the projects at its head include
 # (listed as the tree's build lists them; see mozsearch's
@@ -204,15 +224,13 @@ elif [ -x "$MOZSEARCH_PATH/scripts/try-analyze-js.sh" ]; then
     TESTS_ROOT=$(jq -r --arg tree "$TREE_NAME" '.trees[$tree].wpt_root // "-"' "$CONFIG_FILE") \
         "$MOZSEARCH_PATH/scripts/try-analyze-js.sh" "$INDEX_ROOT" "$SEM/gecko" "$PUSH/changed.lst" "$PUSH/tip"
 fi
-# And its Python, with scip-python, in the tree's projects (see
-# ../python-configs.sh and mozsearch's scripts/try-analyze-python.sh).
-if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-python.sh" ]; then
+# (Its Python's, once that's done; see above.)
+if [[ -n $PYTHON_PID ]]; then
     begin_step semantic python "$NAME"
-    "$HERE/../python-configs.sh" "$SEM/gecko"
-    "$MOZSEARCH_PATH/scripts/try-analyze-python.sh" "$CONFIG_FILE" "$TREE_NAME" "$SEM/gecko" \
-        "$PUSH/changed.lst" "$PUSH/tip" "$SEM/gecko/pyrightconfig.json" "$SEM/gecko/__pyright_wpt.json" ||
-        echo "WARNING: The push's Python analysis failed."
-    rm -f "$SEM/gecko/pyrightconfig.json" "$SEM/gecko/__pyright_wpt.json"
+    wait "$PYTHON_PID" || echo "WARNING: The push's Python analysis failed."
+    PYTHON_PID=
+    cat "$PUSH/python.log"
+    echo "(Its Python analysis took $(( $(date +%s) - PYTHON_START )) s, beside its TypeScript and web analyses.)"
 fi
 # And the rest of its analyses, as the tree's (see mozsearch's
 # scripts/try-analyze-rest.sh, which revisions before Part 708 don't have):
