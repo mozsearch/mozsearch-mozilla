@@ -6,11 +6,6 @@ set -o pipefail # Check all commands in a pipeline
 
 # See ../mozilla-central/setup for documentation
 
-REVISION_TREE=mozilla-esr128
-REVISION_ID=latest
-
-source $CONFIG_REPO/firefox-shared/resolve-gecko-revs.sh $REVISION_TREE $REVISION_ID
-
-$CONFIG_REPO/firefox-shared/checkout-gecko-repos.sh $REVISION_TREE "esr128" "$INDEXED_HG_REV"
-
-$CONFIG_REPO/firefox-shared/fetch-tc-artifacts.sh $REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV"
+# ESR128 isn't getting any new commits, so we can hard-code the last revision
+# for simplicity in checkout-gecko-repos.sh.
+$CONFIG_REPO/firefox-shared/checkout-gecko-repos.sh "mozilla-esr128" "esr128" "f355486f50080c133fba45da56dcf05f66f704d6"
