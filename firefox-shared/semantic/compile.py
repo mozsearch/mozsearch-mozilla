@@ -19,7 +19,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from tu_source import tu_source
+from tu_source import SOURCE_EXTENSIONS, tu_source
 
 OBJDIR = "/builds/worker/workspace/obj-build"
 INDEX = OBJDIR + "/mozsearch_index"
@@ -52,6 +52,12 @@ def command(entry):
     if "moz-check" in argv:
         i = argv.index("moz-check")
         del argv[i - 3 : i + 1]
+    # (A header compiled as its own translation unit is the main file, where
+    # its unused `static const`s warn, as they don't in the sources including
+    # it, and -Werror makes that an error, ex: dom/ipc/ProcessIsolation.h's
+    # `kHighValueCOOPPermission`: so that warning is off, after -Wall's.)
+    if not tu_source(entry).endswith(SOURCE_EXTENSIONS):
+        argv.append("-Wno-unused-const-variable")
     return argv
 
 
