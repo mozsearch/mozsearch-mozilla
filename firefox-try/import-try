@@ -33,49 +33,56 @@ known() {
 # The push's stack, oldest first: the head's draft ancestors in the try
 # repository, where the trunk's changesets are public, which include the
 # stack's changesets that earlier pushes had (which the push's pushlog entry
-# doesn't), and its bases, their parents which aren't drafts.  If that can't
-# be read, the push's changesets from the pushlog (after fetching it), or else
-# the revisions the branch doesn't have (see import-try-push.sh).
-begin_step try-import stack "$HG_REV"
-STACK=""
-BASES=""
-if LOG=$(curl -sfL "$TRY/json-log?rev=draft()%20and%20ancestors($HG_REV)&revcount=1000"); then
-    { read -r STACK; read -r BASES; } < <(python3 -c 'import json, sys
-entries = json.load(sys.stdin)["entries"]
-drafts = {entry["node"] for entry in entries}
-print(" ".join(entry["node"] for entry in reversed(entries)))
-print(" ".join(sorted({parent for entry in entries for parent in entry["parents"] if parent not in drafts})))' <<< "$LOG") || true
-fi
+# doesn't).  (Asked for now, and read after the fetch, which doesn't need it,
+# as each request to try takes about 5 s.)
+LOG_FILE=$(mktemp)
+curl -sfL -o "$LOG_FILE" "$TRY/json-log?rev=draft()%20and%20ancestors($HG_REV)&revcount=1000" &
+LOG_PID=$!
 
-# The push: nothing, if the repo has it already (ex: imported again); or, if
-# the repo has the stack's bases, the stack's changesets, as a bundle of them
-# (getbundle, one request, of which cinnabar's fetch makes several, for its
-# discovery, each taking about 5 s on try, whose heads are many: 34,256 on
-# 2026-11-09, when cinnabar's fetch of a 4-changeset stack took 51 s);
-# otherwise (ex: a push on a newer trunk revision than the repo's, or if that
-# fails), cinnabar's fetch.
+# The push: nothing, if the repo has it already (ex: imported again); or a
+# bundle of what the repo lacks of it (getbundle, one request): the stack's
+# changesets and, if they're on a newer trunk revision than the repo's (as
+# most are, since the repo's trunk is the indexing's), the trunk's changesets
+# since the repo's, the repo's trunk heads (mozilla-unified's bookmarks', and
+# the branches fetched from their own repos; see
+# ../firefox-shared/checkout-gecko-repos.sh) being what it has (`common`, of
+# which the server ignores those it doesn't have); or, if that fails, cinnabar's fetch, whose discovery makes several
+# requests, each taking about 5 s on try, whose heads are many (34,256 on
+# 2026-11-09).  On 2026-11-11, cinnabar's fetch of a stack took 47-53 s, and
+# the bundle 12-15 s (6-7 s for getbundle, and 6-7 s for unbundling it), for
+# a stack on the repo's trunk, and for one 95 changesets newer (0.8 MB).
 begin_step try-import fetch "$HG_REV"
-fetch_stack_bundle() {
-    local base
-    [[ -n "$BASES" ]] || return 1
-    for base in $BASES; do
-        known "$base" || return 1
+fetch_bundle() {
+    local common="" commit node
+    for commit in $(git -C "$SHARED_GIT" for-each-ref --format='%(objectname)' \
+            refs/cinnabar/refs/heads/bookmarks 'refs/remotes/*/branches/default/tip' | sort -u); do
+        node=$(git -C "$SHARED_GIT" cinnabar git2hg "$commit")
+        [[ "$node" == "0000000000000000000000000000000000000000" ]] || common+="$node "
     done
+    [[ -n "$common" ]] || return 1
     local bundle
     bundle=$(mktemp --suffix=.hg)
     # (getbundle's response is a version 1 changegroup, zlib-compressed:
-    # that of an uncompressed bundle file, after its header.)
+    # that of an uncompressed bundle file, after its header.  At most 256 MiB
+    # of it, beyond which the server would be sending what the repo has, if
+    # it had none of the heads, rather than a few days of the trunk, about
+    # 1 MB a day.)
     if curl -sfL -H "Accept: application/mercurial-0.1" \
-            "$TRY?cmd=getbundle&heads=$HG_REV&common=${BASES// /%20}" |
+            "$TRY?cmd=getbundle&heads=$HG_REV&common=$(echo $common | sed 's/ /%20/g')" |
             python3 -I -c 'import sys, zlib
 out = sys.stdout.buffer
 out.write(b"HG10UN")
 d = zlib.decompressobj()
+size = 0
 for chunk in iter(lambda: sys.stdin.buffer.read(1 << 16), b""):
+    size += len(chunk)
+    if size > 256 << 20:
+        sys.exit("getbundle: the response is over 256 MiB")
     out.write(d.decompress(chunk))
 out.write(d.flush())
 if not d.eof:
-    sys.exit("getbundle: the response was truncated")' > "$bundle" &&
+    sys.exit("getbundle: the response was truncated")
+print(f"getbundle: {size / 1e6:.1f} MB", file=sys.stderr)' > "$bundle" &&
             git -C "$SHARED_GIT" -c cinnabar.graft=false cinnabar unbundle "$bundle"; then
         rm -f "$bundle"
         known "$HG_REV"
@@ -86,10 +93,20 @@ if not d.eof:
 }
 if known "$HG_REV"; then
     echo "The repo has $HG_REV already."
-elif ! fetch_stack_bundle; then
+elif ! fetch_bundle; then
     echo "Fetching $HG_REV with git-cinnabar's discovery."
     git -C "$SHARED_GIT" -c cinnabar.graft=false cinnabar fetch "hg::$TRY" "$HG_REV"
 fi
+
+# (If the stack can't be read, the push's changesets from the pushlog, or
+# else the revisions the branch doesn't have; see import-try-push.sh.)
+begin_step try-import stack "$HG_REV"
+STACK=""
+if wait "$LOG_PID"; then
+    STACK=$(python3 -c 'import json, sys
+print(" ".join(entry["node"] for entry in reversed(json.load(sys.stdin)["entries"])))' < "$LOG_FILE") || true
+fi
+rm -f "$LOG_FILE"
 GIT_REV=$(git -C "$SHARED_GIT" cinnabar hg2git "$HG_REV")
 if [[ "$GIT_REV" == "0000000000000000000000000000000000000000" ]]; then
     echo "ERROR: Unable to find the git revision of $HG_REV after fetching it from try."
