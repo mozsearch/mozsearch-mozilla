@@ -12,9 +12,10 @@ set -o pipefail # Check all commands in a pipeline
 # repo with git-cinnabar (as indexing a try push does; see
 # ../firefox-shared/checkout-gecko-repos.sh), and process it with
 # mozsearch's scripts/import-try-push.sh, with the history configuration the
-# history is built with (see ../firefox-disco/update-history.sh), and then
-# analyze it semantically.  Its steps say when they start, and how long each
-# took when it exits (see ../firefox-shared/step-times.sh).
+# history is built with (see ../firefox-disco/update-history.sh), and analyze
+# it semantically, if its stack rebases onto the indexed revision (see below).
+# Its steps say when they start, and how long each took when it exits (see
+# ../firefox-shared/step-times.sh).
 
 HG_REV=$1
 
@@ -121,25 +122,60 @@ for CHANGESET in $STACK; do
     PUSH_REVS+="$(git -C "$SHARED_GIT" cinnabar hg2git "$CHANGESET") "
 done
 
+# Its stack rebased onto the indexed revision, for its semantic analysis
+# (mozsearch's scripts/rebase-try-push.sh: a file whose changes conflict which
+# the C++ build doesn't read, ex: a test's JS, is taken at the push's
+# version; a "semantic::" step, which the push's page names if it fails),
+# unless the stack is unknown (if try's draft changesets and pushlog couldn't
+# be read: the push's revisions since the indexed one could be the trunk's
+# too).  If it rebases, it's analyzed (see ../firefox-shared/semantic/analyze.sh), for
+# its jumps and references, and searches of it, and the history imports the
+# push as it is and its rebased stack too (see mozsearch's
+# scripts/import-try-rebased.sh), or, if the push is on a newer trunk
+# revision than the indexed one (as most are), only its rebased stack, as the
+# push (not the trunk's revisions since the indexed one).  If not, the
+# history imports the push as it is, with those revisions, and it has no
+# semantic analysis, rather than one whose build compiles those revisions'
+# changes too (on 2026-11-17, a push 188 revisions newer than the indexed
+# one, whose test's head.js conflicted, built 4,216 translation units in 42
+# minutes).
+begin_step semantic rebase "$HG_REV"
+IMPORT_REV=$GIT_REV
+IMPORT_REVS=$PUSH_REVS
+ALSO_REBASED=""
+REBASED=""
+if [[ -z "${PUSH_REVS// /}" ]]; then
+    echo "ERROR: Its stack (which of its commits are its own, rather than the trunk's it's on) is unknown, so it has no semantic analysis (which could be of the trunk's changes since the indexed revision too)."
+elif REBASED=$(PUSH_REVS="$PUSH_REVS" "$MOZSEARCH_PATH/scripts/rebase-try-push.sh" "$GIT_ROOT" "$HG_REV" "$GIT_REV"); then
+    # (The revisions the push has which the indexed revision doesn't: more
+    # than its stack's, if it's on a newer trunk revision.)
+    if (( $(git -C "$GIT_ROOT" rev-list --count "$GIT_REV" --not HEAD) > $(wc -w <<< "$PUSH_REVS") )); then
+        IMPORT_REV=$REBASED
+        IMPORT_REVS=$(git -C "$GIT_ROOT" rev-list --reverse "HEAD..$REBASED" | tr '\n' ' ')
+    elif [[ "$REBASED" != "$GIT_REV" ]]; then
+        ALSO_REBASED=1
+    fi
+else
+    echo "ERROR: Its stack's changes conflict with the indexed revision's in the files the C++ build reads, so it has no semantic analysis (which would be of the trunk's changes since the indexed revision too)."
+    REBASED=""
+fi
+
 begin_step try-import history "$HG_REV"
-PUSH_REVS="$PUSH_REVS" "$MOZSEARCH_PATH/scripts/import-try-push.sh" \
-    "$SHARED_GIT" "$HISTORY_ROOT" "$GIT_BRANCH" "$HG_REV" "$GIT_REV" "$MAX_REVISIONS" \
+PUSH_REVS="$IMPORT_REVS" "$MOZSEARCH_PATH/scripts/import-try-push.sh" \
+    "$SHARED_GIT" "$HISTORY_ROOT" "$GIT_BRANCH" "$HG_REV" "$IMPORT_REV" "$MAX_REVISIONS" \
     "$CONFIG_REPO/firefox-disco/history"
 
-# Its semantic analysis (see ../firefox-shared/semantic/analyze.sh), of its
-# stack (a push on a newer trunk revision than the indexed one has the trunk's
-# revisions since too, which aren't its), after which its stack rebased onto
-# the indexed revision has its jumps and
-# references, and searches of it; and that rebased stack's import into the
-# history too, for its pages' blame and stack strip (see mozsearch's
-# scripts/import-try-rebased.sh).  (If those fail, it's still imported.)
-begin_step try-import semantic "$HG_REV"
-if PUSH_REVS="$PUSH_REVS" "$CONFIG_REPO/firefox-shared/semantic/analyze.sh" "$HG_REV" "$GIT_REV"; then
-    begin_step try-import rebased "$HG_REV"
-    "$MOZSEARCH_PATH/scripts/import-try-rebased.sh" \
-        "$SHARED_GIT" "$HISTORY_ROOT" "$GIT_BRANCH" "$HG_REV" "$MAX_REVISIONS" \
-        "$CONFIG_REPO/firefox-disco/history" ||
-        echo "WARNING: The push's rebased stack's import failed."
-else
-    echo "WARNING: The push's semantic analysis failed."
+if [[ -n "$REBASED" ]]; then
+    begin_step try-import semantic "$HG_REV"
+    if "$CONFIG_REPO/firefox-shared/semantic/analyze.sh" "$HG_REV" "$REBASED"; then
+        if [[ -n "$ALSO_REBASED" ]]; then
+            begin_step try-import rebased "$HG_REV"
+            "$MOZSEARCH_PATH/scripts/import-try-rebased.sh" \
+                "$SHARED_GIT" "$HISTORY_ROOT" "$GIT_BRANCH" "$HG_REV" "$MAX_REVISIONS" \
+                "$CONFIG_REPO/firefox-disco/history" ||
+                echo "WARNING: The push's rebased stack's import failed."
+        fi
+    else
+        echo "WARNING: The push's semantic analysis failed."
+    fi
 fi

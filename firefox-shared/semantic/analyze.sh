@@ -6,8 +6,9 @@ set -o pipefail # Check all commands in a pipeline
 
 # A try push's semantic analysis (see mozsearch's tools/src/try_delta.rs),
 # for a tree indexing only linux64's analysis (firefox-try; see its setup):
-# rebase the push's stack onto the indexed revision
-# (mozsearch's scripts/rebase-try-push.sh), and build it in the tree's
+# the push's stack rebased onto the indexed revision (REBASED, which
+# ../../firefox-try/import-try rebased with mozsearch's
+# scripts/rebase-try-push.sh), built in the tree's
 # prepared build (see prepare.sh), starting from its pristine state: the
 # export tier, and then, with the indexer, the translation units that include
 # the files it changes (by the base's include map), writing their files'
@@ -21,13 +22,12 @@ set -o pipefail # Check all commands in a pipeline
 # Its steps say when they start, and how long each took when it exits (see
 # ../step-times.sh); compile.py says how long the translation units took.
 #
-# Usage: analyze.sh NAME HEAD_REV, with try_import's hook environment (see
+# Usage: analyze.sh NAME REBASED, with try_import's hook environment (see
 # mozsearch's tools/src/try_import.rs): GIT_ROOT, INDEX_ROOT, CONFIG_FILE,
-# TREE_NAME, and MOZSEARCH_PATH; and PUSH_REVS, the push's stack's commits,
-# oldest first (see rebase-try-push.sh), if known.
+# TREE_NAME, and MOZSEARCH_PATH.
 
 NAME=$1
-HEAD_REV=$2
+REBASED=$2
 HERE=$(cd "$(dirname "$0")" && pwd)
 SEM=$INDEX_ROOT/semantic
 PUSH=$SEM/workspace/push
@@ -48,12 +48,7 @@ fi
 
 "$HERE/prepare.sh" "$SEM" "$GIT_ROOT" "$(jq -r .moz_source_stamp "$INDEX_ROOT/target.json")"
 
-begin_step semantic rebase "$NAME"
 BASE=$(git -C "$GIT_ROOT" rev-parse HEAD)
-if ! REBASED=$("$MOZSEARCH_PATH/scripts/rebase-try-push.sh" "$GIT_ROOT" "$NAME" "$HEAD_REV"); then
-    echo "ERROR: The push's changes conflict with the indexed revision's, so it can't be analyzed semantically until it's rebased."
-    exit 1
-fi
 rsync -a --delete "$SEM/pristine/obj-build/" "$SEM/workspace/obj-build/"
 rsync -a --delete "$SEM/pristine/mozbuild/" "$SEM/mozbuild/"
 # (Only the files the push changes get new times, or else the build rebuilds
@@ -248,14 +243,9 @@ fi
 
 begin_step semantic delta "$NAME"
 { grep '^__GENERATED__/' "$PUSH/changed.lst" || true; } > "$PUSH/changed-generated.lst"
-# (A stack on a newer trunk revision which needs its changes is analyzed with
-# them, and the delta says what the stack itself changes; see
-# rebase-try-push.sh.)
-STACK_BASE=$(git -C "$GIT_ROOT" rev-parse -q --verify "refs/try-stack-base/$NAME" || true)
 build-try-delta "$CONFIG_FILE" "$TREE_NAME" "$NAME" "$REBASED" "$PUSH/tip" \
     --incomplete "$PUSH/incomplete.lst" --objdir "$SEM/workspace/obj-build" \
-    --changed-generated "$PUSH/changed-generated.lst" --threads "$JOBS" \
-    ${STACK_BASE:+--stack-base "$STACK_BASE"}
+    --changed-generated "$PUSH/changed-generated.lst" --threads "$JOBS"
 
 # (The worktree goes back to the base for the next push; the objdir and mach's
 # state go back to their pristine copies then.)
