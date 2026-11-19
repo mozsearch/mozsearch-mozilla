@@ -108,6 +108,7 @@
       "js_environments": "firefox-shared/js-environments.toml",
       "js_environments_analysis": true,
       "web_analysis_from": "firefox-disco",
+      "try_import_workers": 4,
       "do_not_fill_idl_binding_slots": true,
       "dataflow_summaries": true
     }

@@ -13,12 +13,15 @@ set -o pipefail # Check all commands in a pipeline
 # one, whose worktree it is) are visible besides (read-only), and the nix
 # store with --nix (read-only, for mozsearch's tools, ex: its rust-analyzer),
 # there's no network (unless --net), and the environment is the task's
-# (SEM/env).
+# (SEM/env).  The checkout, the objdir's workspace, mach's state and the
+# artifacts are SEM_SLOT's, if it's set (a semantic analysis's slot; see
+# analyze.sh), else SEM's own.
 #
 # Usage: inbuild.sh SEM [--net] [--nix] COMMAND...
 
 SEM=$1
 shift
+SLOT=${SEM_SLOT:-$SEM}
 NET=(--unshare-net)
 NIX=()
 while true; do
@@ -29,7 +32,7 @@ while true; do
     esac
     shift
 done
-mkdir -p "$SEM/workspace" "$SEM/artifacts" "$SEM/mozbuild"
+mkdir -p "$SLOT/workspace" "$SLOT/artifacts" "$SLOT/mozbuild"
 
 ROOT=()
 for ENTRY in /usr /bin /sbin /lib /lib32 /lib64 /libx32 /etc; do
@@ -39,7 +42,7 @@ for ENTRY in /usr /bin /sbin /lib /lib32 /lib64 /libx32 /etc; do
         ROOT+=(--ro-bind "$ENTRY" "$ENTRY")
     fi
 done
-GIT_COMMON=$(git -C "$SEM/gecko" rev-parse --path-format=absolute --git-common-dir)
+GIT_COMMON=$(git -C "$SLOT/gecko" rev-parse --path-format=absolute --git-common-dir)
 ENV=()
 while IFS= read -r LINE; do
     if [ -n "$LINE" ]; then
@@ -49,11 +52,11 @@ done < "$SEM/env"
 
 exec bwrap "${ROOT[@]}" \
     --dev /dev --proc /proc --tmpfs /tmp \
-    --bind "$SEM/gecko" /builds/worker/checkouts/gecko \
+    --bind "$SLOT/gecko" /builds/worker/checkouts/gecko \
     --ro-bind "$SEM/fetches" /builds/worker/fetches \
-    --bind "$SEM/workspace" /builds/worker/workspace \
-    --bind "$SEM/artifacts" /builds/worker/artifacts \
-    --bind "$SEM/mozbuild" /builds/worker/.mozbuild \
+    --bind "$SLOT/workspace" /builds/worker/workspace \
+    --bind "$SLOT/artifacts" /builds/worker/artifacts \
+    --bind "$SLOT/mozbuild" /builds/worker/.mozbuild \
     --ro-bind "$GIT_COMMON" "$GIT_COMMON" "${NIX[@]}" \
     --ro-bind "$(cd "$(dirname "$0")" && pwd)" /builds/worker/semantic \
     --chdir /builds/worker/checkouts/gecko \

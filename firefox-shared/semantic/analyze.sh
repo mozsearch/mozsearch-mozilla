@@ -22,15 +22,25 @@ set -o pipefail # Check all commands in a pipeline
 # Its steps say when they start, and how long each took when it exits (see
 # ../step-times.sh); compile.py says how long the translation units took.
 #
+# As many pushes' analyses run at a time as the tree's try pushes' imports
+# (TRY_IMPORT_WORKERS, its try_import_workers; see mozsearch's
+# tools/src/try_import.rs), each in a slot of its own: a gecko worktree, a
+# workspace (the objdir, from its pristine copy, and the push's directory),
+# mach's state, and the artifacts, for the build's sandbox (see inbuild.sh's
+# SEM_SLOT).  The first slot is SEM's own; the others, SEM/slots/N, are made
+# from it the first time they're needed (see make_slot).  Their builds share
+# the cores (with all but 8 each, at a lower priority than the web server's;
+# on 2026-11-19, a push's 3,534 translation units' 24 jobs used 6.2 GB).
+#
 # Usage: analyze.sh NAME REBASED, with try_import's hook environment (see
 # mozsearch's tools/src/try_import.rs): GIT_ROOT, INDEX_ROOT, CONFIG_FILE,
-# TREE_NAME, and MOZSEARCH_PATH.
+# TREE_NAME, MOZSEARCH_PATH and TRY_IMPORT_WORKERS (1 if it isn't set).
 
 NAME=$1
 REBASED=$2
 HERE=$(cd "$(dirname "$0")" && pwd)
 SEM=$INDEX_ROOT/semantic
-PUSH=$SEM/workspace/push
+SLOTS=${TRY_IMPORT_WORKERS:-1}
 JOBS=$(nproc)
 JOBS=$(( JOBS > 9 ? JOBS - 8 : 1 ))
 
@@ -38,29 +48,87 @@ source "$HERE/../step-times.sh"
 trap 'end_steps semantic; if [[ -n ${PYTHON_PID:-} ]]; then kill "$PYTHON_PID" 2>/dev/null || true; fi' EXIT
 
 begin_step semantic prepare "$NAME"
-# (One at a time, like try imports.)
-exec 9> "$INDEX_ROOT/semantic.lock"
+# (Preparing, once per indexed revision, which replaces SEM, is one push's
+# alone; the analyses hold the lock shared, so that it waits for them.)
+exec 8> "$INDEX_ROOT/semantic.lock"
 LOCKING=$(date +%s)
-flock 9
+flock 8
+"$HERE/prepare.sh" "$SEM" "$GIT_ROOT" "$(jq -r .moz_source_stamp "$INDEX_ROOT/target.json")"
+flock -s 8
+INDEXED_GIT_REV=$(git -C "$GIT_ROOT" rev-parse HEAD)
+
+# Its slot: the first free one, waiting for one if none is.
+SLOT=""
+while true; do
+    for (( INDEX = 0; INDEX < SLOTS; INDEX++ )); do
+        exec 9> "$INDEX_ROOT/semantic-slot-$INDEX.lock"
+        if flock -n 9; then
+            SLOT=$SEM
+            if (( INDEX > 0 )); then
+                SLOT=$SEM/slots/$INDEX
+            fi
+            break 2
+        fi
+        exec 9>&-
+    done
+    sleep 5
+done
 if (( $(date +%s) - LOCKING > 0 )); then
     echo "Waited $(( $(date +%s) - LOCKING )) s for another push's semantic analysis."
 fi
+echo "Its semantic analysis's slot: $INDEX of $SLOTS ($SLOT)."
+export SEM_SLOT=$SLOT
+PUSH=$SLOT/workspace/push
 
-"$HERE/prepare.sh" "$SEM" "$GIT_ROOT" "$(jq -r .moz_source_stamp "$INDEX_ROOT/target.json")"
+# Make a slot (but SEM's own) for the indexed revision, unless it is: a gecko
+# worktree of the shared repo at the revision, whose files are as old as the
+# prepared checkout's were when its objdir was built (see prepare.sh), so that
+# the build doesn't take them for changed since then (and mach doesn't
+# clobber the objdir, as a CLOBBER newer than its own would make it), and the
+# workspace's files besides the objdir (ex: Rust's replay of its cargo check).
+# (The objdir and mach's state come from their pristine copies for each push,
+# as SEM's do.)
+make_slot() {
+    if [[ "$SLOT" == "$SEM" ]] || [[ "$(cat "$SLOT/ready" 2>/dev/null || true)" == "$INDEXED_GIT_REV" ]]; then
+        return
+    fi
+    begin_step semantic make-slot "$NAME"
+    local shared_git
+    shared_git=$(git -C "$GIT_ROOT" rev-parse --path-format=absolute --git-common-dir)
+    if [ -d "$SLOT/gecko" ]; then
+        git -C "$shared_git" worktree remove --force "$SLOT/gecko" || true
+    fi
+    rm -rf "$SLOT"
+    mkdir -p "$SLOT/workspace" "$SLOT/artifacts" "$SLOT/mozbuild"
+    # (Slots are only made on the web server, after the index's upload, and
+    # kept for its life; but a half-made one's worktree would still be
+    # registered.)
+    git -C "$shared_git" worktree prune
+    git -C "$shared_git" worktree add --detach "$SLOT/gecko" "$INDEXED_GIT_REV"
+    # (fetches.lst, which prepare.sh writes right after its worktree's
+    # checkout and before the build.)
+    local checked_out
+    checked_out=$(stat -c %Y "$SEM/fetches.lst")
+    (cd "$SLOT/gecko" && git ls-files -z | xargs -0 touch -h -m -d "@$checked_out")
+    git -C "$SLOT/gecko" update-index -q --refresh || true
+    rsync -a --exclude=/obj-build --exclude=/push "$SEM/workspace/" "$SLOT/workspace/"
+    echo "$INDEXED_GIT_REV" > "$SLOT/ready"
+}
+make_slot
 
 BASE=$(git -C "$GIT_ROOT" rev-parse HEAD)
-rsync -a --delete "$SEM/pristine/obj-build/" "$SEM/workspace/obj-build/"
-rsync -a --delete "$SEM/pristine/mozbuild/" "$SEM/mozbuild/"
+rsync -a --delete "$SEM/pristine/obj-build/" "$SLOT/workspace/obj-build/"
+rsync -a --delete "$SEM/pristine/mozbuild/" "$SLOT/mozbuild/"
 # (Only the files the push changes get new times, or else the build rebuilds
 # everything, and the checkout's CLOBBER being newer than the objdir's makes
 # mach clobber the objdir, with its compile database and plugin.  So git's
 # index has to know that the other files are unchanged even if their stat
 # data changed, ex: after the index's copy from its volume to the web server's
 # disk, which doesn't keep their inodes.)
-git -C "$SEM/gecko" update-index -q --refresh || true
-git -C "$SEM/gecko" checkout -q --detach -f "$REBASED"
+git -C "$SLOT/gecko" update-index -q --refresh || true
+git -C "$SLOT/gecko" checkout -q --detach -f "$REBASED"
 # (But the npm packages the TypeScript analysis installs; see below.)
-git -C "$SEM/gecko" clean -q -fdx -e /node_modules
+git -C "$SLOT/gecko" clean -q -fdx -e /node_modules
 rm -rf "$PUSH"
 mkdir -p "$PUSH"
 git -C "$GIT_ROOT" diff --name-only "$BASE" "$REBASED" > "$PUSH/changed.lst"
@@ -71,11 +139,11 @@ sleep 1
 "$HERE/inbuild.sh" "$SEM" python3 ./mach --no-interactive build pre-export export -j$JOBS
 # The generated C/C++ the push changes (relative to the base's; see
 # prepare.sh).
-(cd "$SEM/workspace/obj-build" && find . -newer "$PUSH/export-marker" -type f | sed 's#^\./##') |
+(cd "$SLOT/workspace/obj-build" && find . -newer "$PUSH/export-marker" -type f | sed 's#^\./##') |
     { grep -E '\.(h|hh|hpp|c|cc|cpp|inc|def|msg)$' || true; } |
     { grep -vE '^(buildid\.h|build/application\.ini\.h)$' || true; } |
     while read -r FILE; do
-        if ! cmp -s "$SEM/gen-base/$FILE" "$SEM/workspace/obj-build/$FILE"; then
+        if ! cmp -s "$SEM/gen-base/$FILE" "$SLOT/workspace/obj-build/$FILE"; then
             echo "__GENERATED__/$FILE"
         fi
     done >> "$PUSH/changed.lst"
@@ -83,19 +151,19 @@ sleep 1
 # (If the build clobbered the objdir anyway, ex: for a push changing CLOBBER,
 # the plugin and the compile database have to be built again; see
 # prepare.sh.)
-if [ ! -e "$SEM/workspace/obj-build/compile_commands.json" ]; then
+if [ ! -e "$SLOT/workspace/obj-build/compile_commands.json" ]; then
     begin_step semantic rebuild-plugin "$NAME"
     if [ -e "$SEM/only-files" ]; then
-        git -C "$SEM/gecko" apply "$HERE/mozsearch-plugin-only-files.patch"
+        git -C "$SLOT/gecko" apply "$HERE/mozsearch-plugin-only-files.patch"
     fi
     "$HERE/inbuild.sh" "$SEM" gmake -C /builds/worker/workspace/obj-build/build/clang-plugin host -j$JOBS
     "$HERE/inbuild.sh" "$SEM" python3 ./mach --no-interactive build-backend -b CompileDB
-    git -C "$SEM/gecko" checkout -- .
+    git -C "$SLOT/gecko" checkout -- .
 fi
 
 begin_step semantic build-analysis "$NAME"
 python3 -I "$HERE/select_tus.py" "$SEM/deps-resolved.json" \
-    "$SEM/workspace/obj-build/compile_commands.json" "$PUSH"
+    "$SLOT/workspace/obj-build/compile_commands.json" "$PUSH"
 "$HERE/inbuild.sh" "$SEM" env MOZSEARCH_ONLY_FILES=/builds/worker/workspace/push/emit.lst \
     python3 /builds/worker/semantic/compile.py /builds/worker/workspace/push/raw "$JOBS" \
     /builds/worker/workspace/push/tus.lst
@@ -113,15 +181,15 @@ python3 -I "$HERE/select_tus.py" "$SEM/deps-resolved.json" \
 # (On firefox at config8's 2026-11-06 revision, 4 files took 12.6 s, and
 # 134 files 17.2 s, 4.3 GB; 6,729 of the 4 files' 6,738 records were the
 # task's rust-analyzer's, the others with hovers' types the task's lacks.)
-if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-rust.sh" ] && [ -f "$SEM/workspace/rust-analyzer-replay.json" ]; then
+if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-rust.sh" ] && [ -f "$SLOT/workspace/rust-analyzer-replay.json" ]; then
     begin_step semantic rust "$NAME"
-    try-rust-files "$CONFIG_FILE" "$TREE_NAME" "$SEM/gecko" "$PUSH/changed.lst" > "$PUSH/rust-files"
+    try-rust-files "$CONFIG_FILE" "$TREE_NAME" "$SLOT/gecko" "$PUSH/changed.lst" > "$PUSH/rust-files"
     if [ -s "$PUSH/rust-files" ]; then
         REPLAY=/builds/worker/workspace/rust-analyzer-replay.json
         if grep -qE '(^|/)(Cargo\.toml|Cargo\.lock|build\.rs)$' "$PUSH/changed.lst"; then
             # (As prepare.sh's: the crates which failed, which some always
             # do, are left out.)
-            if ! "$HERE/inbuild.sh" "$SEM" sh -c "$(cat "$SEM/workspace/cargo-check.cmd")" \
+            if ! "$HERE/inbuild.sh" "$SEM" sh -c "$(cat "$SLOT/workspace/cargo-check.cmd")" \
                     > "$PUSH/cargo-check.json" 2> "$PUSH/cargo-check.log"; then
                 echo "The push's cargo check: these crates failed, and are left out: $(grep -oE '(failed to run custom build command for|could not compile) `[^`]+`' "$PUSH/cargo-check.log" | cut -d'`' -f2 | cut -d' ' -f1 | sort -u | paste -sd ' ') (see its cargo-check.log)."
             fi
@@ -129,7 +197,7 @@ if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-rust.sh" ] && [ -f "$SEM/workspace/
                 echo "WARNING: The push's cargo check built none of the crates (see its cargo-check.log)."
             fi
             jq '.cargo.buildScripts.overrideCommand = ["cat", "/builds/worker/workspace/push/cargo-check.json"]' \
-                "$SEM/workspace/rust-analyzer-replay.json" > "$PUSH/rust-analyzer-replay.json"
+                "$SLOT/workspace/rust-analyzer-replay.json" > "$PUSH/rust-analyzer-replay.json"
             REPLAY=/builds/worker/workspace/push/rust-analyzer-replay.json
         fi
         # (Offline, with prepare.sh's cargo home, which has the standard
@@ -139,7 +207,7 @@ if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-rust.sh" ] && [ -f "$SEM/workspace/
             CARGO_NET_OFFLINE=true "$(realpath "$(command -v rust-analyzer)")" \
             scip . --config-path "$REPLAY" --only-files /builds/worker/workspace/push/rust-files \
             --output /builds/worker/workspace/push/rust.scip > "$PUSH/rust-analyzer.log" 2>&1; then
-            "$MOZSEARCH_PATH/scripts/try-analyze-rust.sh" "$CONFIG_FILE" "$TREE_NAME" "$SEM/gecko" \
+            "$MOZSEARCH_PATH/scripts/try-analyze-rust.sh" "$CONFIG_FILE" "$TREE_NAME" "$SLOT/gecko" \
                 "$PUSH/rust.scip" "$PUSH/rust-files" "$PUSH/raw"
         else
             tail -5 "$PUSH/rust-analyzer.log"
@@ -167,11 +235,11 @@ if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-python.sh" ]; then
     echo "Performing semantic::python step for $NAME, in the background : $(date +"%Y-%m-%dT%H:%M:%S%z")"
     PYTHON_START=$(date +%s)
     (
-        "$HERE/../python-configs.sh" "$SEM/gecko"
-        "$MOZSEARCH_PATH/scripts/try-analyze-python.sh" "$CONFIG_FILE" "$TREE_NAME" "$SEM/gecko" \
-            "$PUSH/changed.lst" "$PUSH/tip" "$SEM/gecko/pyrightconfig.json" "$SEM/gecko/__pyright_wpt.json" ||
+        "$HERE/../python-configs.sh" "$SLOT/gecko"
+        "$MOZSEARCH_PATH/scripts/try-analyze-python.sh" "$CONFIG_FILE" "$TREE_NAME" "$SLOT/gecko" \
+            "$PUSH/changed.lst" "$PUSH/tip" "$SLOT/gecko/pyrightconfig.json" "$SLOT/gecko/__pyright_wpt.json" ||
             echo "WARNING: The push's Python analysis failed."
-        rm -f "$SEM/gecko/pyrightconfig.json" "$SEM/gecko/__pyright_wpt.json"
+        rm -f "$SLOT/gecko/pyrightconfig.json" "$SLOT/gecko/__pyright_wpt.json"
     ) > "$PUSH/python.log" 2>&1 &
     PYTHON_PID=$!
 fi
@@ -187,18 +255,18 @@ fi
 # before Part 667 don't have).
 if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-typescript.sh" ]; then
     begin_step semantic typescript "$NAME"
-    NPM_STAMP=$(cat "$SEM/gecko/package.json" "$SEM/gecko/package-lock.json" 2>/dev/null | sha256sum | cut -d' ' -f1)
-    if [ ! -d "$SEM/gecko/node_modules" ] || [ "$(cat "$SEM/npm-stamp" 2>/dev/null)" != "$NPM_STAMP" ]; then
-        rm -f "$SEM/npm-stamp"
-        if (cd "$SEM/gecko" && npm install --no-audit --no-fund); then
-            echo "$NPM_STAMP" > "$SEM/npm-stamp"
+    NPM_STAMP=$(cat "$SLOT/gecko/package.json" "$SLOT/gecko/package-lock.json" 2>/dev/null | sha256sum | cut -d' ' -f1)
+    if [ ! -d "$SLOT/gecko/node_modules" ] || [ "$(cat "$SLOT/npm-stamp" 2>/dev/null)" != "$NPM_STAMP" ]; then
+        rm -f "$SLOT/npm-stamp"
+        if (cd "$SLOT/gecko" && npm install --no-audit --no-fund); then
+            echo "$NPM_STAMP" > "$SLOT/npm-stamp"
         else
             echo "WARNING: npm install failed in the semantic analysis's checkout."
         fi
     fi
-    "$HERE/../typescript-projects.sh" "$SEM/gecko" > "$PUSH/typescript-projects"
+    "$HERE/../typescript-projects.sh" "$SLOT/gecko" > "$PUSH/typescript-projects"
     if ! "$MOZSEARCH_PATH/scripts/try-analyze-typescript.sh" "$CONFIG_FILE" "$TREE_NAME" \
-        "$SEM/gecko" "$PUSH/typescript-projects" "$PUSH/changed.lst" "$PUSH/tip"; then
+        "$SLOT/gecko" "$PUSH/typescript-projects" "$PUSH/changed.lst" "$PUSH/tip"; then
         echo "WARNING: The push's TypeScript analysis failed, so its JS is js-analyze's."
     fi
 fi
@@ -211,13 +279,13 @@ fi
 if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-web.sh" ]; then
     begin_step semantic web "$NAME"
     JS_ENVIRONMENTS_JOBS=$JOBS "$MOZSEARCH_PATH/scripts/try-analyze-web.sh" "$CONFIG_FILE" "$TREE_NAME" \
-        "$INDEX_ROOT" "$SEM/gecko" "$PUSH/changed.lst" "$PUSH/tip"
+        "$INDEX_ROOT" "$SLOT/gecko" "$PUSH/changed.lst" "$PUSH/tip"
 elif [ -x "$MOZSEARCH_PATH/scripts/try-analyze-js.sh" ]; then
     begin_step semantic js "$NAME"
     # (Its web-platform-tests' custom properties are each file's own, as the
     # tree's are; see mozsearch's scripts/js-analyze.sh.)
     TESTS_ROOT=$(jq -r --arg tree "$TREE_NAME" '.trees[$tree].wpt_root // "-"' "$CONFIG_FILE") \
-        "$MOZSEARCH_PATH/scripts/try-analyze-js.sh" "$INDEX_ROOT" "$SEM/gecko" "$PUSH/changed.lst" "$PUSH/tip"
+        "$MOZSEARCH_PATH/scripts/try-analyze-js.sh" "$INDEX_ROOT" "$SLOT/gecko" "$PUSH/changed.lst" "$PUSH/tip"
 fi
 # (Its Python's, once that's done; see above.)
 if [[ -n $PYTHON_PID ]]; then
@@ -236,18 +304,24 @@ fi
 # whose records it doesn't change have the tree's.
 if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-rest.sh" ]; then
     begin_step semantic rest "$NAME"
-    "$MOZSEARCH_PATH/scripts/try-analyze-rest.sh" "$CONFIG_FILE" "$TREE_NAME" "$INDEX_ROOT" "$SEM/gecko" \
-        "$SEM/workspace/obj-build" "$PUSH/changed.lst" "$PUSH/tip" "$PUSH/incomplete.lst" ||
+    "$MOZSEARCH_PATH/scripts/try-analyze-rest.sh" "$CONFIG_FILE" "$TREE_NAME" "$INDEX_ROOT" "$SLOT/gecko" \
+        "$SLOT/workspace/obj-build" "$PUSH/changed.lst" "$PUSH/tip" "$PUSH/incomplete.lst" ||
         echo "WARNING: The rest of the push's analyses failed."
 fi
 
 begin_step semantic delta "$NAME"
+# (Pushes whose stacks rebase to the same head have the same delta, whose
+# directory one at a time writes.)
+mkdir -p "$SEM/delta-locks"
+exec 7> "$SEM/delta-locks/$REBASED"
+flock 7
 { grep '^__GENERATED__/' "$PUSH/changed.lst" || true; } > "$PUSH/changed-generated.lst"
 build-try-delta "$CONFIG_FILE" "$TREE_NAME" "$NAME" "$REBASED" "$PUSH/tip" \
-    --incomplete "$PUSH/incomplete.lst" --objdir "$SEM/workspace/obj-build" \
+    --incomplete "$PUSH/incomplete.lst" --objdir "$SLOT/workspace/obj-build" \
     --changed-generated "$PUSH/changed-generated.lst" --threads "$JOBS"
+exec 7>&-
 
 # (The worktree goes back to the base for the next push; the objdir and mach's
 # state go back to their pristine copies then.)
-git -C "$SEM/gecko" checkout -q --detach -f "$BASE"
+git -C "$SLOT/gecko" checkout -q --detach -f "$BASE"
 rm -rf "$PUSH"
