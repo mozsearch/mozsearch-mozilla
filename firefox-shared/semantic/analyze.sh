@@ -48,14 +48,22 @@ source "$HERE/../step-times.sh"
 trap 'end_steps semantic; if [[ -n ${PYTHON_PID:-} ]]; then kill "$PYTHON_PID" 2>/dev/null || true; fi' EXIT
 
 begin_step semantic prepare "$NAME"
-# (Preparing, once per indexed revision, which replaces SEM, is one push's
-# alone; the analyses hold the lock shared, so that it waits for them.)
+# (The analyses hold the lock shared.  Preparing, once per indexed revision,
+# which replaces SEM, is one push's alone: an analysis which finds SEM not
+# prepared takes the lock alone, waiting for the others, to prepare it.
+# Taking it alone each time, as before, waited for every running analysis:
+# on config8 on 2026-11-19, 4 pushes' analyses ran one at a time, and 3 of
+# their imports reached their time limit waiting.)
 exec 8> "$INDEX_ROOT/semantic.lock"
 LOCKING=$(date +%s)
-flock 8
-"$HERE/prepare.sh" "$SEM" "$GIT_ROOT" "$(jq -r .moz_source_stamp "$INDEX_ROOT/target.json")"
-flock -s 8
 INDEXED_GIT_REV=$(git -C "$GIT_ROOT" rev-parse HEAD)
+flock -s 8
+if [[ "$(cat "$SEM/ready" 2>/dev/null || true)" != "$INDEXED_GIT_REV" ]]; then
+    flock -u 8
+    flock 8
+    "$HERE/prepare.sh" "$SEM" "$GIT_ROOT" "$(jq -r .moz_source_stamp "$INDEX_ROOT/target.json")"
+    flock -s 8
+fi
 
 # Its slot: the first free one, waiting for one if none is.
 SLOT=""
