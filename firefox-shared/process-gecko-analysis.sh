@@ -14,6 +14,12 @@ echo "Performing build::process-tc-artifacts step for $TREE_NAME : $(date +"%Y-%
 echo "${GECKO_PLATFORMS:-linux64 linux64-opt macosx64 macosx64-aarch64 macosx64-aarch64-opt win64 win64-opt android-armv7 android-aarch64 ios}" | tr " " "\n" |
 parallel --halt now,fail=1 "$CONFIG_REPO/firefox-shared/process-tc-artifacts.sh {}"
 
+# And the platforms whose Java and Kotlin alone a tree indexes (ex:
+# firefox-try's android-aarch64; see process-java-artifacts.sh).
+for PLATFORM in ${GECKO_JAVA_PLATFORMS:-}; do
+    "$CONFIG_REPO/firefox-shared/process-java-artifacts.sh" "$PLATFORM"
+done
+
 # Combine the per-platform list files
 cat generated-files-*.list > generated-files.list
 cat analysis-files-*.list > analysis-files.list

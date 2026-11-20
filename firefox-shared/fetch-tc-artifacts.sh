@@ -192,6 +192,18 @@ for PLATFORM in ${GECKO_PLATFORMS:-linux64 linux64-opt macosx64 macosx64-aarch64
     echo "${CURL} ${TC_PREFIX}/chrome-map.json -o ${PLATFORM}.chrome-map.json || true" >> downloads.lst
 done # end PLATFORM loop
 
+# Platforms whose Java and Kotlin index alone is indexed, besides
+# GECKO_PLATFORMS' (ex: firefox-try's android-aarch64; see
+# process-java-artifacts.sh).
+for PLATFORM in ${GECKO_JAVA_PLATFORMS:-}; do
+    TC_PREFIX="${TC_REV_PREFIX}.firefox.${PLATFORM}-searchfox-debug/artifacts/public/build"
+    if [ -f "${PLATFORM}.mozsearch-java-index.zip" ]; then
+        echo "Found pre-existing ${PLATFORM}.mozsearch-java-index.zip, skipping its re-download."
+        continue
+    fi
+    echo "${CURL} ${TC_PREFIX}/target.mozsearch-java-index.zip -o ${PLATFORM}.mozsearch-java-index.zip || true" >> downloads.lst
+done
+
 # Do the downloads
 echo "Performing setup::fetch-tc-artifacts-download step for $TREE_NAME : $(date +"%Y-%m-%dT%H:%M:%S%z")"
 parallel --halt now,fail=1 < downloads.lst

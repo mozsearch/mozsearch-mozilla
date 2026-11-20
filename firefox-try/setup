@@ -8,7 +8,12 @@ set -o pipefail # Check all commands in a pipeline
 # import-try): the same revision, but with only linux64's analysis, the
 # platform whose compilation gives try pushes their semantic analysis (see
 # mozsearch's tools/src/try_delta.rs), so that a push's analysis replaces the
-# tree's exactly.  It shares firefox-disco's history (firefox-shared's, which
+# tree's exactly; and android-aarch64's Java and Kotlin
+# (GECKO_JAVA_PLATFORMS; see ../firefox-shared/process-java-artifacts.sh),
+# which only Android builds compile, and so are none of linux64's files.  (A
+# push changing Java or Kotlin files has none of their analysis until its
+# delta has Android's; build-try-delta drops the base's for them, rather
+# than keeping it at the wrong lines.)  It shares firefox-disco's history (firefox-shared's, which
 # only firefox-disco updates) and repos.  Its setup is in a setup group of its
 # own (see config8.json), running alongside firefox-disco's: what needs
 # nothing from it first, then, once firefox-disco's setup has updated the
@@ -64,5 +69,5 @@ INDEXED_HG_REV=$(jq -r ".moz_source_stamp" "$INDEX_ROOT/target.json")
 SHARED_REPOS_UPDATED=1 \
     $CONFIG_REPO/firefox-shared/checkout-gecko-repos.sh $BUILD_REVISION_TREE "main" "$INDEXED_HG_REV"
 
-GECKO_PLATFORMS=linux64 \
+GECKO_PLATFORMS=linux64 GECKO_JAVA_PLATFORMS=android-aarch64 \
     $CONFIG_REPO/firefox-shared/fetch-tc-artifacts.sh $BUILD_REVISION_TREE $INDEXED_HG_REV "$PREEXISTING_HG_REV"

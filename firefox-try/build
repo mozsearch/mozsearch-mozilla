@@ -36,9 +36,9 @@ SCIP_PY_LOG="$INDEX_ROOT/scip-python.log"
 "$CONFIG_REPO/firefox-shared/scip-python.sh" > "$SCIP_PY_LOG" 2>&1 &
 SCIP_PY_PID=$!
 
-# Only linux64's analysis; see setup.
+# Only linux64's analysis, and android-aarch64's Java and Kotlin; see setup.
 pushd $INDEX_ROOT
-GECKO_PLATFORMS=linux64 $CONFIG_REPO/firefox-shared/process-gecko-analysis.sh
+GECKO_PLATFORMS=linux64 GECKO_JAVA_PLATFORMS=android-aarch64 $CONFIG_REPO/firefox-shared/process-gecko-analysis.sh
 popd
 
 # The build of the indexed revision which try pushes' semantic analysis starts
