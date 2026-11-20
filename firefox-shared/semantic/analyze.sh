@@ -147,15 +147,18 @@ git -C "$GIT_ROOT" diff --name-only "$BASE" "$REBASED" > "$PUSH/changed.lst"
 # worker, which replaces this import's build-export, selection and
 # compilation if it's of this import exactly: the indexed revision as its
 # base, and the same changed files with the same contents at their heads (the
-# delta's push being the stack on the base, after its own prototype commit).
+# delta's task rebasing the push's stack onto the base, as this import does).
 # The generated files its export changed (ex: a YAML or IPDL file's headers)
 # go in the slot's objdir, as this import's export would have put them, and
 # those which differ from the base's are among the changed files, as below.
-# The delta is found by the index route its tasks insert, by this push's
-# revision.  Anything else, and this import builds as before.
+# The delta is found by the index route its task inserts, by this push's
+# revision and the platform (the first prototypes' tasks' had no platform).
+# Anything else, and this import builds as before.
 use_tc_delta() {
     local tc=https://firefox-ci-tc.services.mozilla.com/api task dir path blob artifact
-    task=$(curl -sSf "$tc/index/v1/task/gecko.v2.try.searchfox-delta.v1.hg.$NAME" | jq -r .taskId) || return 1
+    local route=gecko.v2.try.searchfox-delta.v1.hg.$NAME
+    task=$(curl -sSf "$tc/index/v1/task/$route.linux64" | jq -r .taskId) ||
+        task=$(curl -sSf "$tc/index/v1/task/$route" | jq -r .taskId) || return 1
     dir=$PUSH/tc-delta
     mkdir -p "$dir"
     for artifact in base-env.sh head-blobs.tsv changed-generated.lst tus.lst emit.lst incomplete.lst analysis.tar.zst; do
