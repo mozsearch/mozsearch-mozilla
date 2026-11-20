@@ -146,11 +146,13 @@ git -C "$GIT_ROOT" diff --name-only "$BASE" "$REBASED" > "$PUSH/changed.lst"
 # of the translation units the push's changes affect, compiled on a try
 # worker, which replaces this import's build-export, selection and
 # compilation if it's of this import exactly: the indexed revision as its
-# base, the same changed files with the same contents at their heads (the
-# delta's push being the stack on the base, after its own prototype commit),
-# and no generated files changed (whose sources the delta doesn't carry
-# yet).  The delta is found by the index route its tasks insert, by this
-# push's revision.  Anything else, and this import builds as before.
+# base, and the same changed files with the same contents at their heads (the
+# delta's push being the stack on the base, after its own prototype commit).
+# The generated files its export changed (ex: a YAML or IPDL file's headers)
+# go in the slot's objdir, as this import's export would have put them, and
+# those which differ from the base's are among the changed files, as below.
+# The delta is found by the index route its tasks insert, by this push's
+# revision.  Anything else, and this import builds as before.
 use_tc_delta() {
     local tc=https://firefox-ci-tc.services.mozilla.com/api task dir path blob artifact
     task=$(curl -sSf "$tc/index/v1/task/gecko.v2.try.searchfox-delta.v1.hg.$NAME" | jq -r .taskId) || return 1
@@ -166,8 +168,9 @@ use_tc_delta() {
         echo "tc-delta: task $task's base isn't $BASE"
         return 1
     fi
-    if [ -s "$dir/changed-generated.lst" ]; then
-        echo "tc-delta: task $task's push changes generated files"
+    if [ -s "$dir/changed-generated.lst" ] &&
+        ! curl -sSfL -o "$dir/generated.tar.zst" "$tc/queue/v1/task/$task/artifacts/public/searchfox/generated.tar.zst"; then
+        echo "tc-delta: task $task's push changes generated files, which it doesn't have"
         return 1
     fi
     # (Without try_task_config.json, which the delta's push and the code
@@ -186,6 +189,14 @@ use_tc_delta() {
     done < "$dir/head-blobs.tsv"
     zstd -dc "$dir/analysis.tar.zst" | tar -x -C "$PUSH"
     cp "$dir"/{tus,emit,incomplete}.lst "$PUSH/"
+    if [ -s "$dir/changed-generated.lst" ]; then
+        zstd -dc "$dir/generated.tar.zst" | tar -x -C "$SLOT/workspace/obj-build"
+        while read -r path; do
+            if ! cmp -s "$SEM/gen-base/$path" "$SLOT/workspace/obj-build/$path"; then
+                echo "__GENERATED__/$path"
+            fi
+        done < "$dir/changed-generated.lst" >> "$PUSH/changed.lst"
+    fi
     echo "tc-delta: using task $task's analysis ($(find "$PUSH/raw" -type f | wc -l) files, $(wc -l < "$PUSH/tus.lst") translation units)"
 }
 
