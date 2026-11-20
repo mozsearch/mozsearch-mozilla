@@ -154,15 +154,19 @@ git -C "$GIT_ROOT" diff --name-only "$BASE" "$REBASED" > "$PUSH/changed.lst"
 # The delta is found by the index route its task inserts, by this push's
 # revision and the platform (the first prototypes' tasks' had no platform).
 # Anything else, and this import builds as before.
-use_tc_delta() {
-    local tc=https://firefox-ci-tc.services.mozilla.com/api task dir path blob artifact
-    local route=gecko.v2.try.searchfox-delta.v1.hg.$NAME
-    task=$(curl -sSf "$tc/index/v1/task/$route.linux64" | jq -r .taskId) ||
-        task=$(curl -sSf "$tc/index/v1/task/$route" | jq -r .taskId) || return 1
-    dir=$PUSH/tc-delta
+TC=https://firefox-ci-tc.services.mozilla.com/api
+# The delta task's artifacts (public/searchfox/ARTIFACT...) into DIR, if its
+# base is the indexed revision, and its changed files are this import's, with
+# the same contents (see below); it says why not otherwise.  TASK is the
+# task's id.
+#
+# Usage: tc_delta_fetch TASK DIR ARTIFACT...
+tc_delta_fetch() {
+    local task=$1 dir=$2 path blob artifact
+    shift 2
     mkdir -p "$dir"
-    for artifact in base-env.sh head-blobs.tsv changed-generated.lst tus.lst emit.lst incomplete.lst analysis.tar.zst; do
-        if ! curl -sSfL -o "$dir/$artifact" "$tc/queue/v1/task/$task/artifacts/public/searchfox/$artifact"; then
+    for artifact in base-env.sh head-blobs.tsv "$@"; do
+        if ! curl -sSfL -o "$dir/$artifact" "$TC/queue/v1/task/$task/artifacts/public/searchfox/$artifact"; then
             echo "tc-delta: task $task has no $artifact"
             return 1
         fi
@@ -171,15 +175,10 @@ use_tc_delta() {
         echo "tc-delta: task $task's base isn't $BASE"
         return 1
     fi
-    if [ -s "$dir/changed-generated.lst" ] &&
-        ! curl -sSfL -o "$dir/generated.tar.zst" "$tc/queue/v1/task/$task/artifacts/public/searchfox/generated.tar.zst"; then
-        echo "tc-delta: task $task's push changes generated files, which it doesn't have"
-        return 1
-    fi
     # (Without try_task_config.json, which the delta's push and the code
     # review bot's each have their own of.)
     if ! diff <(cut -f1 "$dir/head-blobs.tsv" | grep -vx try_task_config.json | sort) \
-            <(grep -vx try_task_config.json "$PUSH/changed.lst" | sort); then
+            <(grep -vx try_task_config.json "$PUSH/changed.lst" | grep -v '^__GENERATED__/' | sort); then
         echo "tc-delta: task $task's changed files aren't this import's"
         return 1
     fi
@@ -190,6 +189,21 @@ use_tc_delta() {
             return 1
         fi
     done < "$dir/head-blobs.tsv"
+}
+
+use_tc_delta() {
+    local task dir path
+    local route=gecko.v2.try.searchfox-delta.v1.hg.$NAME
+    task=$(curl -sSf "$TC/index/v1/task/$route.linux64" | jq -r .taskId) ||
+        task=$(curl -sSf "$TC/index/v1/task/$route" | jq -r .taskId) || return 1
+    dir=$PUSH/tc-delta
+    tc_delta_fetch "$task" "$dir" changed-generated.lst tus.lst emit.lst incomplete.lst analysis.tar.zst ||
+        return 1
+    if [ -s "$dir/changed-generated.lst" ] &&
+        ! curl -sSfL -o "$dir/generated.tar.zst" "$TC/queue/v1/task/$task/artifacts/public/searchfox/generated.tar.zst"; then
+        echo "tc-delta: task $task's push changes generated files, which it doesn't have"
+        return 1
+    fi
     zstd -dc "$dir/analysis.tar.zst" | tar -x -C "$PUSH"
     cp "$dir"/{tus,emit,incomplete}.lst "$PUSH/"
     if [ -s "$dir/changed-generated.lst" ]; then
@@ -296,13 +310,51 @@ if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-rust.sh" ] && [ -f "$SLOT/workspace
     fi
 fi
 
-# (Merged like the tree's, whose only platform is linux64.)
+# And its Java and Kotlin, as the tree's are android-aarch64's (see
+# ../process-java-artifacts.sh): from the push's Android Taskcluster delta (a
+# prototype's, as above, indexed at the route's `.android-aarch64`), its
+# head's per-file SCIP of all of its Java and Kotlin, and the files whose SCIP
+# differs from the base's (java-changed.lst: those the push changes, and
+# those whose SCIP its changes change), whose analysis is then the tree's
+# indexing's of them (see mozsearch's scripts/try-analyze-java.sh, which
+# revisions before Part 803 don't have), as android-aarch64's.  Without such
+# a delta, the push's Java and Kotlin files have no analysis.
+use_tc_java_delta() {
+    local task dir
+    task=$(curl -sSf "$TC/index/v1/task/gecko.v2.try.searchfox-delta.v1.hg.$NAME.android-aarch64" |
+        jq -r .taskId) || return 1
+    dir=$PUSH/tc-java-delta
+    tc_delta_fetch "$task" "$dir" java-changed.lst java-index.tar.zst || return 1
+    zstd -dc "$dir/java-index.tar.zst" | tar -x -C "$dir" || return 1
+    { grep -v '^removed' "$dir/java-changed.lst" || true; } | cut -f2 |
+        sed 's#^META-INF/scip/##; s#\.scip$##' > "$dir/files"
+    echo "tc-delta: using task $task's Java and Kotlin SCIP ($(wc -l < "$dir/files") files)"
+    mkdir -p "$PUSH/analysis-android-aarch64"
+    "$MOZSEARCH_PATH/scripts/try-analyze-java.sh" "$CONFIG_FILE" "$TREE_NAME" "$SLOT/gecko" \
+        "$dir/mozsearch_java_index" "$dir/files" "$PUSH/analysis-android-aarch64"
+}
+if [ -x "$MOZSEARCH_PATH/scripts/try-analyze-java.sh" ]; then
+    begin_step semantic java "$NAME"
+    if ! use_tc_java_delta; then
+        echo "tc-delta: no Android delta of this import's Java and Kotlin, so they have no analysis."
+        rm -rf "$PUSH/analysis-android-aarch64"
+    fi
+    rm -rf "$PUSH/tc-java-delta"
+fi
+
+# (Merged like the tree's, whose platforms are linux64, and android-aarch64
+# for Java and Kotlin, which linux64 has none of.)
 begin_step semantic merge "$NAME"
 mkdir -p "$PUSH/raw" "$PUSH/tip"
 ln -s raw "$PUSH/analysis-linux64"
 (cd "$PUSH/raw" && find . -type f | sed 's#^\./##') |
     (cd "$PUSH" && parallel --halt now,fail=1 \
         'mkdir -p "$(dirname tip/{})" && merge-analyses analysis-linux64/{} > tip/{}')
+if [ -d "$PUSH/analysis-android-aarch64" ]; then
+    (cd "$PUSH/analysis-android-aarch64" && find . -type f | sed 's#^\./##') |
+        (cd "$PUSH" && parallel --halt now,fail=1 \
+            'mkdir -p "$(dirname tip/{})" && merge-analyses analysis-android-aarch64/{} > tip/{}')
+fi
 
 # And its Python, with scip-python, in the tree's projects (see
 # ../python-configs.sh and mozsearch's scripts/try-analyze-python.sh): in the
