@@ -141,6 +141,63 @@ rm -rf "$PUSH"
 mkdir -p "$PUSH"
 git -C "$GIT_ROOT" diff --name-only "$BASE" "$REBASED" > "$PUSH/changed.lst"
 
+# A Taskcluster delta of this push (a prototype's; see searchfox's
+# review-continuity plan, and the try task's delta.sh): the C/C++ analysis
+# of the translation units the push's changes affect, compiled on a try
+# worker, which replaces this import's build-export, selection and
+# compilation if it's of this import exactly: the indexed revision as its
+# base, the same changed files with the same contents at their heads (the
+# delta's push being the stack on the base, after its own prototype commit),
+# and no generated files changed (whose sources the delta doesn't carry
+# yet).  The delta is found by the index route its tasks insert, by this
+# push's revision.  Anything else, and this import builds as before.
+use_tc_delta() {
+    local tc=https://firefox-ci-tc.services.mozilla.com/api task dir path blob artifact
+    task=$(curl -sSf "$tc/index/v1/task/gecko.v2.try.searchfox-delta.v1.hg.$NAME" | jq -r .taskId) || return 1
+    dir=$PUSH/tc-delta
+    mkdir -p "$dir"
+    for artifact in base-env.sh head-blobs.tsv changed-generated.lst tus.lst emit.lst incomplete.lst analysis.tar.zst; do
+        if ! curl -sSfL -o "$dir/$artifact" "$tc/queue/v1/task/$task/artifacts/public/searchfox/$artifact"; then
+            echo "tc-delta: task $task has no $artifact"
+            return 1
+        fi
+    done
+    if ! grep -qx "export MOZ_SOURCE_GIT_CHANGESET='$BASE'" "$dir/base-env.sh"; then
+        echo "tc-delta: task $task's base isn't $BASE"
+        return 1
+    fi
+    if [ -s "$dir/changed-generated.lst" ]; then
+        echo "tc-delta: task $task's push changes generated files"
+        return 1
+    fi
+    # (Without try_task_config.json, which the delta's push and the code
+    # review bot's each have their own of.)
+    if ! diff <(cut -f1 "$dir/head-blobs.tsv" | grep -vx try_task_config.json | sort) \
+            <(grep -vx try_task_config.json "$PUSH/changed.lst" | sort); then
+        echo "tc-delta: task $task's changed files aren't this import's"
+        return 1
+    fi
+    while IFS=$'\t' read -r path blob; do
+        [ "$path" = try_task_config.json ] && continue
+        if [ "$(git -C "$GIT_ROOT" rev-parse -q --verify "$REBASED:$path" || echo -)" != "$blob" ]; then
+            echo "tc-delta: task $task's $path isn't this import's"
+            return 1
+        fi
+    done < "$dir/head-blobs.tsv"
+    zstd -dc "$dir/analysis.tar.zst" | tar -x -C "$PUSH"
+    cp "$dir"/{tus,emit,incomplete}.lst "$PUSH/"
+    echo "tc-delta: using task $task's analysis ($(find "$PUSH/raw" -type f | wc -l) files, $(wc -l < "$PUSH/tus.lst") translation units)"
+}
+
+begin_step semantic tc-delta "$NAME"
+if use_tc_delta; then
+    USED_TC_DELTA=1
+else
+    USED_TC_DELTA=
+    rm -rf "$PUSH/tc-delta" "$PUSH/raw"
+fi
+
+if [ -z "$USED_TC_DELTA" ]; then
 begin_step semantic build-export "$NAME"
 touch "$PUSH/export-marker"
 sleep 1
@@ -175,6 +232,7 @@ python3 -I "$HERE/select_tus.py" "$SEM/deps-resolved.json" \
 "$HERE/inbuild.sh" "$SEM" env MOZSEARCH_ONLY_FILES=/builds/worker/workspace/push/emit.lst \
     python3 /builds/worker/semantic/compile.py /builds/worker/workspace/push/raw "$JOBS" \
     /builds/worker/workspace/push/tus.lst
+fi
 
 # And its Rust, as the tree's is the task's rust-analyzer's SCIP index (see
 # ../process-tc-artifacts.sh): the files whose analysis it can change
